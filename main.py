@@ -2,16 +2,34 @@ from utils import get_home_path
 from wallet import Wallet
 from allocation import Allocation
 from const import MAIN_ALLOCATION_ID, STORAGE_ADDRESS
+from reedsolo import RSCodec
+
+rsc = RSCodec(2)
 
 wallet = Wallet()
 main_alloc = Allocation(MAIN_ALLOCATION_ID, wallet, STORAGE_ADDRESS)
 
-path = f"{get_home_path()}/.zcn/uploads/AMAZING.txt"
-# main_alloc.upload_file(path)
+path = f"{get_home_path()}/.zcn/uploads/1.txt"
+upload_res = main_alloc.upload_file(path)
 
-info = main_alloc.get_allocation_info()
+for res in upload_res:
+    print(res.text)
+
+
+# info = main_alloc.get_allocation_info()
 # print(json.dumps(info, indent=4))
 
-results = main_alloc.download_file("/TOPS.txt")
-for res in results:
-    print(res.text)
+# new_file = f"{get_home_path()}/.zcn/downloads/downloaded_stack_page.txt"
+
+# download_res = main_alloc.download_file("/stack_page.txt", new_file)
+
+# encoded_data = "".join(results)
+# data = b""
+# for res in download_res:
+#     data = data + res
+
+# decoded_data = rsc.decode(data)
+# print(decoded_data[0])
+
+# with open(new_file, "wb") as file:
+#     file.write(data)
