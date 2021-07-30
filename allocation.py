@@ -55,6 +55,7 @@ class Allocation(ConnectionBase):
                 old_marker = read_marker_res.json()
                 signature_payload = f"{old_marker['allocation_id']}:{old_marker['blobber_id']}:{old_marker['client_id']}:{old_marker['client_public_key']}:{old_marker['owner_id']}:{old_marker['counter']}:{old_marker['timestamp']}"
                 hashed_signature_payload = hash_string(signature_payload)
+
                 signature = self.wallet.sign(hashed_signature_payload)
                 num_blocks = (
                     file_info.get("num_of_blocks")
@@ -94,10 +95,6 @@ class Allocation(ConnectionBase):
                 headers["Content-Type"] = data.content_type
 
                 res = requests.post(url, data=data, headers=headers)
-                req = requests.Request(
-                    method="POST", url=url, data=data, headers=headers
-                )
-                print(req.prepare().body)
                 results.append(res)
 
         return results

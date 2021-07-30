@@ -14,7 +14,7 @@ def hash_string(payload_string):
 
 
 def get_project_root():
-    return Path(__file__).parent.resolve().parent.resolve()
+    return Path(__file__).parent.resolve()
 
 
 def get_home_path():
