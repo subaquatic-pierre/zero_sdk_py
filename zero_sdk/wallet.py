@@ -27,36 +27,38 @@ except:
 
 
 class Wallet(ConnectionBase):
-    def __init__(self, default_config=True, config=None, network=None):
-        # Raise error if no config object passed in and not default config
-        if default_config == False and config == None:
-            raise Exception(
-                "If default config not selected a config object needs to passed to constructor"
-            )
-        # Set default config
-        if default_config == True:
-            config = default_wallet_config
-            network = Network(default_network_config)
-
-            # Set custom config
-            self.client_id = config.get("client_id")
-            self.client_key = config.get("client_key")
-            self.public_key = config.get("keys")[0]["public_key"]
-            self.private_key = config.get("keys")[0]["private_key"]
-            self.mnemonics = config.get("mnemonics")
-            self.version = config.get("version")
-            self.date_created = config.get("date_created")
-            self.network = network
-
+    def __init__(
+        self,
+        client_id,
+        client_key,
+        public_key,
+        private_key,
+        mnemonics,
+        version,
+        date_created,
+        network,
+    ):
+        # Raise error if incorrect config
+        if (
+            not client_id
+            or not client_key
+            or not public_key
+            or not private_key
+            or not mnemonics
+            or not version
+            or not date_created
+            or not network
+        ):
+            raise Exception("Incorrect args passed to __init__")
         else:
             # Set custom config
-            self.client_id = config.get("client_id")
-            self.client_key = config.get("client_key")
-            self.public_key = config.get("public_key")
-            self.private_key = config.get("private_key")
-            self.mnemonics = config.get("mnemonics")
-            self.version = config.get("version")
-            self.date_created = config.get("date_created")
+            self.client_id = client_id
+            self.client_key = client_key
+            self.public_key = public_key
+            self.private_key = private_key
+            self.mnemonics = mnemonics
+            self.version = version
+            self.date_created = date_created
             self.network = network
 
     def _init_wallet(self):
@@ -167,8 +169,21 @@ class Wallet(ConnectionBase):
             res = requests.put(url, json=data, headers=headers)
             results.append(res)
 
-        for res in results:
-            print(res.text)
+            for res in results:
+                print(res.text)
+
+    @staticmethod
+    def from_object(config, network):
+        return Wallet(
+            config.get("client_id"),
+            config.get("client_key"),
+            config.get("keys")[0]["public_key"],
+            config.get("keys")[0]["private_key"],
+            config.get("mnemonics"),
+            config.get("version"),
+            config.get("date_created"),
+            Network(network),
+        )
 
     def __repr__(self):
         return f"Wallet(default_config=True, config={default_wallet_config}, network=Network({default_network_config}))"
@@ -186,3 +201,6 @@ class Wallet(ConnectionBase):
             },
             indent=4,
         )
+
+
+default_wallet = Wallet.from_object(default_wallet_config, default_network_config)

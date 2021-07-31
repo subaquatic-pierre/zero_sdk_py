@@ -1,6 +1,6 @@
 from zero_sdk.network import Network
-from zero_sdk.const import TO_CLIENT_ID, BASE_URL
-from zero_sdk.utils import from_json, from_yaml, get_home_path
+from setup import config
+from zero_sdk.utils import from_yaml, get_home_path
 
 default_network_config = from_yaml(f"{get_home_path()}/.zcn/network_config.json")
 
@@ -15,7 +15,7 @@ assert len(network.sharders) > 0, "No sharders were loaded"
 
 # Test network url
 network = Network(default_network_config)
-assert network.url == BASE_URL, "Base network url not loaded correctly"
+assert network.url == config.BASE_URL, "Base network url not loaded correctly"
 
 # Test network has remote client ID
 network = Network(default_network_config)
