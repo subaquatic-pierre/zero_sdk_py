@@ -1,13 +1,13 @@
-from utils import get_home_path
-from wallet import Wallet
-from allocation import Allocation
-from const import MAIN_ALLOCATION_ID, STORAGE_ADDRESS
+from zero_sdk.utils import get_home_path
+from zero_sdk.wallet import Wallet
+from zero_sdk.allocation import Allocation
+from zero_sdk.config import config
 from reedsolo import RSCodec
 
 rsc = RSCodec(2)
 
 wallet = Wallet()
-main_alloc = Allocation(MAIN_ALLOCATION_ID, wallet, STORAGE_ADDRESS)
+main_alloc = Allocation(config.MAIN_ALLOCATION_ID, wallet, config.STORAGE_ADDRESS)
 
 path = f"{get_home_path()}/.zcn/uploads/1.txt"
 upload_res = main_alloc.upload_file(path)

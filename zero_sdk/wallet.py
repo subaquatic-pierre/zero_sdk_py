@@ -2,20 +2,14 @@ import requests
 import json
 from time import time
 
-from utils import hash_string
-from sign import sign_payload
-from network import Network, ConnectionBase
-from utils import (
+from zero_sdk.utils import hash_string
+from zero_sdk.sign import sign_payload
+from zero_sdk.network import Network, ConnectionBase
+from zero_sdk.utils import (
     get_home_path,
     from_json,
     from_yaml,
 )
-
-from const import (
-    MAIN_ALLOCATION_ID,
-    TO_CLIENT_ID,
-)
-
 
 default_wallet_config = {}
 default_network_config = {}
