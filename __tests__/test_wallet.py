@@ -1,6 +1,12 @@
 from unittest.case import TestCase
 from zero_sdk.wallet import Wallet
-import pytest
+
+from zero_sdk.config import Config
+from zero_sdk.utils import from_json
+
+conf_obj = from_json("../config.json")
+config = Config()
+config.from_object(conf_obj)
 
 
 class TestWallet(TestCase):
@@ -30,6 +36,6 @@ class TestWallet(TestCase):
         self.assertTrue(isinstance(balance, int))
 
     def test_add_tokens(self):
-        """Test add_token method did not add to wallet balance"""
+        """Test add_token method add to wallet balance"""
         wallet = Wallet()
         self.assertTrue(wallet.add_tokens())
