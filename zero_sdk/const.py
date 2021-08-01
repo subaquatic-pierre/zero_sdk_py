@@ -1,22 +1,22 @@
-MultiSigSmartContractAddress = (
+MULTI_SIG_SMART_CONTRACT_ADDRESS = (
     "27b5ef7120252b79f9dd9c05505dd28f328c80f6863ee446daede08a84d651a7"
 )
-VestingSmartContractAddress = (
+VESTING_SMART_CONTRACT_ADDRESS = (
     "2bba5b05949ea59c80aed3ac3474d7379d3be737e8eb5a968c52295e48333ead"
 )
-FaucetSmartContractAddress = (
+FAUCET_SMART_CONTRACT_ADDRESS = (
     "6dba10422e368813802877a85039d3985d96760ed844092319743fb3a76712d3"
 )
-ZRC20SmartContractAddress = (
+ZRC20_SMART_CONTRACT_ADDRESS = (
     "6dba10422e368813802877a85039d3985d96760ed844092319743fb3a76712d5"
 )
-StorageSmartContractAddress = (
+STORAGE_SMART_CONTRACT_ADDRESS = (
     "6dba10422e368813802877a85039d3985d96760ed844092319743fb3a76712d7"
 )
-MinerSmartContractAddress = (
+MINER_SMART_CONTRACT_ADDRESS = (
     "6dba10422e368813802877a85039d3985d96760ed844092319743fb3a76712d9"
 )
-InterestPoolSmartContractAddress = (
+INTEREST_POOL_SMART_CONTRACT_ADDRESS = (
     "cf8d0df9bd8cc637a4ff4e792ffe3686da6220c45f0e1103baa609f3f1751ef4"
 )
 
@@ -35,31 +35,33 @@ class Endpoints:
 
     # SC REST
     SC_REST = "v1/screst/"
-    SC_REST_ALLOCATION = "v1/screst/" + StorageSmartContractAddress + "/allocation"
-    SC_REST_ALLOCATIONS = "v1/screst/" + StorageSmartContractAddress + "/allocations"
+    SC_REST_ALLOCATION = "v1/screst/" + STORAGE_SMART_CONTRACT_ADDRESS + "/allocation"
+    SC_REST_ALLOCATIONS = "v1/screst/" + STORAGE_SMART_CONTRACT_ADDRESS + "/allocations"
     SC_REST_READPOOL_STATS = (
-        "v1/screst/" + StorageSmartContractAddress + "/getReadPoolStat"
+        "v1/screst/" + STORAGE_SMART_CONTRACT_ADDRESS + "/getReadPoolStat"
     )
     SC_REST_WRITEPOOL_STATS = (
-        "v1/screst/" + StorageSmartContractAddress + "/getWritePoolStat"
+        "v1/screst/" + STORAGE_SMART_CONTRACT_ADDRESS + "/getWritePoolStat"
     )
-    SC_BLOBBER_STATS = "v1/screst/" + StorageSmartContractAddress + "/getblobbers"
-    SC_SHARDER_LIST = "v1/screst/" + MinerSmartContractAddress + "/getSharderList"
-    SC_MINERS_STATS = "v1/screst/" + MinerSmartContractAddress + "/getMinerList"
+    SC_BLOBBER_STATS = "v1/screst/" + STORAGE_SMART_CONTRACT_ADDRESS + "/getblobbers"
+    SC_SHARDER_LIST = "v1/screst/" + MINER_SMART_CONTRACT_ADDRESS + "/getSharderList"
+    SC_MINERS_STATS = "v1/screst/" + MINER_SMART_CONTRACT_ADDRESS + "/getMinerList"
     SC_REST_ALLOCATION_MIN_LOCK = (
-        "v1/screst/" + StorageSmartContractAddress + "/allocation_min_lock"
+        "v1/screst/" + STORAGE_SMART_CONTRACT_ADDRESS + "/allocation_min_lock"
     )
 
     GET_LOCKED_TOKENS = (
-        "v1/screst/" + InterestPoolSmartContractAddress + "/getPoolsStats"
+        "v1/screst/" + INTEREST_POOL_SMART_CONTRACT_ADDRESS + "/getPoolsStats"
     )
-    GET_USER_POOLS = "v1/screst/" + MinerSmartContractAddress + "/getUserPools"
+    GET_USER_POOLS = "v1/screst/" + MINER_SMART_CONTRACT_ADDRESS + "/getUserPools"
 
     # STAKING
     GET_STORAGESC_POOL_STATS = (
-        "v1/screst/" + StorageSmartContractAddress + "/getUserStakePoolStat"
+        "v1/screst/" + STORAGE_SMART_CONTRACT_ADDRESS + "/getUserStakePoolStat"
     )
-    GET_MINERSC_POOL_STATS = "v1/screst/" + MinerSmartContractAddress + "/getUserPools"
+    GET_MINERSC_POOL_STATS = (
+        "v1/screst/" + MINER_SMART_CONTRACT_ADDRESS + "/getUserPools"
+    )
 
     # BLOBBER
     ALLOCATION_FILE_LIST = "/v1/file/list/"

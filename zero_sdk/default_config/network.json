@@ -1,0 +1,29 @@
+{
+    "miners": [
+        "http://localhost:7071/",
+        "http://localhost:7072/",
+        "http://localhost:7073/"
+    ],
+    "sharders": [
+        "http://localhost:7171/"
+    ],
+    "preferredBlobbers": [
+        "http://localhost:7051/",
+        "http://localhost:7052/",
+        "http://localhost:7053/",
+        "http://localhost:7054/"
+    ],
+    "readPrice": {
+        "min": 0,
+        "max": 0
+    },
+    "writePrice": {
+        "min": 0,
+        "max": 0
+    },
+    "tokenLock": 0,
+    "proxyServerUrl": "http://localhost:9082",
+    "zeroBoxUrl": "http://one.0box.io:9081",
+    "transaction_timeout": 15,
+    "clusterName": "local"
+}
