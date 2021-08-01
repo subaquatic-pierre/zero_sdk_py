@@ -1,29 +1,44 @@
 {
     "miners": [
-        "http://localhost:7071/",
-        "http://localhost:7072/",
-        "http://localhost:7073/"
+        "https://beta.0chain.net/miner01/",
+        "https://beta.0chain.net/miner02/",
+        "https://beta.0chain.net/miner03/"
     ],
     "sharders": [
-        "http://localhost:7171/"
+        "https://beta.0chain.net/sharder01/",
+        "https://beta.0chain.net/sharder02/"
     ],
-    "preferredBlobbers": [
-        "http://localhost:7051/",
-        "http://localhost:7052/",
-        "http://localhost:7053/",
-        "http://localhost:7054/"
+    "blobbers": [
+        "https://beta.0chain.net/blobber01/",
+        "https://beta.0chain.net/blobber02/",
+        "https://beta.0chain.net/blobber03/",
+        "https://beta.0chain.net/blobber04/",
+        "https://beta.0chain.net/blobber05/",
+        "https://beta.0chain.net/blobber06/"
     ],
     "readPrice": {
         "min": 0,
-        "max": 0
+        "max": 10000000000
     },
     "writePrice": {
         "min": 0,
-        "max": 0
+        "max": 10000000000
     },
-    "tokenLock": 0,
-    "proxyServerUrl": "http://localhost:9082",
-    "zeroBoxUrl": "http://one.0box.io:9081",
-    "transaction_timeout": 15,
-    "clusterName": "local"
+    "dataShards": 4,
+    "parityShards": 2,
+    "allocationSize": 2,
+    "tokenLock": 5000000000,
+    "tokenLockDuration": "720h",
+    "maxChallengeCompletionTime": 3600,
+    "chain_id": "0afc093ffb509f059c55478bc1a60351cef7b4e9c008a53a6cc8241ca8617dfe",
+    "clusterName": "0chain-local-cluster",
+    "proxyServerUrl": "https://beta.0chain.net/proxy",
+    "recorderUrl": "https://beta.0chain.net/recorder",
+    "zeroBoxUrl": "https://0box.beta.0chain.net",
+    "backend": "https://backend.0chain.net",
+    "dataSource": "database",
+    "explorerType": "public",
+    "transaction_timeout": 20,
+    "state ": true,
+    "minLockDemand": 0.1
 }
