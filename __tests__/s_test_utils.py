@@ -6,7 +6,7 @@ from zero_sdk.utils import (
     from_json,
     get_home_path,
     hash_string,
-    network_url_from_config,
+    hostname_from_config_obj,
     verify_data,
 )
 
@@ -31,10 +31,10 @@ class TestUtils(TestCase):
         network_config = from_yaml(f"{HOME_DIR}/.zcn/config.yaml")
         self.assertTrue(network_config["block_worker"] is not None)
 
-    def test_network_url_from_config(self):
-        """Test network_url_from_config returning correct url"""
+    def test_hostname_from_config_obj(self):
+        """Test hostname_from_config_obj returning correct url"""
         network_config = {"block_worker": "https://beta.0chain.net/dns"}
-        url = network_url_from_config(network_config)
+        url = hostname_from_config_obj(network_config)
         self.assertTrue(url == DEFAULT_NETWORK)
 
     def test_from_json(self):

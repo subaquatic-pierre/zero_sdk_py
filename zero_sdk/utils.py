@@ -21,7 +21,7 @@ def get_home_path():
     return f"{Path().home()}"
 
 
-def network_url_from_config(network_config) -> str:
+def hostname_from_config_obj(network_config) -> str:
     split = network_config["block_worker"].split("/")
     new_split = split[:-1]
     url = "/".join(new_split)
