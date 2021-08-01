@@ -38,28 +38,14 @@ class Wallet(ConnectionBase):
         date_created,
         network,
     ):
-        # Raise error if incorrect config
-        if (
-            not client_id
-            or not client_key
-            or not public_key
-            or not private_key
-            or not mnemonics
-            or not version
-            or not date_created
-            or not network
-        ):
-            raise Exception("Incorrect args passed to __init__")
-        else:
-            # Set custom config
-            self.client_id = client_id
-            self.client_key = client_key
-            self.public_key = public_key
-            self.private_key = private_key
-            self.mnemonics = mnemonics
-            self.version = version
-            self.date_created = date_created
-            self.network = network
+        self.client_id = client_id
+        self.client_key = client_key
+        self.public_key = public_key
+        self.private_key = private_key
+        self.mnemonics = mnemonics
+        self.version = version
+        self.date_created = date_created
+        self.network = network
 
     def _init_wallet(self):
         # Implement wallet init
