@@ -1,29 +1,9 @@
 import requests
-import json
 from time import time
 
 from zero_sdk.utils import hash_string
 from zero_sdk.sign import sign_payload
-from zero_sdk.network import Network, ConnectionBase
-from zero_sdk.utils import (
-    get_home_path,
-    from_json,
-    from_yaml,
-)
-
-default_wallet_config = {}
-default_network_config = {}
-network = ""
-
-try:
-    default_wallet_config = from_json(f"{get_home_path()}/.zcn/wallet.json")
-except:
-    print("Default wallet not loaded")
-
-try:
-    default_network_config = from_yaml(f"{get_home_path()}/.zcn/network_config.json")
-except:
-    print("Defualt network not loaded")
+from zero_sdk.connection_base import ConnectionBase
 
 
 class Wallet(ConnectionBase):
@@ -160,6 +140,10 @@ class Wallet(ConnectionBase):
 
     @staticmethod
     def from_object(config, network):
+        """Returns fully configured instance of wallet
+        :param config: Wallet config object from json.loads function
+        :param network: Instance of configured network
+        """
         return Wallet(
             config.get("client_id"),
             config.get("client_key"),
@@ -168,25 +152,11 @@ class Wallet(ConnectionBase):
             config.get("mnemonics"),
             config.get("version"),
             config.get("date_created"),
-            Network(network),
+            network,
         )
 
     def __repr__(self):
-        return f"Wallet(default_config=True, config={default_wallet_config}, network=Network({default_network_config}))"
+        return f"Wallet(config, network)"
 
     def __str__(self):
-        return json.dumps(
-            {
-                "client_id": self.client_id,
-                "public_key": self.public_key,
-                "private_key": self.private_key,
-                "mnemonics": self.mnemonics,
-                "date_created": self.date_created,
-                "version": self.version,
-                "network_url": self.network.url,
-            },
-            indent=4,
-        )
-
-
-default_wallet = Wallet.from_object(default_wallet_config, default_network_config)
+        return f"client_id: {self.client_id} \nnetwork_url: {self.network.hostname}"
