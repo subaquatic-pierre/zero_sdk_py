@@ -1,7 +1,7 @@
 from unittest import TestCase
 from zero_sdk.allocation import Allocation
 from zero_sdk.wallet import Wallet
-from setup import config
+from zero_sdk.config import config
 
 
 class AllocationTest(TestCase):
