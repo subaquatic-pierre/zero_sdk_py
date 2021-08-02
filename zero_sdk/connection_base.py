@@ -11,7 +11,10 @@ class ConnectionBase:
         :param error_message: String message to display on error
         """
         if res.status_code == 200:
-            return res.json()
+            try:
+                return res.json()
+            except:
+                return res.text
         else:
             return f"{error_message} - Message: {res.text}"
 

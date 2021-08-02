@@ -13,13 +13,16 @@ class Network(ConnectionBase):
         self.sharders = sharders
         self.preferred_blobbers = preferred_blobbers
 
-    def _request_from_sharders(self, endpoint):
+    def _request_from_workers(self, worker, endpoint):
+        workers = self.__getattribute__(worker)
         res = None
-        for sharder in self.sharders:
-            url = f"{sharder.url}/{endpoint}"
+        for worker in workers:
+            url = f"{worker.url}/{endpoint}"
             res = self._request("GET", url)
-            if res:
-                return res
+            if type(res) == str:
+                continue
+
+            return res
 
         if not res:
             raise Exception("No chain stats found")
@@ -28,12 +31,27 @@ class Network(ConnectionBase):
 
     def get_chain_stats(self):
         endpoint = Endpoints.GET_CHAIN_STATS
-        res = self._request_from_sharders(endpoint)
+        res = self._request_from_workers("sharders", endpoint)
         return res
 
-    def get_recent_finalized(self):
-        endpoint = Endpoints.GET_CHAIN_STATS
-        res = self._request_from_sharders(endpoint)
+    def get_block(self, block_id):
+        endpoint = f"{Endpoints.GET_BLOCK_INFO}/?block={block_id}"
+        res = self._request_from_workers("sharders", endpoint)
+        return res
+
+    def get_latest_finalized_block(self):
+        endpoint = Endpoints.GET_LATEST_FINALIZED_BLOCK
+        res = self._request_from_workers("sharders", endpoint)
+        return res
+
+    def get_latest_finalized_magic_block(self):
+        endpoint = Endpoints.GET_LATEST_FINALIZED_MAGIC_BLOCK
+        res = self._request_from_workers("sharders", endpoint)
+        return res
+
+    def get_latest_finalized_magic_block_summary(self):
+        endpoint = Endpoints.GET_LATEST_FINALIZED_MAGIC_BLOCK_SUMMARY
+        res = self._request_from_workers("miners", endpoint)
         return res
 
     def json(self):

@@ -27,7 +27,11 @@ class Endpoints:
     PUT_TRANSACTION = "v1/transaction/put"
 
     GET_RECENT_FINALIZED = "v1/block/get/recent_finalized"
-    GET_LATEST_FINALIZED = "v1/block/get/latest_finalized"
+    GET_LATEST_FINALIZED_BLOCK = "v1/block/get/latest_finalized"
+    GET_LATEST_FINALIZED_MAGIC_BLOCK = "v1/block/get/latest_finalized_magic_block"
+    GET_LATEST_FINALIZED_MAGIC_BLOCK_SUMMARY = (
+        "v1/block/get/latest_finalized_magic_block_summary"
+    )
     GET_CHAIN_STATS = "v1/chain/get/stats"
     GET_BLOCK_INFO = "v1/block/get"
     CHECK_TRANSACTION_STATUS = "v1/transaction/get/confirmation"
