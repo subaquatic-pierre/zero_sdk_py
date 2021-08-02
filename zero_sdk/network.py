@@ -1,6 +1,6 @@
 import json
-from zero_sdk.connection_base import ConnectionBase
 import requests
+from zero_sdk.connection_base import ConnectionBase
 from zero_sdk.const import Endpoints
 from zero_sdk.workers import Blobber, Miner, Sharder
 from zero_sdk.utils import hostname_from_config_obj
@@ -13,14 +13,36 @@ class Network(ConnectionBase):
         self.sharders = sharders
         self.preferred_blobbers = preferred_blobbers
 
+    def _request_from_sharders(self, endpoint):
+        res = None
+        for sharder in self.sharders:
+            url = f"{sharder.url}/{endpoint}"
+            res = self._request("GET", url)
+            if res:
+                return res
+
+        if not res:
+            raise Exception("No chain stats found")
+
+        return res
+
+    def get_chain_stats(self):
+        endpoint = Endpoints.GET_CHAIN_STATS
+        res = self._request_from_sharders(endpoint)
+        return res
+
+    def get_recent_finalized(self):
+        endpoint = Endpoints.GET_CHAIN_STATS
+        res = self._request_from_sharders(endpoint)
+        return res
+
     def json(self):
-        network_dict = {
+        return {
             "hostname": self.hostname,
             "miners": [worker.url for worker in self.miners],
             "sharders": [worker.url for worker in self.sharders],
             "preferred_blobbers": [worker.url for worker in self.preferred_blobbers],
         }
-        return json.dumps(network_dict, indent=4)
 
     @staticmethod
     def from_object(config_obj, hostname=None):

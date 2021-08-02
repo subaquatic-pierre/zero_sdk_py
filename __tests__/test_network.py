@@ -34,3 +34,19 @@ class TestNetworkAttributes(TestCase):
         """Test network has atleast one shrader"""
         sharders = self.network.sharders
         self.assertGreater(len(sharders), 0)
+
+
+class TestNetworkMethods(TestCase):
+    def setUp(self) -> None:
+        self.network = Network.from_object(default_network_config)
+        return super().setUp()
+
+    def test_json(self):
+        """Test json method returns valid json"""
+        network_json = self.network.json()
+        self.assertIsInstance(network_json, dict)
+
+    def test_get_network_chain_stats(self):
+        """Test get network chain stats return valid data"""
+        chain_stats = self.network.get_chain_stats()
+        self.assertIsInstance(chain_stats, dict)

@@ -6,9 +6,8 @@ from zero_sdk.config import default_network_config_obj
 from reedsolo import RSCodec
 
 network = Network.from_object(default_network_config_obj)
-network_json = network.json()
-print(network_json)
-
+network_stats = network.get_chain_stats()
+print(network_stats)
 
 # rsc = RSCodec(2)
 
