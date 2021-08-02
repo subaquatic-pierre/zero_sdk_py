@@ -23,10 +23,13 @@ class Network(ConnectionBase):
         return json.dumps(network_dict, indent=4)
 
     @staticmethod
-    def from_object(config_obj):
-        hostname = hostname_from_config_obj(config_obj)
+    def from_object(config_obj, hostname=None):
+        if not hostname:
+            hostname = hostname_from_config_obj(config_obj)
         miners = [Miner(url) for url in request_dns_workers(hostname, "miners")]
         sharders = [Sharder(url) for url in request_dns_workers(hostname, "sharders")]
+
+        # Todo: Error check blobber load
         preferred_blobbers = [
             Blobber(url) for url in config_obj.get("preferred_blobbers")
         ]
