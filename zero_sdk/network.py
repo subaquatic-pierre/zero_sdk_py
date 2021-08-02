@@ -15,19 +15,21 @@ class Network(ConnectionBase):
 
     def _request_from_workers(self, worker, endpoint):
         workers = self.__getattribute__(worker)
-        res = None
+        res_json = None
+        res_string = ""
         for worker in workers:
             url = f"{worker.url}/{endpoint}"
             res = self._request("GET", url)
-            if type(res) == str:
-                continue
 
-            return res
+            if type(res) == dict:
+                res_json = res
+            elif type(res) == str:
+                res_string = res
 
-        if not res:
-            raise Exception("No chain stats found")
-
-        return res
+        if res_json:
+            return res_json
+        else:
+            return res_string
 
     def get_chain_stats(self):
         endpoint = Endpoints.GET_CHAIN_STATS
@@ -35,7 +37,7 @@ class Network(ConnectionBase):
         return res
 
     def get_block(self, block_id):
-        endpoint = f"{Endpoints.GET_BLOCK_INFO}/?block={block_id}"
+        endpoint = f"{Endpoints.GET_BLOCK_INFO}?block={block_id}"
         res = self._request_from_workers("sharders", endpoint)
         return res
 
