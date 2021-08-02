@@ -1,6 +1,7 @@
 from unittest.case import TestCase
 from unittest.mock import MagicMock
 import os
+from zero_sdk.workers import Blobber, Miner, Sharder
 
 from requests.models import Response
 from zero_sdk import network
@@ -59,7 +60,9 @@ class TestNetworkMethods(TestCase):
 
 class TestNetworkChainMethods(TestCase):
     def setUp(self) -> None:
-        self.network = Network.from_object(default_network_config)
+        self.network = Network(
+            "url", [Miner("url")], [Sharder("url")], [Blobber("url")]
+        )
         return super().setUp()
 
     def _setup_mock(self, filename):
@@ -82,15 +85,20 @@ class TestNetworkChainMethods(TestCase):
 
     def test_get_latest_finalized_block(self):
         """Test get_latest_finalized block returns valid data"""
+        self._setup_mock("valid_get_latest_block.json")
         block_info = self.network.get_latest_finalized_block()
         self.assertIsInstance(block_info, dict)
 
     def test_get_latest_finalized_magic_block(self):
         """Test get_latest_finalized_magic_block returns valid data"""
+        #
+        self._setup_mock("valid_get_latest_magic_block.json")
         block_info = self.network.get_latest_finalized_magic_block()
         self.assertIsInstance(block_info, dict)
 
     def test_get_latest_finalized_magic_block_summary(self):
         """Test get_latest_finalized block returns valid data"""
+        #
+        self._setup_mock("valid_get_block_summary.json")
         block_info = self.network.get_latest_finalized_magic_block_summary()
         self.assertIsInstance(block_info, dict)

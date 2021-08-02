@@ -1,0 +1,12 @@
+{
+    "version": "1.0",
+    "creation_date": 1627910572,
+    "hash": "d49fef4d1756bfcba18659f501ef272091b4025e24521d514304f1651a6ca40b",
+    "miner_id": "1aa6750e0cd545af2b573b066535959bd170bed99bfbfd5d32ab16e1c1ca2a13",
+    "round": 838739,
+    "round_random_seed": 9024499216369325452,
+    "merkle_tree_root": "0c271c03155b45ee1ba72aed993cf98476ec711e0873710af88d5d8ea60e867e",
+    "state_hash": "XXJRwFnCN13sMgX7cd9vgzNBVq9gmr9GxEcTxIc/k+g=",
+    "receipt_merkle_tree_root": "220bdec8dbfffaf4202591c73ff5ee5484043b82a28f649167855d35d96268f3",
+    "num_txns": 1
+}

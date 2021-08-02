@@ -13,8 +13,21 @@ latest_block = network.get_latest_finalized_block()
 block_hash = latest_block["hash"]
 block = network.get_block(block_hash)
 
-pprint(chain_stats)
-pprint(block)
+print("latest block")
+pprint(latest_block)
+
+magic_block = network.get_latest_finalized_magic_block()
+print("magic_block")
+pprint(magic_block)
+
+summary = network.get_latest_finalized_magic_block_summary()
+print("summary")
+pprint(summary)
+
+
+# get_latest_finalized_block
+# get_latest_finalized_magic_block
+# get_latest_finalized_magic_block_summary
 
 
 # rsc = RSCodec(2)
