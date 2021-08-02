@@ -1,12 +1,19 @@
 from unittest.case import TestCase
+from unittest.mock import MagicMock
+import os
+
+from requests.models import Response
+from zero_sdk import network
 from zero_sdk.network import Network
-from zero_sdk.utils import from_yaml, get_project_root
+from zero_sdk.utils import from_yaml, from_json
+from tests.utils import TEST_DIR
+from tests.mock_response import MockResponse
 
 BLOCK_ID = "ed79cae70d439c11258236da1dfa6fc550f7cc569768304623e8fbd7d70efae4"
 
 
 default_network_config = from_yaml(
-    f"{get_project_root()}/__tests__/fixtures/default_network.yaml"
+    os.path.join(TEST_DIR, "fixtures/default_network.yaml")
 )
 
 
@@ -49,27 +56,41 @@ class TestNetworkMethods(TestCase):
         network_json = self.network.json()
         self.assertIsInstance(network_json, dict)
 
+
+class TestNetworkChainMethods(TestCase):
+    def setUp(self) -> None:
+        self.network = Network.from_object(default_network_config)
+        return super().setUp()
+
+    def _setup_mock(self, filename):
+        res_obj = from_json(os.path.join(TEST_DIR, f"fixtures/{filename}"))
+        mock_response = MockResponse(200, res_obj)
+        request_mock = MagicMock(return_value=mock_response)
+        self.network._request = request_mock
+
     def test_get_network_chain_stats(self):
         """Test get_network_chain_stats returns valid data"""
+        self._setup_mock("valid_chain_stats_response.json")
         chain_stats = self.network.get_chain_stats()
-        self.assertTrue(type(chain_stats) == dict or type(chain_stats) == str)
+        self.assertIsInstance(chain_stats, dict)
 
     def test_get_block(self):
-        """Test get_block return valid data"""
+        """Test get_block returns valid data"""
+        self._setup_mock("valid_get_block_response.json")
         block_info = self.network.get_block(BLOCK_ID)
-        self.assertTrue(type(block_info) == dict or type(block_info) == str)
+        self.assertIsInstance(block_info, dict)
 
     def test_get_latest_finalized_block(self):
-        """Test get_latest_finalized blockk returns valid data"""
+        """Test get_latest_finalized block returns valid data"""
         block_info = self.network.get_latest_finalized_block()
-        self.assertTrue(type(block_info) == dict or type(block_info) == str)
+        self.assertIsInstance(block_info, dict)
 
     def test_get_latest_finalized_magic_block(self):
         """Test get_latest_finalized_magic_block returns valid data"""
         block_info = self.network.get_latest_finalized_magic_block()
-        self.assertTrue(type(block_info) == dict or type(block_info) == str)
+        self.assertIsInstance(block_info, dict)
 
     def test_get_latest_finalized_magic_block_summary(self):
-        """Test get_latest_finalizedreturns valid data"""
+        """Test get_latest_finalized block returns valid data"""
         block_info = self.network.get_latest_finalized_magic_block_summary()
-        self.assertTrue(type(block_info) == dict or type(block_info) == str)
+        self.assertIsInstance(block_info, dict)

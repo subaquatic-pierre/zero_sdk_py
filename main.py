@@ -7,22 +7,14 @@ from zero_sdk.config import default_network_config_obj
 from zero_sdk.utils import pprint
 from reedsolo import RSCodec
 
-BLOCK_ID = "ed79cae70d439c11258236da1dfa6fc550f7cc569768304623e8fbd7d70efae4"
-
-
 network = Network.from_object(default_network_config_obj)
-
+chain_stats = network.get_chain_stats()
 latest_block = network.get_latest_finalized_block()
-
-pprint(latest_block)
-
 block_hash = latest_block["hash"]
+block = network.get_block(block_hash)
 
-print("block_hash", block_hash)
-
-block_info = network.get_block(block_hash)
-
-pprint(block_info)
+pprint(chain_stats)
+pprint(block)
 
 
 # rsc = RSCodec(2)

@@ -7,29 +7,27 @@ from zero_sdk.utils import hostname_from_config_obj
 
 
 class Network(ConnectionBase):
-    def __init__(self, hostname, miners, sharders, preferred_blobbers):
-        self.hostname = hostname
-        self.miners = miners
-        self.sharders = sharders
-        self.preferred_blobbers = preferred_blobbers
+    def __init__(self, hostname, miners, sharders, preferred_blobbers) -> None:
+        self.hostname: str = hostname
+        self.miners: list = miners
+        self.sharders: list = sharders
+        self.preferred_blobbers: list = preferred_blobbers
 
-    def _request_from_workers(self, worker, endpoint):
-        workers = self.__getattribute__(worker)
-        res_json = None
-        res_string = ""
+    def _request_from_workers(self, worker, endpoint) -> dict:
+        workers: list = self.__getattribute__(worker)
+        res_json: dict = None
         for worker in workers:
             url = f"{worker.url}/{endpoint}"
             res = self._request("GET", url)
+            valid_res = self._validate_response(res)
 
-            if type(res) == dict:
-                res_json = res
-            elif type(res) == str:
-                res_string = res
+            if type(valid_res) == dict:
+                res_json = valid_res
 
         if res_json:
             return res_json
         else:
-            return res_string
+            raise ConnectionError(f"Error fetching response from {worker}")
 
     def get_chain_stats(self):
         endpoint = Endpoints.GET_CHAIN_STATS
