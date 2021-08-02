@@ -1,13 +1,13 @@
+from zero_sdk.network import Network
 from zero_sdk.utils import get_home_path
 from zero_sdk.wallet import Wallet
 from zero_sdk.allocation import Allocation
-from zero_sdk.config import config
-from zero_sdk.wallet import default_wallet
+from zero_sdk.config import default_network_config_obj
 from reedsolo import RSCodec
 
-# print(config.BASE_URL)
-
-print(default_wallet)
+network = Network.from_object(default_network_config_obj)
+network_json = network.json()
+print(network_json)
 
 
 # rsc = RSCodec(2)

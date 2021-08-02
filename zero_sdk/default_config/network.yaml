@@ -6,6 +6,6 @@ confirmation_chain_length: 3
 max_txn_query: 5
 query_sleep_time: 5
 preferred_blobbers:
-  - http://one.devnet-0chain.net:31051
-  - http://one.devnet-0chain.net:31052
-  - http://one.devnet-0chain.net:31053
+  - http://beta.0chain.net/blobber01
+  - http://beta.0chain.net/blobber02
+  - http://beta.0chain.net/blobber03

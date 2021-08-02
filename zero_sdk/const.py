@@ -22,7 +22,7 @@ INTEREST_POOL_SMART_CONTRACT_ADDRESS = (
 
 
 class Endpoints:
-    NETWORK_DNS = "dns/network/"
+    NETWORK_DNS = "dns/network"
     REGISTER_CLIENT = "v1/client/put"
     PUT_TRANSACTION = "v1/transaction/put"
 
