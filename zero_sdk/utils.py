@@ -4,8 +4,8 @@ from pathlib import Path
 from hashlib import sha3_256
 
 
-def pprint(res):
-    print(json.dumps(res.json(), indent=4))
+def pprint(dict):
+    print(json.dumps(dict, indent=4))
 
 
 def hash_string(payload_string):

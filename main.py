@@ -4,6 +4,7 @@ from zero_sdk.utils import get_home_path
 from zero_sdk.wallet import Wallet
 from zero_sdk.allocation import Allocation
 from zero_sdk.config import default_network_config_obj
+from zero_sdk.utils import pprint
 from reedsolo import RSCodec
 
 BLOCK_ID = "ed79cae70d439c11258236da1dfa6fc550f7cc569768304623e8fbd7d70efae4"
@@ -12,7 +13,8 @@ BLOCK_ID = "ed79cae70d439c11258236da1dfa6fc550f7cc569768304623e8fbd7d70efae4"
 network = Network.from_object(default_network_config_obj)
 
 latest_block = network.get_latest_finalized_block()
-print(json.dumps(latest_block, indent=4))
+
+pprint(latest_block)
 
 block_hash = latest_block["hash"]
 
@@ -20,8 +22,7 @@ print("block_hash", block_hash)
 
 block_info = network.get_block(block_hash)
 
-
-print(json.dumps(block_info, indent=4))
+pprint(block_info)
 
 
 # rsc = RSCodec(2)
