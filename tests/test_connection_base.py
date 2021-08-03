@@ -4,14 +4,12 @@ from unittest.mock import MagicMock
 from unittest.case import TestCase
 
 
-from tests.utils import TEST_DIR
+from tests.utils import TEST_DIR, build_network
 from tests.mock_response import MockResponse
 
 from zero_sdk.const import Endpoints
 from zero_sdk.utils import from_json
 from zero_sdk.connection_base import ConnectionBase
-from zero_sdk.network import Network
-from zero_sdk.workers import Miner, Sharder, Blobber
 
 
 class Connection(ConnectionBase):
@@ -80,27 +78,13 @@ class TextConnectionBase(TestCase):
         self.assertIsInstance(valid_response, str)
 
 
-def build_connection(min_confirmations):
-    placeholder_workers = [
-        "http://worker01.com",
-        "http://worker02.com",
-        "http://worker03.com",
-    ]
-    miners = [Miner(url) for url in placeholder_workers]
-    sharders = [Sharder(url) for url in placeholder_workers]
-    blobbers = [Blobber(url) for url in placeholder_workers]
-    return Network(
-        "http://placehoder.com", miners, sharders, blobbers, min_confirmations
-    )
-
-
 def get_chain_stats():
     return from_json(os.path.join(TEST_DIR, "fixtures/valid_chain_stats_response.json"))
 
 
 class TestGetConsensus(TestCase):
     def setUp(self) -> None:
-        self.connection = build_connection(50)
+        self.connection = build_network(50)
         return super().setUp()
 
     def _setup_mock(self, status_code, data):
@@ -132,7 +116,7 @@ class TestGetConsensus(TestCase):
             )
 
     def test_min_consensus_error(self):
-        self.connection = build_connection(200)
+        self.connection = build_network(200)
         self._setup_mock(200, get_chain_stats())
         with self.assertRaises(Exception):
             self.connection._get_consensus_from_workers(

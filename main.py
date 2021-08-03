@@ -9,7 +9,6 @@ from zero_sdk.utils import pprint
 network = Network.from_object(default_network_config_obj)
 wallet = Wallet.from_object(default_wallet_config_obj, network)
 
-balance = wallet.get_balance()
-chain_stats = network.get_chain_stats()
+locked_tockens = wallet.get_locked_tokens()
 
-print(balance)
+print(locked_tockens)

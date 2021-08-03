@@ -1,0 +1,2 @@
+class ConsensusError(ConnectionError):
+    pass

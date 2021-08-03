@@ -64,6 +64,12 @@ class Wallet(ConnectionBase):
 
         return data
 
+    def get_locked_tokens(self):
+        endpoint = f"{Endpoints.GET_LOCKED_TOKENS}?client_id={self.client_id}"
+        empty_return_value = {"locked_tokens": []}
+        res = self._get_consensus_from_workers("sharders", endpoint, empty_return_value)
+        return res
+
     def sign(self, payload):
         return sign_payload(self.private_key, payload)
 

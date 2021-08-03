@@ -1,12 +1,11 @@
 from unittest.case import TestCase
 from unittest.mock import MagicMock
 import os
-from zero_sdk.workers import Blobber, Miner, Sharder
 
-from requests.models import Response
-from zero_sdk import network
+from zero_sdk.workers import Blobber, Miner, Sharder
 from zero_sdk.network import Network
 from zero_sdk.utils import from_yaml, from_json
+
 from tests.utils import TEST_DIR
 from tests.mock_response import MockResponse
 

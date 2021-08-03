@@ -4,6 +4,7 @@ from requests import request
 import json
 from requests.models import Response
 from zero_sdk.utils import hash_string
+from zero_sdk.exceptions import ConsensusError
 
 
 class ConnectionBase(ABC):
@@ -116,7 +117,7 @@ class ConnectionBase(ABC):
                     }
 
         if len(response_hash_map) < 1:
-            raise Exception("No consesus reached from workers")
+            raise ConsensusError("No consesus reached from workers")
 
         consensus_data = self._get_consensus_data(response_hash_map, workers)
         return consensus_data
@@ -143,7 +144,7 @@ class ConnectionBase(ABC):
         percentage_of_workers = (greatest_num_confirmations / total_workers) * 100
         highest_confirmations = consensus_data.get(key_for_highest_confirmations)
         if percentage_of_workers < min_confirmation:
-            raise Exception(
+            raise ConsensusError(
                 "Minimum consesus requirement not met, check network config settings or network worker availability"
             )
 
@@ -164,10 +165,17 @@ class ConnectionBase(ABC):
     def _handle_empty_return_value(
         self, valid_response: str, empty_value: dict, endpoint: str
     ):
-        json_res = json.loads(valid_response)
+        try:
+            json_res = json.loads(valid_response)
+        except Exception:
+            json_res = {}
 
         if Endpoints.GET_BALANCE in endpoint:
-            if json_res["error"] == "value not present":
+            if json_res.get("error") == "value not present":
+                valid_response = empty_value
+
+        elif Endpoints.GET_LOCKED_TOKENS in endpoint:
+            if json_res.get("code") == "resource_not_found":
                 valid_response = empty_value
 
         return valid_response
