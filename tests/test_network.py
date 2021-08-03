@@ -47,6 +47,11 @@ class TestNetworkAttributes(TestCase):
         sharders = self.network.sharders
         self.assertGreater(len(sharders), 0)
 
+    def test_has_min_confirmation(self):
+        """Test network has atleast one shrader"""
+        min_confirmation = self.network.min_confirmation
+        self.assertGreater(min_confirmation, 0)
+
 
 class TestNetworkMethods(TestCase):
     def setUp(self) -> None:
@@ -62,7 +67,11 @@ class TestNetworkMethods(TestCase):
 class TestNetworkChainMethods(TestCase):
     def setUp(self) -> None:
         self.network = Network(
-            "url", [Miner("url")], [Sharder("url")], [Blobber("url")]
+            "url",
+            [Miner("url")],
+            [Sharder("url")],
+            [Blobber("url")],
+            min_confirmation=50,
         )
         return super().setUp()
 
@@ -81,13 +90,13 @@ class TestNetworkChainMethods(TestCase):
     def test_get_block_by_hash(self):
         """Test get_block returns valid data"""
         self._setup_mock("valid_get_block_response.json")
-        block_info = self.network.get_block(BLOCK_ID)
+        block_info = self.network.get_block_by_hash(BLOCK_ID)
         self.assertIsInstance(block_info, dict)
 
     def test_get_block_by_round(self):
         """Test get_block returns valid data"""
         self._setup_mock("valid_get_block_response.json")
-        block_info = self.network.get_block(ROUND_NUMBER)
+        block_info = self.network.get_block_by_round(ROUND_NUMBER)
         self.assertIsInstance(block_info, dict)
 
     def test_get_latest_finalized_block(self):

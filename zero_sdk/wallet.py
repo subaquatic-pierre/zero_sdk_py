@@ -1,6 +1,9 @@
 import requests
 from time import time
+import json
 
+from zero_sdk.const import Endpoints
+from zero_sdk.network import Network
 from zero_sdk.utils import hash_string
 from zero_sdk.sign import sign_payload
 from zero_sdk.connection_base import ConnectionBase
@@ -48,25 +51,34 @@ class Wallet(ConnectionBase):
 
         return wrapper
 
-    @_validate_wallet
-    def get_network_info(self) -> object:
-        url = f"{self.network.url}/dns/network"
-        res = requests.get(url)
-        error_message = f"An error occured fetching network info"
-        res = self._validate_response(res, error_message)
-        return res
+    def _get_consensus_from_workers(self, worker, endpoint) -> dict:
+        min_confirmation = self.network.min_confirmation
+        workers: list = getattr(self.network, worker)
+        responses = []
+        hashed_responses = []
+        for worker in workers:
+            url = f"{worker.url}/{endpoint}"
+            res = self._request("GET", url)
+            valid_response = self._validate_response(res)
+
+            responses.append(valid_response)
+            valid_response = "this is string"
+            hashed_responses.append(hash_string(json.dumps(valid_response)))
+
+        print(hashed_responses)
+        print(responses)
+
+    def _get_consensus_data(self):
+        pass
 
     @_validate_wallet
     def get_balance(self) -> int:
         """Get Wallet balance
         Return float value of tokens
         """
-        url = f"{self.network.url}/sharder01/v1/client/get/balance?client_id={self.client_id}"
-        res = requests.get(url)
-        error_message = f"An error occured getting wallet balance"
-        res = self._validate_response(res, error_message)
-        balance = int(res["balance"])
-        return balance
+        endpoint = f"{Endpoints.GET_BALANCE}?client_id={self.client_id}"
+        self._get_consensus_from_workers("sharders", endpoint)
+        return "This is final consesus data"
 
     def sign(self, payload):
         return sign_payload(self.private_key, payload)
@@ -139,7 +151,7 @@ class Wallet(ConnectionBase):
                 print(res.text)
 
     @staticmethod
-    def from_object(config, network):
+    def from_object(config: dict, network: Network):
         """Returns fully configured instance of wallet
         :param config: Wallet config object from json.loads function
         :param network: Instance of configured network

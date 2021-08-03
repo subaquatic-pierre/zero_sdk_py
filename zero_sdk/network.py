@@ -7,11 +7,14 @@ from zero_sdk.utils import hostname_from_config_obj
 
 
 class Network(ConnectionBase):
-    def __init__(self, hostname, miners, sharders, preferred_blobbers) -> None:
+    def __init__(
+        self, hostname, miners, sharders, preferred_blobbers, min_confirmation
+    ) -> None:
         self.hostname: str = hostname
         self.miners: list = miners
         self.sharders: list = sharders
         self.preferred_blobbers: list = preferred_blobbers
+        self.min_confirmation: int = min_confirmation
 
     def _request_from_workers(self, worker, endpoint) -> dict:
         workers: list = self.__getattribute__(worker)
@@ -78,8 +81,9 @@ class Network(ConnectionBase):
         preferred_blobbers = [
             Blobber(url) for url in config_obj.get("preferred_blobbers")
         ]
+        min_confirmation = config_obj["min_confirmation"]
 
-        return Network(hostname, miners, sharders, preferred_blobbers)
+        return Network(hostname, miners, sharders, preferred_blobbers, min_confirmation)
 
     def __str__(self) -> str:
         return f"hostname: {self.hostname}"
