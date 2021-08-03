@@ -3,7 +3,7 @@ from zero_sdk.const import Endpoints
 from requests import request
 import json
 from requests.models import Response
-from zero_sdk.utils import hash_string, handle_empty_return_value
+from zero_sdk.utils import hash_string
 
 
 class ConnectionBase(ABC):
@@ -83,7 +83,7 @@ class ConnectionBase(ABC):
 
             # Check if get_balance request and empty wallet, return empty balance value as data
             if type(valid_response) == str:
-                valid_response = handle_empty_return_value(
+                valid_response = self._handle_empty_return_value(
                     valid_response, empty_return_value, endpoint
                 )
 
@@ -160,3 +160,14 @@ class ConnectionBase(ABC):
             return getattr(self, "min_confirmation")
         else:
             return getattr(self.network, "min_confirmation")
+
+    def _handle_empty_return_value(
+        self, valid_response: str, empty_value: dict, endpoint: str
+    ):
+        json_res = json.loads(valid_response)
+
+        if Endpoints.GET_BALANCE in endpoint:
+            if json_res["error"] == "value not present":
+                valid_response = empty_value
+
+        return valid_response
