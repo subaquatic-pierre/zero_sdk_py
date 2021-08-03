@@ -11,6 +11,7 @@ from tests.utils import TEST_DIR
 from tests.mock_response import MockResponse
 
 BLOCK_ID = "ed79cae70d439c11258236da1dfa6fc550f7cc569768304623e8fbd7d70efae4"
+ROUND_NUMBER = "832629"
 
 
 default_network_config = from_yaml(
@@ -77,10 +78,16 @@ class TestNetworkChainMethods(TestCase):
         chain_stats = self.network.get_chain_stats()
         self.assertIsInstance(chain_stats, dict)
 
-    def test_get_block(self):
+    def test_get_block_by_hash(self):
         """Test get_block returns valid data"""
         self._setup_mock("valid_get_block_response.json")
         block_info = self.network.get_block(BLOCK_ID)
+        self.assertIsInstance(block_info, dict)
+
+    def test_get_block_by_round(self):
+        """Test get_block returns valid data"""
+        self._setup_mock("valid_get_block_response.json")
+        block_info = self.network.get_block(ROUND_NUMBER)
         self.assertIsInstance(block_info, dict)
 
     def test_get_latest_finalized_block(self):

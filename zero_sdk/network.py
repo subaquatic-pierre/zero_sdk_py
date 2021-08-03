@@ -34,8 +34,13 @@ class Network(ConnectionBase):
         res = self._request_from_workers("sharders", endpoint)
         return res
 
-    def get_block(self, block_id):
+    def get_block_by_hash(self, block_id):
         endpoint = f"{Endpoints.GET_BLOCK_INFO}?block={block_id}"
+        res = self._request_from_workers("sharders", endpoint)
+        return res
+
+    def get_block_by_round(self, round_num):
+        endpoint = f"{Endpoints.GET_BLOCK_INFO}?round={round_num}"
         res = self._request_from_workers("sharders", endpoint)
         return res
 

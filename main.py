@@ -7,22 +7,14 @@ from zero_sdk.config import default_network_config_obj
 from zero_sdk.utils import pprint
 from reedsolo import RSCodec
 
+ROUND_NUMBER = "832629"
+
+
 network = Network.from_object(default_network_config_obj)
-chain_stats = network.get_chain_stats()
-latest_block = network.get_latest_finalized_block()
-block_hash = latest_block["hash"]
-block = network.get_block(block_hash)
 
-print("latest block")
-pprint(latest_block)
+block_info = network.get_block_by_round(ROUND_NUMBER)
 
-magic_block = network.get_latest_finalized_magic_block()
-print("magic_block")
-pprint(magic_block)
-
-summary = network.get_latest_finalized_magic_block_summary()
-print("summary")
-pprint(summary)
+pprint(block_info)
 
 
 # get_latest_finalized_block
