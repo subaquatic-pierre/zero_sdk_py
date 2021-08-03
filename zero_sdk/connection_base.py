@@ -25,11 +25,11 @@ class ConnectionBase(ABC):
         """
         if res.status_code == 200:
             try:
-                # successfull code 200 response with valid json
-                if return_type == "json":
-                    return res.json()
+                # successful code 200 response
                 if return_type == "string":
                     return res.text
+                if return_type == "json":
+                    return res.json()
             except:
                 # unable to parse response
                 if raise_exception:
@@ -80,24 +80,24 @@ class ConnectionBase(ABC):
             url = f"{worker.url}/{endpoint}"
 
             res = self._request("GET", url)
-            valid_response = self._check_status_code(res)
+            response = self._check_status_code(res)
 
             # Check if get_balance request and empty wallet, return empty balance value as data
-            if type(valid_response) == str:
-                valid_response = self._handle_empty_return_value(
-                    valid_response, empty_return_value, endpoint
+            if type(response) == str:
+                response = self._handle_empty_return_value(
+                    response, empty_return_value, endpoint
                 )
 
             # May be string response if node is down, ensure valid dict object
-            if type(valid_response) == dict:
+            if type(response) == dict:
 
                 # JSON response may contain error, do not add to response map, not valid transaction
-                err = valid_response.get("error")
+                err = response.get("error")
                 if err:
                     continue
 
                 # Build response hash string
-                response_hash_string = hash_string(json.dumps(valid_response))
+                response_hash_string = hash_string(json.dumps(response))
 
                 # Check if key exists in response map
                 existing_response_key = response_hash_map.get(response_hash_string)
@@ -106,13 +106,13 @@ class ConnectionBase(ABC):
                 if existing_response_key:
                     prev_count = existing_response_key.get("num_confirmations")
                     response_hash_map[response_hash_string] = {
-                        "data": valid_response,
+                        "data": response,
                         "num_confirmations": prev_count + 1,
                     }
                 # Add key to response map if does not exists
                 else:
                     response_hash_map[response_hash_string] = {
-                        "data": valid_response,
+                        "data": response,
                         "num_confirmations": 1,
                     }
 
@@ -163,19 +163,19 @@ class ConnectionBase(ABC):
             return getattr(self.network, "min_confirmation")
 
     def _handle_empty_return_value(
-        self, valid_response: str, empty_value: dict, endpoint: str
+        self, response: str, empty_value: dict, endpoint: str
     ):
         try:
-            json_res = json.loads(valid_response)
+            json_res = json.loads(response)
         except Exception:
             json_res = {}
 
         if Endpoints.GET_BALANCE in endpoint:
             if json_res.get("error") == "value not present":
-                valid_response = empty_value
+                response = empty_value
 
         elif Endpoints.GET_LOCKED_TOKENS in endpoint:
             if json_res.get("code") == "resource_not_found":
-                valid_response = empty_value
+                response = empty_value
 
-        return valid_response
+        return response
