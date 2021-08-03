@@ -59,7 +59,7 @@ class Wallet(ConnectionBase):
         endpoint = f"{Endpoints.GET_BALANCE}?client_id={self.client_id}"
         final_data = self._get_consensus_from_workers("sharders", endpoint)
 
-        return final_data
+        return final_data["balance"]
 
     def sign(self, payload):
         return sign_payload(self.private_key, payload)

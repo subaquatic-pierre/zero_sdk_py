@@ -79,6 +79,7 @@ class ConnectionBase(ABC):
             res = self._request("GET", url)
             valid_response = self._validate_response(res)
 
+            # Check if get_balance request and empty wallet, return empty balance value as data
             if type(valid_response) == str and Endpoints.GET_BALANCE in endpoint:
                 json_res = json.loads(valid_response)
                 if json_res["error"] == "value not present":
