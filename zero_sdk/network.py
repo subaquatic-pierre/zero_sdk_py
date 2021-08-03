@@ -16,25 +16,9 @@ class Network(ConnectionBase):
         self.preferred_blobbers: list = preferred_blobbers
         self.min_confirmation: int = min_confirmation
 
-    def _request_from_workers(self, worker, endpoint) -> dict:
-        workers: list = self.__getattribute__(worker)
-        res_json: dict = None
-        for worker in workers:
-            url = f"{worker.url}/{endpoint}"
-            res = self._request("GET", url)
-            valid_res = self._validate_response(res)
-
-            if type(valid_res) == dict:
-                res_json = valid_res
-
-        if res_json:
-            return res_json
-        else:
-            raise ConnectionError(f"Error fetching response from {worker}")
-
     def get_chain_stats(self):
         endpoint = Endpoints.GET_CHAIN_STATS
-        res = self._request_from_workers("sharders", endpoint)
+        res = self._get_consensus_from_workers("sharders", endpoint)
         return res
 
     def get_block_by_hash(self, block_id):
