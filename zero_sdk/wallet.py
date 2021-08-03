@@ -57,7 +57,10 @@ class Wallet(ConnectionBase):
         Return float value of tokens
         """
         endpoint = f"{Endpoints.GET_BALANCE}?client_id={self.client_id}"
-        final_data = self._get_consensus_from_workers("sharders", endpoint)
+        empty_return_value = {"balance": 0}
+        final_data = self._get_consensus_from_workers(
+            "sharders", endpoint, empty_return_value
+        )
 
         return final_data["balance"]
 

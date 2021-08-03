@@ -2,6 +2,7 @@ import json
 import yaml
 from pathlib import Path
 from hashlib import sha3_256
+from zero_sdk.const import Endpoints
 
 
 def pprint(dict):
@@ -51,3 +52,13 @@ def verify_data(data):
         raise Exception("No data loaded")
     else:
         return data
+
+
+def handle_empty_return_value(valid_response: str, empty_value: dict, endpoint: str):
+    json_res = json.loads(valid_response)
+
+    if Endpoints.GET_BALANCE in endpoint:
+        if json_res["error"] == "value not present":
+            valid_response = empty_value
+
+    return valid_response

@@ -3,11 +3,11 @@ from zero_sdk.const import Endpoints
 from requests import request
 import json
 from requests.models import Response
-from zero_sdk.utils import hash_string
+from zero_sdk.utils import hash_string, handle_empty_return_value
 
 
 class ConnectionBase(ABC):
-    def _validate_response(
+    def _check_status_code(
         self,
         res,
         error_message="",
@@ -54,7 +54,9 @@ class ConnectionBase(ABC):
         res = request(method, url, headers=headers, data=data, files=files)
         return res
 
-    def _get_consensus_from_workers(self, worker, endpoint) -> dict:
+    def _get_consensus_from_workers(
+        self, worker, endpoint, empty_return_value=None
+    ) -> dict:
         """Get response from all workers, consolidate responses to get consesus of data,
         return data of highest number of confirmations of a response
         :param worker: String, name of worker to request data,
@@ -77,13 +79,13 @@ class ConnectionBase(ABC):
             url = f"{worker.url}/{endpoint}"
 
             res = self._request("GET", url)
-            valid_response = self._validate_response(res)
+            valid_response = self._check_status_code(res)
 
             # Check if get_balance request and empty wallet, return empty balance value as data
-            if type(valid_response) == str and Endpoints.GET_BALANCE in endpoint:
-                json_res = json.loads(valid_response)
-                if json_res["error"] == "value not present":
-                    valid_response = {"balance": 0}
+            if type(valid_response) == str:
+                valid_response = handle_empty_return_value(
+                    valid_response, empty_return_value, endpoint
+                )
 
             # May be string response if node is down, ensure valid dict object
             if type(valid_response) == dict:
