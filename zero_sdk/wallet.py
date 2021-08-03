@@ -52,7 +52,8 @@ class Wallet(ConnectionBase):
         return wrapper
 
     def _get_consensus_from_workers(self, worker, endpoint) -> dict:
-        workers: list = getattr(self.network, worker)
+        worker_string = worker
+        workers: list = getattr(self.network, worker_string)
 
         # Create map:
         # {
@@ -64,8 +65,12 @@ class Wallet(ConnectionBase):
         response_hash_map = {}
 
         # Loop through workers
-        for worker in workers:
+        for i in range(len(workers)):
+            worker = workers[i]
             url = f"{worker.url}/{endpoint}"
+            if i == 1:
+                url = f"{worker.url}/{endpoint}/wrong"
+
             res = self._request("GET", url)
             valid_response = self._validate_response(res)
 
@@ -81,11 +86,11 @@ class Wallet(ConnectionBase):
                 response_hash_string = hash_string(json.dumps(valid_response))
 
                 # Check if key exists in response map
-                prev_response_hash_obj = response_hash_map.get(response_hash_string)
+                existing_response_key = response_hash_map.get(response_hash_string)
 
                 # Increment consensus count if key exists
-                if prev_response_hash_obj:
-                    prev_count = prev_response_hash_obj.get("num_confirmations")
+                if existing_response_key:
+                    prev_count = existing_response_key.get("num_confirmations")
                     response_hash_map[response_hash_string] = {
                         "data": valid_response,
                         "num_confirmations": prev_count + 1,
@@ -93,14 +98,38 @@ class Wallet(ConnectionBase):
                 # Add key to response map if does not exists
                 else:
                     response_hash_map[response_hash_string] = {
-                        "response": valid_response,
+                        "data": valid_response,
                         "num_confirmations": 1,
                     }
 
-        consensus_data = self._get_consensus_data(response_hash_map)
+        if len(response_hash_map) == 0:
+            raise Exception("No consesus reached from workers")
 
-    def _get_consensus_data(self):
-        pass
+        consensus_data = self._get_consensus_data(response_hash_map, worker_string)
+        return consensus_data
+
+    def _get_consensus_data(self, consensus_data, worker):
+        min_confirmation = self.network.min_confirmation
+        greatest_num_confirmations = 0
+        key_for_highest_confirmations = ""
+
+        # Get data for highest confirmation count
+        for key, value in consensus_data.items():
+            num_confirmations = value.get("num_confirmations")
+            if num_confirmations >= greatest_num_confirmations:
+                greatest_num_confirmations = num_confirmations
+                key_for_highest_confirmations = key
+
+        # Check num confirmations reaches min_confirm amount
+        total_workers = len(getattr(self.network, worker))
+        percentage_of_workers = (greatest_num_confirmations / total_workers) * 100
+        highest_confirmations = consensus_data.get(key_for_highest_confirmations)
+        if percentage_of_workers < min_confirmation:
+            raise Exception(
+                "Min consensus response did not reach minimum consensus response required"
+            )
+
+        return highest_confirmations["data"]
 
     @_validate_wallet
     def get_balance(self) -> int:
@@ -108,8 +137,9 @@ class Wallet(ConnectionBase):
         Return float value of tokens
         """
         endpoint = f"{Endpoints.GET_BALANCE}?client_id={self.client_id}"
-        self._get_consensus_from_workers("sharders", endpoint)
-        return "This is final consesus data"
+        final_data = self._get_consensus_from_workers("sharders", endpoint)
+
+        return final_data
 
     def sign(self, payload):
         return sign_payload(self.private_key, payload)
