@@ -26,32 +26,32 @@ class TextConnectionBase(TestCase):
     def _setup_mock(self, status_code, data):
         self.response = MockResponse(status_code, data)
 
-    def test_validate_response_dict(self):
+    def test_check_status_code_dict(self):
         self._setup_mock(200, {"header": "Welcome"})
-        valid_res = self.connection._validate_response(self.response)
+        valid_res = self.connection._check_status_code(self.response)
         self.assertIsInstance(valid_res, dict)
         self.assertIn("header", valid_res)
 
-    def test_validate_response_string(self):
+    def test_check_status_code_string(self):
         res_text = "This is the response text"
         self._setup_mock(200, res_text)
-        valid_res = self.connection._validate_response(
+        valid_res = self.connection._check_status_code(
             self.response, return_type="string"
         )
         self.assertIsInstance(valid_res, str)
         self.assertIs(valid_res, res_text)
 
-    def test_validate_response_string(self):
+    def test_check_status_code_string(self):
         res_text = "This is the response text"
         self._setup_mock(200, res_text)
-        valid_res = self.connection._validate_response(self.response)
+        valid_res = self.connection._check_status_code(self.response)
         self.assertIsInstance(valid_res, str)
         self.assertIs(valid_res, res_text)
 
-    def test_validate_response_invalid_json(self):
+    def test_check_status_code_invalid_json(self):
         self._setup_mock(200, None)
         with self.assertRaises(ConnectionError):
-            self.connection._validate_response(
+            self.connection._check_status_code(
                 self.response,
                 "There was en error",
                 raise_exception=True,
@@ -61,7 +61,7 @@ class TextConnectionBase(TestCase):
     def test_status_code_400_raises_error(self):
         self._setup_mock(400, None)
         with self.assertRaises(ConnectionError):
-            self.connection._validate_response(
+            self.connection._check_status_code(
                 self.response,
                 "There was en error",
                 raise_exception=True,
@@ -72,7 +72,7 @@ class TextConnectionBase(TestCase):
         error_message = "There was en error"
         response_text = "Response Text"
         self._setup_mock(400, response_text)
-        valid_response = self.connection._validate_response(
+        valid_response = self.connection._check_status_code(
             self.response,
             error_message,
             return_type="json",
@@ -141,7 +141,8 @@ class TestGetConsensus(TestCase):
 
     def test_error_balance_wallet(self):
         self._setup_mock(200, json.dumps({"error": "value not present"}))
+        empty_return_value = {"balance": 0}
         data = self.connection._get_consensus_from_workers(
-            "sharders", Endpoints.GET_BALANCE
+            "sharders", Endpoints.GET_BALANCE, empty_return_value
         )
         self.assertIn("balance", data)

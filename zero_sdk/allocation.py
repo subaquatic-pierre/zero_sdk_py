@@ -22,7 +22,7 @@ class Allocation(ConnectionBase):
         url = f"{self.wallet.network.sharders[0]}/v1/screst/{self.storage_address}/allocation?allocation={self.id}"
         res = requests.get(url)
         error_message = f"There was an error getting blobber info"
-        valid_res = self._validate_response(res, error_message)
+        valid_res = self._check_status_code(res, error_message)
         return valid_res
 
     def get_file_path(self, blobber, remote_path, headers):

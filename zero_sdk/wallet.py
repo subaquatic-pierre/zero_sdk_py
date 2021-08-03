@@ -106,7 +106,7 @@ class Wallet(ConnectionBase):
 
         res = requests.post(url, json=data, headers=headers)
         error_message = "An error occurred adding tokens to wallet"
-        res = self._validate_response(res, error_message)
+        res = self._check_status_code(res, error_message)
 
         return res
 
