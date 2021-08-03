@@ -11,6 +11,3 @@ wallet = Wallet.from_object(default_wallet_config_obj, network)
 
 balance = wallet.get_balance()
 chain_stats = network.get_chain_stats()
-pprint(chain_stats)
-
-print(balance)

@@ -1,10 +1,11 @@
+from abc import ABC
 from requests import request
 import json
 from requests.models import Response
 from zero_sdk.utils import hash_string
 
 
-class ConnectionBase:
+class ConnectionBase(ABC):
     def _validate_response(
         self,
         res,
@@ -53,6 +54,11 @@ class ConnectionBase:
         return res
 
     def _get_consensus_from_workers(self, worker, endpoint) -> dict:
+        """Get response from all workers, consolidate responses to get consesus of data,
+        return data of highest number of confirmations of a response
+        :param worker: String, name of worker to request data,
+        :param endpoint: String, endpoint to request from worker
+        """
         worker_string = worker
         workers = self._get_workers(worker_string)
 
@@ -100,13 +106,18 @@ class ConnectionBase:
                         "num_confirmations": 1,
                     }
 
-        if len(response_hash_map) == 0:
+        if len(response_hash_map) < 1:
             raise Exception("No consesus reached from workers")
 
-        consensus_data = self._get_consensus_data(response_hash_map, worker_string)
+        consensus_data = self._get_consensus_data(response_hash_map, workers)
         return consensus_data
 
-    def _get_consensus_data(self, consensus_data, worker):
+    def _get_consensus_data(self, consensus_data, workers):
+        """Take all consensus data, check min required confirmations,
+        return highest number of confirmations in data, ensure min confirmation count met
+        :param consensus_data: Dict, received from _get_consensus_from_workers
+        :param worker: String, string for name of worker
+        """
         min_confirmation = self._get_min_confirmation()
         greatest_num_confirmations = 0
         key_for_highest_confirmations = ""
@@ -119,12 +130,12 @@ class ConnectionBase:
                 key_for_highest_confirmations = key
 
         # Check num confirmations reaches min_confirm amount
-        total_workers = len(self._get_workers(worker))
+        total_workers = len(workers)
         percentage_of_workers = (greatest_num_confirmations / total_workers) * 100
         highest_confirmations = consensus_data.get(key_for_highest_confirmations)
         if percentage_of_workers < min_confirmation:
             raise Exception(
-                "Min consensus response did not reach minimum consensus response required"
+                "Minimum consesus requirement not met, check network config settings or network worker availability"
             )
 
         return highest_confirmations["data"]
