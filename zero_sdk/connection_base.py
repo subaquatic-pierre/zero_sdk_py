@@ -1,4 +1,5 @@
 from abc import ABC
+from zero_sdk.const import Endpoints
 from requests import request
 import json
 from requests.models import Response
@@ -33,12 +34,12 @@ class ConnectionBase(ABC):
                 if raise_exception:
                     raise ConnectionError(f"{error_message} - Message: {res.text}")
                 else:
-                    return f"{error_message} - Message: {res.text}"
+                    return res.text
         else:
             if raise_exception:
                 raise ConnectionError(f"{error_message} - Message: {res.text}")
             else:
-                return f"{error_message} - Message: {res.text}"
+                return res.text
 
     def _request(self, method, url, headers=None, data=None, files=None) -> Response:
         """Base request method for model requests
@@ -77,6 +78,11 @@ class ConnectionBase(ABC):
 
             res = self._request("GET", url)
             valid_response = self._validate_response(res)
+
+            if type(valid_response) == str and Endpoints.GET_BALANCE in endpoint:
+                json_res = json.loads(valid_response)
+                if json_res["error"] == "value not present":
+                    valid_response = {"balance": 0}
 
             # May be string response if node is down, ensure valid dict object
             if type(valid_response) == dict:

@@ -1,13 +1,17 @@
 import os
+import json
 from unittest.mock import MagicMock
-from tests.utils import TEST_DIR
 from unittest.case import TestCase
 
+
+from tests.utils import TEST_DIR
+from tests.mock_response import MockResponse
+
+from zero_sdk.const import Endpoints
 from zero_sdk.utils import from_json
 from zero_sdk.connection_base import ConnectionBase
 from zero_sdk.network import Network
 from zero_sdk.workers import Miner, Sharder, Blobber
-from tests.mock_response import MockResponse
 
 
 class Connection(ConnectionBase):
@@ -73,7 +77,7 @@ class TextConnectionBase(TestCase):
             error_message,
             return_type="json",
         )
-        self.assertEqual(valid_response, f"{error_message} - Message: {response_text}")
+        self.assertIsInstance(valid_response, str)
 
 
 def build_connection(min_confirmations):
@@ -127,13 +131,6 @@ class TestGetConsensus(TestCase):
                 "sharders", "http://placeholder.com"
             )
 
-    def test_error_status_code_response(self):
-        self._setup_mock(400, get_chain_stats())
-        with self.assertRaises(Exception):
-            self.connection._get_consensus_from_workers(
-                "sharders", "http://placeholder.com"
-            )
-
     def test_min_consensus_error(self):
         self.connection = build_connection(200)
         self._setup_mock(200, get_chain_stats())
@@ -141,3 +138,10 @@ class TestGetConsensus(TestCase):
             self.connection._get_consensus_from_workers(
                 "sharders", "http://placeholder.com"
             )
+
+    def test_error_balance_wallet(self):
+        self._setup_mock(200, json.dumps({"error": "value not present"}))
+        data = self.connection._get_consensus_from_workers(
+            "sharders", Endpoints.GET_BALANCE
+        )
+        self.assertIn("balance", data)
