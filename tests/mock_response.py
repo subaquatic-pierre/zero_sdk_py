@@ -4,4 +4,12 @@ class MockResponse:
         self.data = data
 
     def json(self):
+        if not self.data:
+            raise ConnectionError
+        return self.data
+
+    @property
+    def text(self):
+        if not self.data:
+            raise ConnectionError
         return self.data
