@@ -52,21 +52,52 @@ class Wallet(ConnectionBase):
         return wrapper
 
     def _get_consensus_from_workers(self, worker, endpoint) -> dict:
-        min_confirmation = self.network.min_confirmation
         workers: list = getattr(self.network, worker)
-        responses = []
-        hashed_responses = []
+
+        # Create map:
+        # {
+        #   hashed_data_string: {
+        #       data: response.json(),
+        #       num_confirmations: int
+        #    }
+        # }
+        response_hash_map = {}
+
+        # Loop through workers
         for worker in workers:
             url = f"{worker.url}/{endpoint}"
             res = self._request("GET", url)
             valid_response = self._validate_response(res)
 
-            responses.append(valid_response)
-            valid_response = "this is string"
-            hashed_responses.append(hash_string(json.dumps(valid_response)))
+            # May be string response if node is down, ensure valid dict object
+            if type(valid_response) == dict:
 
-        print(hashed_responses)
-        print(responses)
+                # JSON response may contain error, do not add to response map, not valid transaction
+                err = valid_response.get("error")
+                if err:
+                    continue
+
+                # Build response hash string
+                response_hash_string = hash_string(json.dumps(valid_response))
+
+                # Check if key exists in response map
+                prev_response_hash_obj = response_hash_map.get(response_hash_string)
+
+                # Increment consensus count if key exists
+                if prev_response_hash_obj:
+                    prev_count = prev_response_hash_obj.get("num_confirmations")
+                    response_hash_map[response_hash_string] = {
+                        "data": valid_response,
+                        "num_confirmations": prev_count + 1,
+                    }
+                # Add key to response map if does not exists
+                else:
+                    response_hash_map[response_hash_string] = {
+                        "response": valid_response,
+                        "num_confirmations": 1,
+                    }
+
+        consensus_data = self._get_consensus_data(response_hash_map)
 
     def _get_consensus_data(self):
         pass
