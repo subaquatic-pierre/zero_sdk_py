@@ -121,3 +121,15 @@ class TestNetworkChainMethods(TestCase):
         self._setup_mock("check_txn_response.json")
         block_info = self.network.check_transaction_status("thisistransactionhash")
         self.assertIsInstance(block_info, dict)
+
+    def test_restore_wallet(self):
+        """Test get_latest_finalized block returns valid data"""
+        self._setup_mock("create.json")
+        wallet = self.network.restore_wallet("this is a mnonnic key phrase")
+        self.assertIn("id", wallet)
+
+    def test_create_wallet(self):
+        """Test get_latest_finalized block returns valid data"""
+        self._setup_mock("create.json")
+        wallet = self.network.create_wallet()
+        self.assertIn("id", wallet)
