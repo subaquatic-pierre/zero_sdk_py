@@ -83,38 +83,39 @@ class ConnectionBase(ABC):
             response = self._check_status_code(res)
 
             # Check if get_balance request and empty wallet, return empty balance value as data
-            if type(response) == str:
-                response = self._handle_empty_return_value(
-                    response, empty_return_value, endpoint
-                )
+            # if type(response) == str:
+            response = self._handle_empty_return_value(
+                response, empty_return_value, endpoint
+            )
 
             # May be string response if node is down, ensure valid dict object
-            if type(response) == dict:
+            # if type(response) == dict:
 
-                # JSON response may contain error, do not add to response map, not valid transaction
+            # JSON response may contain error, do not add to response map, not valid transaction
+            if not type(response) == str:
                 err = response.get("error")
                 if err:
                     continue
 
-                # Build response hash string
-                response_hash_string = hash_string(json.dumps(response))
+            # Build response hash string
+            response_hash_string = hash_string(json.dumps(response))
 
-                # Check if key exists in response map
-                existing_response_key = response_hash_map.get(response_hash_string)
+            # Check if key exists in response map
+            existing_response_key = response_hash_map.get(response_hash_string)
 
-                # Increment consensus count if key exists
-                if existing_response_key:
-                    prev_count = existing_response_key.get("num_confirmations")
-                    response_hash_map[response_hash_string] = {
-                        "data": response,
-                        "num_confirmations": prev_count + 1,
-                    }
-                # Add key to response map if does not exists
-                else:
-                    response_hash_map[response_hash_string] = {
-                        "data": response,
-                        "num_confirmations": 1,
-                    }
+            # Increment consensus count if key exists
+            if existing_response_key:
+                prev_count = existing_response_key.get("num_confirmations")
+                response_hash_map[response_hash_string] = {
+                    "data": response,
+                    "num_confirmations": prev_count + 1,
+                }
+            # Add key to response map if does not exists
+            else:
+                response_hash_map[response_hash_string] = {
+                    "data": response,
+                    "num_confirmations": 1,
+                }
 
         if len(response_hash_map) < 1:
             raise ConsensusError("No consesus reached from workers")

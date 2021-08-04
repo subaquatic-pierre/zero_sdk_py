@@ -48,12 +48,6 @@ class TestWalletMethods(TestCase):
         balance = self.wallet.get_balance()
         self.assertIn("balance", balance)
 
-    def test_get_balance_error(self):
-        """Test get_balance returns error on string value return"""
-        self._setup_mock("This is the string")
-        with self.assertRaises(ConsensusError):
-            self.wallet.get_balance()
-
     def test_get_locked_tokens(self):
         """Test Balance is integer"""
         self._setup_mock({"locked_tokens": []})

@@ -7,13 +7,11 @@ from zero_sdk.config import default_network_config_obj, default_wallet_config_ob
 from zero_sdk.utils import pprint
 from zero_sdk.bls import genereate_keys
 
-# network = Network.from_object(default_network_config_obj)
-# wallet = Wallet.from_object(default_wallet_config_obj, network)
+network = Network.from_object(default_network_config_obj)
+wallet = Wallet.from_object(default_wallet_config_obj, network)
 
-# locked_tockens = wallet.get_locked_tokens()
-
-# print(locked_tockens)
-
-keys = genereate_keys()
-
-print(json.dumps(keys, indent=4))
+# pools = wallet.get_user_pools()
+status = network.check_transaction_status(
+    "191a6e941f87d761dcf67ef0b9a10b6d11517a5017818e001e67138e2d67dddc"
+)
+print(status)

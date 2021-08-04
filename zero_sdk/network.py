@@ -46,6 +46,11 @@ class Network(ConnectionBase):
         res = self._get_consensus_from_workers("miners", endpoint)
         return res
 
+    def check_transaction_status(self, hash):
+        endpoint = f"{Endpoints.CHECK_TRANSACTION_STATUS}?hash={hash}"
+        res = self._get_consensus_from_workers("sharders", endpoint)
+        return res
+
     def json(self):
         return {
             "hostname": self.hostname,

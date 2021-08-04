@@ -99,13 +99,6 @@ class TestGetConsensus(TestCase):
         )
         self.assertIn("current_round", final_data)
 
-    def test_error_string_response(self):
-        self._setup_mock(200, "Error returned from server")
-        with self.assertRaises(Exception):
-            self.connection._get_consensus_from_workers(
-                "sharders", "http://placeholder.com"
-            )
-
     def test_error_key_in_response(self):
         chain_stats_obj = get_chain_stats()
         chain_stats_obj["error"] = "There was an error"
