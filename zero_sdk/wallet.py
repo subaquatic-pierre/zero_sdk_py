@@ -5,7 +5,7 @@ import json
 from zero_sdk.const import Endpoints
 from zero_sdk.network import Network
 from zero_sdk.utils import hash_string
-from zero_sdk.sign import sign_payload
+from zero_sdk.bls import sign_payload
 from zero_sdk.connection_base import ConnectionBase
 
 
