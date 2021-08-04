@@ -16,10 +16,9 @@ import hashlib
 
 network = Network.from_object(default_network_config_obj)
 
-
 # pools = wallet.get_user_pools()
 # status = network.check_transaction_status(txn_hash)
 # pprint(status)
 
-new_wallet = network.create_wallet()
-pprint(new_wallet)
+# new_wallet = network.create_wallet()
+# pprint(new_wallet)

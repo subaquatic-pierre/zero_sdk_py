@@ -80,6 +80,8 @@ class Wallet(ConnectionBase):
         )
         return res
 
+    def execute_smart_contract(self):
+        pass
         # ____________________________
         # END HERE
         # ____________________________

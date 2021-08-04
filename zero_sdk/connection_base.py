@@ -45,7 +45,9 @@ class ConnectionBase(ABC):
             else:
                 return res.text
 
-    def _request(self, method, url, headers=None, data=None, files=None) -> Response:
+    def _request(
+        self, url, method="GET", headers=None, data=None, files=None
+    ) -> Response:
         """Base request method for model requests
         Returns valid res data as json string
         :param method: String
@@ -57,7 +59,10 @@ class ConnectionBase(ABC):
         """
         try:
             res = requests.request(method, url, headers=headers, data=data, files=files)
-            return res
+            try:
+                return res.json()
+            except:
+                return res.text
         except requests.exceptions.RequestException as e:
             return e
 

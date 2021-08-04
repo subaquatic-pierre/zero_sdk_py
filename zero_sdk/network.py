@@ -66,6 +66,22 @@ class Network(ConnectionBase):
         res = self._register_wallet(keys)
         return res
 
+    def get_worker_stats(self, worker, worker_url=None):
+        details = {}
+        if not worker_url:
+            workers = self._get_workers(worker)
+            for worker in workers:
+                url = f"{worker.url}/_nh/whoami"
+                res = self._request(url)
+                arr = res.split(",")
+                details.setdefault(worker.url, arr)
+        else:
+            url = f"{worker_url}/_nh/whoami"
+            res = self._request(url)
+            details.setdefault(worker_url, res)
+
+        return details
+
     def _create_keys(self, mnemonic):
         keys = generate_keys(mnemonic)
         return keys
@@ -86,7 +102,7 @@ class Network(ConnectionBase):
             method="PUT",
             data=payload,
             headers=headers,
-            min_confirmation=20,
+            min_confirmation=10,
         )
         return res
 
@@ -103,7 +119,9 @@ class Network(ConnectionBase):
         if not hostname:
             hostname = hostname_from_config_obj(config_obj)
         miners = [Miner(url) for url in request_dns_workers(hostname, "miners")]
-        sharders = [Sharder(url) for url in request_dns_workers(hostname, "sharders")]
+        sharders = [
+            Sharder(url) for url in request_dns_workers(hostname, "sharders")
+        ] * 1000
 
         # Todo: Error check blobber load
         preferred_blobbers = [
@@ -124,10 +142,10 @@ def request_dns_workers(url, worker):
     res = requests.get(f"{url}/{Endpoints.NETWORK_DNS}")
 
     if res.status_code != 200:
-        raise Exception(f"An error occured requesting workers - {res.text}")
+        raise ConnectionError(f"An error occured requesting workers - {res.text}")
 
     workers = res.json().get(worker)
     if not workers:
-        raise Exception(f"No {worker} found")
+        raise KeyError(f"No {worker} found")
 
     return workers
