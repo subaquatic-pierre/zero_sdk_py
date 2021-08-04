@@ -1,6 +1,7 @@
 import bls from 'bls-wasm';
 import bip39 from 'bip39'
 import sha3 from 'js-sha3'
+import axios from 'axios'
 
 await bls.init(bls.BN254)
 
@@ -28,11 +29,35 @@ const generate_keys = async (mnemonic) => {
     const client_id = sha3.sha3_256(hexStringToByte(public_key));
 
     const output = public_key + ' ' + private_key + ' ' + client_id
-    process.stdout.write(output)
+    return {
+        public_key: public_key,
+        private_key: private_key,
+        client_id: client_id
+    }
+    // process.stdout.write(output)
 }
 
 
 const args = process.argv.slice(2)
 const mnemonic = args[0]
 
-generate_keys(mnemonic)
+const makeRequest = async () => {
+    const mnemonic = 'capable gloom call way exact lift include diagram paddle mutual penalty cluster doctor apology slab vapor squirrel answer blanket clinic subway rally topic acid'
+    const keys = await generate_keys(mnemonic)
+    const data = {}
+    console.log(keys)
+    data.id = keys.client_id
+    data.public_key = keys.public_key
+    const url = 'https://beta.0chain.net/miner01/v1/client/put'
+
+    axios({
+        method: 'post',
+        url: url,
+        data: data,
+    }).then(res => {
+        console.log(res.data)
+    })
+
+}
+
+makeRequest()
