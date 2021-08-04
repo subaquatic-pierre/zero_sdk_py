@@ -22,37 +22,37 @@ class Network(ConnectionBase):
 
     def get_chain_stats(self):
         endpoint = Endpoints.GET_CHAIN_STATS
-        res = self._get_consensus_from_workers("sharders", endpoint)
+        res = self._consensus_from_workers("sharders", endpoint)
         return res
 
     def get_block_by_hash(self, block_id):
         endpoint = f"{Endpoints.GET_BLOCK_INFO}?block={block_id}"
-        res = self._get_consensus_from_workers("sharders", endpoint)
+        res = self._consensus_from_workers("sharders", endpoint)
         return res
 
     def get_block_by_round(self, round_num):
         endpoint = f"{Endpoints.GET_BLOCK_INFO}?round={round_num}"
-        res = self._get_consensus_from_workers("sharders", endpoint)
+        res = self._consensus_from_workers("sharders", endpoint)
         return res
 
     def get_latest_finalized_block(self):
         endpoint = Endpoints.GET_LATEST_FINALIZED_BLOCK
-        res = self._get_consensus_from_workers("sharders", endpoint)
+        res = self._consensus_from_workers("sharders", endpoint)
         return res
 
     def get_latest_finalized_magic_block(self):
         endpoint = Endpoints.GET_LATEST_FINALIZED_MAGIC_BLOCK
-        res = self._get_consensus_from_workers("sharders", endpoint)
+        res = self._consensus_from_workers("sharders", endpoint)
         return res
 
     def get_latest_finalized_magic_block_summary(self):
         endpoint = Endpoints.GET_LATEST_FINALIZED_MAGIC_BLOCK_SUMMARY
-        res = self._get_consensus_from_workers("miners", endpoint)
+        res = self._consensus_from_workers("miners", endpoint)
         return res
 
     def check_transaction_status(self, hash):
         endpoint = f"{Endpoints.CHECK_TRANSACTION_STATUS}?hash={hash}"
-        res = self._get_consensus_from_workers("sharders", endpoint)
+        res = self._consensus_from_workers("sharders", endpoint)
         return res
 
     def create_wallet(self):

@@ -55,8 +55,8 @@ class ConnectionBase(ABC):
         res = request(method, url, headers=headers, data=data, files=files)
         return res
 
-    def _get_consensus_from_workers(
-        self, worker, endpoint, empty_return_value=None
+    def _consensus_from_workers(
+        self, worker, endpoint, method="GET", empty_return_value=None
     ) -> dict:
         """Get response from all workers, consolidate responses to get consesus of data,
         return data of highest number of confirmations of a response
@@ -79,7 +79,7 @@ class ConnectionBase(ABC):
         for worker in workers:
             url = f"{worker.url}/{endpoint}"
 
-            res = self._request("GET", url)
+            res = self._request(method, url)
             response = self._check_status_code(res)
 
             # Check if get_balance request and empty wallet, return empty balance value as data
@@ -93,9 +93,10 @@ class ConnectionBase(ABC):
 
             # JSON response may contain error, do not add to response map, not valid transaction
             if not type(response) == str:
-                err = response.get("error")
-                if err:
-                    continue
+                if response:
+                    err = response.get("error")
+                    if err:
+                        continue
 
             # Build response hash string
             response_hash_string = hash_string(json.dumps(response))
@@ -126,7 +127,7 @@ class ConnectionBase(ABC):
     def _get_consensus_data(self, consensus_data, workers):
         """Take all consensus data, check min required confirmations,
         return highest number of confirmations in data, ensure min confirmation count met
-        :param consensus_data: Dict, received from _get_consensus_from_workers
+        :param consensus_data: Dict, received from _consensus_from_workers
         :param worker: String, string for name of worker
         """
         min_confirmation = self._get_min_confirmation()
@@ -163,9 +164,7 @@ class ConnectionBase(ABC):
         else:
             return getattr(self.network, "min_confirmation")
 
-    def _handle_empty_return_value(
-        self, response: str, empty_value: dict, endpoint: str
-    ):
+    def _handle_empty_return_value(self, response, empty_value: dict, endpoint: str):
         try:
             json_res = json.loads(response)
         except Exception:

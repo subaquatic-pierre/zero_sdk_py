@@ -96,7 +96,7 @@ class TestGetConsensus(TestCase):
 
     def test_successful_response(self):
         self._setup_mock(200, get_chain_stats())
-        final_data = self.connection._get_consensus_from_workers(
+        final_data = self.connection._consensus_from_workers(
             "sharders", "http://placeholder.com"
         )
         self.assertIn("current_round", final_data)
@@ -106,7 +106,7 @@ class TestGetConsensus(TestCase):
         chain_stats_obj["error"] = "There was an error"
         self._setup_mock(200, chain_stats_obj)
         with self.assertRaises(Exception):
-            self.connection._get_consensus_from_workers(
+            self.connection._consensus_from_workers(
                 "sharders", "http://placeholder.com"
             )
 
@@ -114,14 +114,14 @@ class TestGetConsensus(TestCase):
         self.connection = build_network(200)
         self._setup_mock(200, get_chain_stats())
         with self.assertRaises(Exception):
-            self.connection._get_consensus_from_workers(
+            self.connection._consensus_from_workers(
                 "sharders", "http://placeholder.com"
             )
 
     def test_error_balance_wallet(self):
         self._setup_mock(200, json.dumps({"error": "value not present"}))
         empty_return_value = {"balance": 0}
-        data = self.connection._get_consensus_from_workers(
-            "sharders", Endpoints.GET_BALANCE, empty_return_value
+        data = self.connection._consensus_from_workers(
+            "sharders", Endpoints.GET_BALANCE, empty_return_value=empty_return_value
         )
         self.assertIn("balance", data)

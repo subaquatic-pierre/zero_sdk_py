@@ -58,8 +58,8 @@ class Wallet(ConnectionBase):
         """
         endpoint = f"{Endpoints.GET_BALANCE}?client_id={self.client_id}"
         empty_return_value = {"balance": 0}
-        data = self._get_consensus_from_workers(
-            "sharders", endpoint, empty_return_value
+        data = self._consensus_from_workers(
+            "sharders", endpoint, empty_return_value=empty_return_value
         )
 
         return data
@@ -67,16 +67,18 @@ class Wallet(ConnectionBase):
     def get_locked_tokens(self):
         endpoint = f"{Endpoints.GET_LOCKED_TOKENS}?client_id={self.client_id}"
         empty_return_value = {"locked_tokens": []}
-        res = self._get_consensus_from_workers("sharders", endpoint, empty_return_value)
+        res = self._consensus_from_workers(
+            "sharders", endpoint, empty_return_value=empty_return_value
+        )
         return res
 
     def get_user_pools(self):
         endpoint = f"{Endpoints.GET_USER_POOLS}?client_id={self.client_id}"
         empty_return_value = {"pools": {}}
-        res = self._get_consensus_from_workers("sharders", endpoint, empty_return_value)
+        res = self._consensus_from_workers(
+            "sharders", endpoint, empty_return_value=empty_return_value
+        )
         return res
-
-
 
         # ____________________________
         # END HERE
