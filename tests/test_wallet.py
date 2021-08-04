@@ -11,7 +11,7 @@ from tests.utils import TEST_DIR, build_network, build_wallet
 from tests.mock_response import MockResponse
 
 default_wallet_config = from_json(
-    os.path.join(TEST_DIR, "fixtures/default_wallet.json")
+    os.path.join(TEST_DIR, "fixtures/wallet/default_wallet.json")
 )
 
 
@@ -37,22 +37,29 @@ class TestWalletMethods(TestCase):
         self.wallet = build_wallet()
         return super().setUp()
 
-    def _setup_mock(self, data):
-        mock_response = MockResponse(200, data)
+    def _setup_mock(self, filename):
+        res_obj = from_json(os.path.join(TEST_DIR, f"fixtures/wallet/{filename}"))
+        mock_response = MockResponse(200, res_obj)
         request_mock = MagicMock(return_value=mock_response)
         self.wallet._request = request_mock
 
     def test_get_balance(self):
         """Test Balance is integer"""
-        self._setup_mock({"balance": 20000})
+        self._setup_mock("balance.json")
         balance = self.wallet.get_balance()
         self.assertIn("balance", balance)
 
     def test_get_locked_tokens(self):
         """Test Balance is integer"""
-        self._setup_mock({"locked_tokens": []})
+        self._setup_mock("tokens.json")
         locked_tockens = self.wallet.get_locked_tokens()
         self.assertIn("locked_tokens", locked_tockens)
+
+    # def test_create_keys(self):
+    #     """Test Balance is integer"""
+    #     self._setup_mock({"locked_tokens": []})
+    #     locked_tockens = self.wallet.get_locked_tokens()
+    #     self.assertIn("locked_tokens", locked_tockens)
 
     # def test_add_tokens(self):
     #     """Test add_token method add to wallet balance"""

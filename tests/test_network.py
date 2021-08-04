@@ -14,7 +14,7 @@ ROUND_NUMBER = "832629"
 
 
 default_network_config = from_yaml(
-    os.path.join(TEST_DIR, "fixtures/default_network.yaml")
+    os.path.join(TEST_DIR, "fixtures/network/default_network.yaml")
 )
 
 
@@ -75,7 +75,7 @@ class TestNetworkChainMethods(TestCase):
         return super().setUp()
 
     def _setup_mock(self, filename):
-        res_obj = from_json(os.path.join(TEST_DIR, f"fixtures/{filename}"))
+        res_obj = from_json(os.path.join(TEST_DIR, f"fixtures/network/{filename}"))
         mock_response = MockResponse(200, res_obj)
         request_mock = MagicMock(return_value=mock_response)
         self.network._request = request_mock
@@ -106,14 +106,18 @@ class TestNetworkChainMethods(TestCase):
 
     def test_get_latest_finalized_magic_block(self):
         """Test get_latest_finalized_magic_block returns valid data"""
-        #
         self._setup_mock("valid_get_latest_magic_block.json")
         block_info = self.network.get_latest_finalized_magic_block()
         self.assertIsInstance(block_info, dict)
 
     def test_get_latest_finalized_magic_block_summary(self):
         """Test get_latest_finalized block returns valid data"""
-        #
         self._setup_mock("valid_get_block_summary.json")
         block_info = self.network.get_latest_finalized_magic_block_summary()
+        self.assertIsInstance(block_info, dict)
+
+    def test_check_transaction(self):
+        """Test get_latest_finalized block returns valid data"""
+        self._setup_mock("check_txn_response.json")
+        block_info = self.network.check_transaction_status("thisistransactionhash")
         self.assertIsInstance(block_info, dict)

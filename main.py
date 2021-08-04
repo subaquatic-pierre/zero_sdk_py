@@ -7,11 +7,11 @@ from zero_sdk.config import default_network_config_obj, default_wallet_config_ob
 from zero_sdk.utils import pprint
 from zero_sdk.bls import genereate_keys
 
+txn_hash = "17297e21e21c59b32de70f082a8668166cc9cb06eb5071abd2907089c45c7238"
+
 network = Network.from_object(default_network_config_obj)
 wallet = Wallet.from_object(default_wallet_config_obj, network)
 
 # pools = wallet.get_user_pools()
-status = network.check_transaction_status(
-    "191a6e941f87d761dcf67ef0b9a10b6d11517a5017818e001e67138e2d67dddc"
-)
-print(status)
+status = network.check_transaction_status(txn_hash)
+pprint(status)

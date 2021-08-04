@@ -79,7 +79,9 @@ class TextConnectionBase(TestCase):
 
 
 def get_chain_stats():
-    return from_json(os.path.join(TEST_DIR, "fixtures/valid_chain_stats_response.json"))
+    return from_json(
+        os.path.join(TEST_DIR, "fixtures/network/valid_chain_stats_response.json")
+    )
 
 
 class TestGetConsensus(TestCase):
