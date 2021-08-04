@@ -125,3 +125,7 @@ class TestGetConsensus(TestCase):
             "sharders", Endpoints.GET_BALANCE, empty_return_value=empty_return_value
         )
         self.assertIn("balance", data)
+
+    # TODO - TESTS
+    def test_handle_empty_return_value(self):
+        pass

@@ -67,6 +67,13 @@ class TestWalletMethods(TestCase):
         pool = self.wallet.create_read_pool()
         self.assertIn("entity", pool)
 
+    # TODO - TESTS
+    def test_execute_smart_contract(self):
+        pass
+
+    def test_submit_transaction(self):
+        pass
+
     # def test_create_keys(self):
     #     keys = self.wallet._create_keys("this is a super sucret phrase")
     #     self.assertIn("private_key", keys)
