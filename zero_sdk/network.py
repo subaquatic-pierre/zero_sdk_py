@@ -86,7 +86,7 @@ class Network(ConnectionBase):
             method="PUT",
             data=payload,
             headers=headers,
-            min_confirmation=0.00001,
+            min_confirmation=20,
         )
         return res
 
@@ -102,7 +102,7 @@ class Network(ConnectionBase):
     def from_object(config_obj, hostname=None):
         if not hostname:
             hostname = hostname_from_config_obj(config_obj)
-        miners = [Miner(url) for url in request_dns_workers(hostname, "miners")] * 2
+        miners = [Miner(url) for url in request_dns_workers(hostname, "miners")]
         sharders = [Sharder(url) for url in request_dns_workers(hostname, "sharders")]
 
         # Todo: Error check blobber load
