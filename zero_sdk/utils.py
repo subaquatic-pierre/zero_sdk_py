@@ -1,4 +1,5 @@
 import json
+from time import time
 import yaml
 import secrets
 from pathlib import Path
@@ -60,3 +61,15 @@ def generate_mnemonic():
     byte_array = secrets.token_bytes(32)
     mnemonic = encode_bytes(bytearray(byte_array))
     return mnemonic
+
+
+def timer(f):
+    def wrapper(*args, **kwargs):
+        start_time = time()
+        res = f(*args, **kwargs)
+        end_time = time()
+        total_time = end_time - start_time
+        print("Total Time: ", total_time)
+        return res
+
+    return wrapper

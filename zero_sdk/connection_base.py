@@ -1,9 +1,12 @@
 from abc import ABC
+from time import sleep
 from zero_sdk.const import Endpoints
-from requests import request
+import requests
+from concurrent.futures import ThreadPoolExecutor
+
 import json
 from requests.models import Response
-from zero_sdk.utils import hash_string
+from zero_sdk.utils import hash_string, timer
 from zero_sdk.exceptions import ConsensusError
 
 
@@ -52,11 +55,49 @@ class ConnectionBase(ABC):
         :param files: Tuple or List
         :param error_message: String, message to display if error
         """
-        res = request(method, url, headers=headers, data=data, files=files)
-        return res
+        try:
+            res = requests.request(method, url, headers=headers, data=data, files=files)
+            return res
+        except requests.exceptions.RequestException as e:
+            return e
+
+    def _parallel_requests(
+        self,
+        workers,
+        endpoint,
+        method,
+        data,
+        files,
+        headers,
+    ):
+        future_responses = []
+        with ThreadPoolExecutor(max_workers=20) as executor:
+            for worker in workers:
+                url = f"{worker.url}/{endpoint}"
+
+                future = executor.submit(
+                    self._request,
+                    method,
+                    url,
+                    data=data,
+                    files=files,
+                    headers=headers,
+                )
+                future_responses.append(future)
+
+        responses = [future.result() for future in future_responses]
+        return responses
 
     def _consensus_from_workers(
-        self, worker, endpoint, method="GET", empty_return_value=None
+        self,
+        worker,
+        endpoint,
+        method="GET",
+        data=None,
+        files=None,
+        headers=None,
+        empty_return_value=None,
+        min_confirmation=None,
     ) -> dict:
         """Get response from all workers, consolidate responses to get consesus of data,
         return data of highest number of confirmations of a response
@@ -66,21 +107,20 @@ class ConnectionBase(ABC):
         worker_string = worker
         workers = self._get_workers(worker_string)
 
-        # Create map:
-        # {
-        #   hashed_data_string: {
-        #       data: response.json(),
-        #       num_confirmations: int
-        #    }
-        # }
+        responses = self._parallel_requests(
+            workers=workers,
+            endpoint=endpoint,
+            method=method,
+            data=data,
+            files=files,
+            headers=headers,
+        )
+
         response_hash_map = {}
 
         # Loop through workers
-        for worker in workers:
-            url = f"{worker.url}/{endpoint}"
-
-            res = self._request(method, url)
-            response = self._check_status_code(res)
+        for reponse in responses:
+            response = self._check_status_code(reponse)
 
             # Check if get_balance request and empty wallet, return empty balance value as data
             # if type(response) == str:
@@ -121,16 +161,19 @@ class ConnectionBase(ABC):
         if len(response_hash_map) < 1:
             raise ConsensusError("No consesus reached from workers")
 
-        consensus_data = self._get_consensus_data(response_hash_map, workers)
+        consensus_data = self._get_consensus_data(
+            response_hash_map, workers, min_confirmation
+        )
         return consensus_data
 
-    def _get_consensus_data(self, consensus_data, workers):
+    def _get_consensus_data(self, consensus_data, workers, min_confirmation):
         """Take all consensus data, check min required confirmations,
         return highest number of confirmations in data, ensure min confirmation count met
         :param consensus_data: Dict, received from _consensus_from_workers
         :param worker: String, string for name of worker
         """
-        min_confirmation = self._get_min_confirmation()
+        if not min_confirmation:
+            min_confirmation = self._get_min_confirmation()
         greatest_num_confirmations = 0
         key_for_highest_confirmations = ""
 

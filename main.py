@@ -22,4 +22,4 @@ network = Network.from_object(default_network_config_obj)
 # pprint(status)
 
 new_wallet = network.create_wallet()
-print(new_wallet)
+pprint(new_wallet)

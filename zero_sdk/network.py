@@ -56,24 +56,21 @@ class Network(ConnectionBase):
         return res
 
     def create_wallet(self):
-        # mnemonic = generate_mnemonic()
-        mnemonic = "capable gloom call way exact lift include diagram paddle mutual penalty cluster doctor apology slab vapor squirrel answer blanket clinic subway rally topic acid"
+        mnemonic = generate_mnemonic()
         keys = self._create_keys(mnemonic)
         res = self._register_wallet(keys)
         return res
 
-    # def restore_wallet(self, mnemonic):
-    #     keys = self._create_keys(mnemonic)
-    #     res = self._register_wallet(keys)
-    #     return res
+    def restore_wallet(self, mnemonic):
+        keys = self._create_keys(mnemonic)
+        res = self._register_wallet(keys)
+        return res
 
     def _create_keys(self, mnemonic):
         keys = generate_keys(mnemonic)
         return keys
 
     def _register_wallet(self, keys):
-        print(json.dumps(keys, indent=4))
-        miners = self.miners
         payload = json.dumps(
             {
                 "id": keys["client_id"],
@@ -83,13 +80,15 @@ class Network(ConnectionBase):
             }
         )
         headers = {"Accept": "application/json", "Content-Type": "application/json"}
-        results = []
-        for miner in miners:
-            url = f"{miner.url}/{Endpoints.REGISTER_CLIENT}"
-            res = self._request("PUT", url, data=payload, headers=headers)
-            results.append(res.text)
-
-        return results
+        res = self._consensus_from_workers(
+            "miners",
+            endpoint=Endpoints.REGISTER_CLIENT,
+            method="PUT",
+            data=payload,
+            headers=headers,
+            min_confirmation=0.00001,
+        )
+        return res
 
     def json(self):
         return {
@@ -103,7 +102,7 @@ class Network(ConnectionBase):
     def from_object(config_obj, hostname=None):
         if not hostname:
             hostname = hostname_from_config_obj(config_obj)
-        miners = [Miner(url) for url in request_dns_workers(hostname, "miners")]
+        miners = [Miner(url) for url in request_dns_workers(hostname, "miners")] * 2
         sharders = [Sharder(url) for url in request_dns_workers(hostname, "sharders")]
 
         # Todo: Error check blobber load
