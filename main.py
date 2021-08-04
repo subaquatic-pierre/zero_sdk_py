@@ -15,5 +15,6 @@ import hashlib
 network = Network.from_object(default_network_config_obj)
 wallet = Wallet.from_object(default_wallet_config_obj, network)
 
-res = wallet.create_read_pool()
-print(res)
+res, data = wallet.create_read_pool()
+pprint(res)
+print(data)
