@@ -21,6 +21,14 @@ INTEREST_POOL_SMART_CONTRACT_ADDRESS = (
 )
 
 
+class TransactionType:
+    SEND = 0
+    DATA = 10
+    # STORAGE_WRITE = 101,
+    # STORAGE_READ  = 103,
+    SMART_CONTRACT = 1000
+
+
 class Endpoints:
     NETWORK_DNS = "dns/network"
     REGISTER_CLIENT = "v1/client/put"

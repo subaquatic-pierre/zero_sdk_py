@@ -59,10 +59,8 @@ class ConnectionBase(ABC):
         """
         try:
             res = requests.request(method, url, headers=headers, data=data, files=files)
-            try:
-                return res.json()
-            except:
-                return res.text
+            return res
+
         except requests.exceptions.RequestException as e:
             return e
 
@@ -82,8 +80,8 @@ class ConnectionBase(ABC):
 
                 future = executor.submit(
                     self._request,
-                    method,
-                    url,
+                    method=method,
+                    url=url,
                     data=data,
                     files=files,
                     headers=headers,
@@ -124,8 +122,8 @@ class ConnectionBase(ABC):
         response_hash_map = {}
 
         # Loop through workers
-        for reponse in responses:
-            response = self._check_status_code(reponse)
+        for response in responses:
+            response = self._check_status_code(response)
 
             # Check if get_balance request and empty wallet, return empty balance value as data
             # if type(response) == str:

@@ -2,7 +2,7 @@ import requests
 from time import time
 import json
 
-from zero_sdk.const import Endpoints
+from zero_sdk.const import Endpoints, TransactionType, STORAGE_SMART_CONTRACT_ADDRESS
 from zero_sdk.network import Network
 from zero_sdk.utils import hash_string
 from zero_sdk.bls import sign_payload
@@ -80,11 +80,54 @@ class Wallet(ConnectionBase):
         )
         return res
 
-    def execute_smart_contract(self):
-        pass
-        # ____________________________
-        # END HERE
-        # ____________________________
+    def create_read_pool(self):
+        payload = json.dumps({"name": "new_read_pool", "input": None})
+        res = self._execute_smart_contract(payload)
+        return res
+
+    def _execute_smart_contract(self, payload, to_client_id=None, transaction_value=0):
+        if not to_client_id:
+            to_client_id = STORAGE_SMART_CONTRACT_ADDRESS
+        return self._submit_transaction(
+            to_client_id, transaction_value, payload, TransactionType.SMART_CONTRACT
+        )
+
+    def _submit_transaction(self, to_client_id, value, payload, transaction_type):
+        hash_payload = hash_string(payload)
+        ts = int(time())
+
+        hashdata = f"{ts}:{self.client_id}:{to_client_id}:{value}:{hash_payload}"
+
+        hash = hash_string(hashdata)
+        signature = self.sign(hash)
+
+        data = json.dumps(
+            {
+                "client_id": self.client_id,
+                "transaction_value": value,
+                "transaction_data": payload,
+                "transaction_type": transaction_type,
+                "creation_date": ts,
+                "to_client_id": to_client_id,
+                "hash": hash,
+                "transaction_fee": 0,
+                "signature": signature,
+                "version": "1.0",
+            }
+        )
+        headers = {"Content-Type": "application/json"}
+        res = self._consensus_from_workers(
+            "miners",
+            endpoint=Endpoints.PUT_TRANSACTION,
+            method="POST",
+            data=data,
+            headers=headers,
+        )
+        return res
+
+    # ____________________________
+    # END HERE
+    # ____________________________
 
     # def _create
 
