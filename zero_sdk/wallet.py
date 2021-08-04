@@ -76,6 +76,14 @@ class Wallet(ConnectionBase):
         res = self._get_consensus_from_workers("sharders", endpoint, empty_return_value)
         return res
 
+
+
+        # ____________________________
+        # END HERE
+        # ____________________________
+
+    # def _create
+
     def sign(self, payload):
         return sign_payload(self.private_key, payload)
 

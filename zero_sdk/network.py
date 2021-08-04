@@ -1,9 +1,13 @@
+import os
 import json
+from zero_sdk.config import PROJECT_ROOT
 import requests
 from zero_sdk.connection_base import ConnectionBase
 from zero_sdk.const import Endpoints
 from zero_sdk.workers import Blobber, Miner, Sharder
-from zero_sdk.utils import hostname_from_config_obj
+from zero_sdk.utils import from_json, hostname_from_config_obj
+from zero_sdk.utils import generate_mnemonic
+from zero_sdk.bls import generate_keys
 
 
 class Network(ConnectionBase):
@@ -50,6 +54,42 @@ class Network(ConnectionBase):
         endpoint = f"{Endpoints.CHECK_TRANSACTION_STATUS}?hash={hash}"
         res = self._get_consensus_from_workers("sharders", endpoint)
         return res
+
+    def create_wallet(self):
+        # mnemonic = generate_mnemonic()
+        mnemonic = "capable gloom call way exact lift include diagram paddle mutual penalty cluster doctor apology slab vapor squirrel answer blanket clinic subway rally topic acid"
+        keys = self._create_keys(mnemonic)
+        res = self._register_wallet(keys)
+        return res
+
+    # def restore_wallet(self, mnemonic):
+    #     keys = self._create_keys(mnemonic)
+    #     res = self._register_wallet(keys)
+    #     return res
+
+    def _create_keys(self, mnemonic):
+        keys = generate_keys(mnemonic)
+        return keys
+
+    def _register_wallet(self, keys):
+        print(json.dumps(keys, indent=4))
+        miners = self.miners
+        payload = json.dumps(
+            {
+                "id": keys["client_id"],
+                "version": None,
+                "creation_date": None,
+                "public_key": keys["public_key"],
+            }
+        )
+        headers = {"Accept": "application/json", "Content-Type": "application/json"}
+        results = []
+        for miner in miners:
+            url = f"{miner.url}/{Endpoints.REGISTER_CLIENT}"
+            res = self._request("PUT", url, data=payload, headers=headers)
+            results.append(res.text)
+
+        return results
 
     def json(self):
         return {

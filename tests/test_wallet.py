@@ -55,6 +55,16 @@ class TestWalletMethods(TestCase):
         locked_tockens = self.wallet.get_locked_tokens()
         self.assertIn("locked_tokens", locked_tockens)
 
+    def test_get_locked_tokens(self):
+        """Test Balance is integer"""
+        self._setup_mock("pools.json")
+        pools = self.wallet.get_user_pools()
+        self.assertIn("pools", pools)
+
+    def test_create_keys(self):
+        keys = self.wallet._create_keys("this is a super sucret phrase")
+        self.assertIn("private_key", keys)
+
     # def test_create_keys(self):
     #     """Test Balance is integer"""
     #     self._setup_mock({"locked_tokens": []})

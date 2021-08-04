@@ -1,6 +1,4 @@
 import subprocess
-import secrets
-from zero_sdk.lib.bip39 import encode_bytes
 from zero_sdk.utils import get_project_root, hash_string
 
 root_dir = get_project_root()
@@ -27,10 +25,8 @@ def sign_payload(private_key, hash_payload):
         return False
 
 
-def genereate_keys():
+def generate_keys(mnemonic):
     file_path = f"{root_dir}/zero_sdk/lib/bn254_js/generate_keys.js"
-    byte_array = secrets.token_bytes(32)
-    mnemonic = encode_bytes(bytearray(byte_array))
 
     command = subprocess.Popen(
         ["node", file_path, mnemonic],
@@ -43,11 +39,12 @@ def genereate_keys():
         split = keys.decode().split(" ")
         public_key = split[0]
         private_key = split[1]
+        client_id = split[2]
         return {
             "public_key": public_key,
             "private_key": private_key,
             "mnemonic": mnemonic,
-            "client_id": hash_string(public_key),
+            "client_id": client_id,
         }
     else:
         return False

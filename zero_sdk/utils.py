@@ -1,8 +1,10 @@
 import json
 import yaml
+import secrets
 from pathlib import Path
 from hashlib import sha3_256
-from zero_sdk.const import Endpoints
+
+from zero_sdk.lib.bip39 import encode_bytes
 
 
 def pprint(dict):
@@ -52,3 +54,9 @@ def verify_data(data):
         raise Exception("No data loaded")
     else:
         return data
+
+
+def generate_mnemonic():
+    byte_array = secrets.token_bytes(32)
+    mnemonic = encode_bytes(bytearray(byte_array))
+    return mnemonic

@@ -1,0 +1,18 @@
+{
+  "name": "BN254",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.21.1",
+    "bip39": "^3.0.4",
+    "bls-wasm": "^0.4.4",
+    "js-sha3": "^0.8.0"
+  }
+}
