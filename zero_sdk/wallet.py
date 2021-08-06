@@ -110,6 +110,7 @@ class Wallet(ConnectionBase):
         data = json.dumps(
             {
                 "client_id": self.client_id,
+                "public_key": self.public_key,
                 "transaction_value": value,
                 "transaction_data": payload,
                 "transaction_type": transaction_type,
@@ -169,6 +170,41 @@ class Wallet(ConnectionBase):
     def list_allocations(self):
         url = f"{Endpoints.SC_REST_ALLOCATIONS}?client={self.client_id}"
         res = self._consensus_from_workers("sharders", url)
+        return res
+
+    def allocation_min_lock(
+        self,
+        data_shards=AllocationConfig.DATA_SHARDS,
+        parity_shards=AllocationConfig.PARITY_SHARDS,
+        size=AllocationConfig.SIZE,
+        preferred_blobbers=AllocationConfig.PREFERRED_BLOBBERS,
+        write_price=AllocationConfig.WRITE_PRICE,
+        read_price=AllocationConfig.READ_PRICE,
+        max_challenge_completion_time=AllocationConfig.MAX_CHALLENGE_COMPLETION_TIME,
+        expiration_date=time(),
+    ):
+        future = int(expiration_date + timedelta(days=30).total_seconds())
+
+        payload = json.dumps(
+            {
+                "allocation_data": {
+                    "data_shards": data_shards,
+                    "parity_shards": parity_shards,
+                    "owner_id": self.client_id,
+                    "owner_public_key": self.public_key,
+                    "size": size,
+                    "expiration_date": future,
+                    "read_price_range": read_price,
+                    "write_price_range": write_price,
+                    "max_challenge_completion_time": max_challenge_completion_time,
+                    "preferred_blobbers": preferred_blobbers,
+                },
+            }
+        )
+
+        res = self._consensus_from_workers(
+            "sharders", endpoint=Endpoints.SC_REST_ALLOCATION_MIN_LOCK, data=payload
+        )
         return res
 
     # ____________________________

@@ -19,9 +19,7 @@ allocation = Allocation(
 )
 
 
-# res = allocation.get_allocation_info()
-res = wallet.list_allocations()
-pprint(res)
-
-res = wallet.allocate_storage()
-pprint(res)
+res = allocation.get_stats("http://beta.0chain.net:31301")
+print(json.dumps(res, indent=4))
+# res = wallet.allocation_min_lock()
+# pprint(res)

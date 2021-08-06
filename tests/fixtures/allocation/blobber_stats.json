@@ -1,0 +1,45 @@
+{
+    "allocated_size": 0,
+    "used_size": 16033137,
+    "files_size": 16009973,
+    "thumbnails_size": 23164,
+    "disk_size_used": 17968687,
+    "num_of_block_writes": 270,
+    "num_of_writes": 32,
+    "num_of_reads": 60,
+    "total_challenges": 0,
+    "num_open_challenges": 0,
+    "num_success_challenges": 0,
+    "num_failed_challenges": 0,
+    "num_redeemed_challenges": 0,
+    "cloud_files_size": 13993338,
+    "cloud_total_files": 4,
+    "last_minio_scan": "2021-08-06T13:57:51",
+    "num_of_allocations": 18,
+    "capacity": 1073741824000,
+    "read_price": 0.01,
+    "write_price": 0.01,
+    "min_lock_demand": 0.1,
+    "max_offer_duration": 2678400000000000,
+    "challnge_completion_time": 120000000000,
+    "read_lock_timeout": 60,
+    "write_lock_timeout": 60,
+    "read_markers": {
+        "redeemed": 0,
+        "pending": 0
+    },
+    "write_markers": {
+        "accepted": {
+            "size": 0,
+            "count": 0
+        },
+        "committed": {
+            "size": 0,
+            "count": 0
+        },
+        "failed": {
+            "size": 0,
+            "count": 0
+        }
+    }
+}

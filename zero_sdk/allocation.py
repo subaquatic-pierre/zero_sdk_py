@@ -21,6 +21,25 @@ class Allocation(ConnectionBase):
         res = self._consensus_from_workers("sharders", url)
         return res
 
+    def get_stats(self, url=None):
+        if not url:
+            blobbers = self.get_allocation_info()["blobbers"]
+            urls = [blobber["url"] for blobber in blobbers]
+            results = []
+            for url in urls:
+                endpoint = f"{url}/getstats"
+                res = self._request(endpoint)
+                res = self._check_status_code(res)
+                results.append(res)
+
+            return results
+
+        else:
+            endpoint = f"{url}/getstats"
+            res = self._request(endpoint)
+            res = self._check_status_code(res)
+            return res
+
     # def get_file_path(self, blobber, remote_path, headers):
     #     url = (
     #         f'{blobber["url"]}/v1/file/referencepath/{self.id}?paths=["{remote_path}"]'
