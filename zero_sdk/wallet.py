@@ -1,8 +1,14 @@
+from datetime import date, timedelta
 import requests
 from time import time
 import json
 
-from zero_sdk.const import Endpoints, TransactionType, STORAGE_SMART_CONTRACT_ADDRESS
+from zero_sdk.const import (
+    AllocationConfig,
+    Endpoints,
+    TransactionType,
+    STORAGE_SMART_CONTRACT_ADDRESS,
+)
 from zero_sdk.network import Network
 from zero_sdk.utils import hash_string
 from zero_sdk.bls import sign_payload
@@ -125,6 +131,46 @@ class Wallet(ConnectionBase):
         )
         return res
 
+    def allocate_storage(
+        self,
+        data_shards=AllocationConfig.DATA_SHARDS,
+        parity_shards=AllocationConfig.PARITY_SHARDS,
+        size=AllocationConfig.SIZE,
+        lock_tokens=AllocationConfig.TOKEN_LOCK,
+        preferred_blobbers=AllocationConfig.PREFERRED_BLOBBERS,
+        write_price=AllocationConfig.WRITE_PRICE,
+        read_price=AllocationConfig.READ_PRICE,
+        max_challenge_completion_time=AllocationConfig.MAX_CHALLENGE_COMPLETION_TIME,
+        expiration_date=time(),
+    ):
+        future = int(expiration_date + timedelta(days=30).total_seconds())
+
+        payload = json.dumps(
+            {
+                "name": "new_allocation_request",
+                "input": {
+                    "data_shards": data_shards,
+                    "parity_shards": parity_shards,
+                    "owner_id": self.client_id,
+                    "owner_public_key": self.public_key,
+                    "size": size,
+                    "expiration_date": future,
+                    "read_price_range": read_price,
+                    "write_price_range": write_price,
+                    "max_challenge_completion_time": max_challenge_completion_time,
+                    "preferred_blobbers": preferred_blobbers,
+                },
+            }
+        )
+
+        res = self._execute_smart_contract(payload, transaction_value=lock_tokens)
+        return res
+
+    def list_allocations(self):
+        url = f"{Endpoints.SC_REST_ALLOCATIONS}?client={self.client_id}"
+        res = self._consensus_from_workers("sharders", url)
+        return res
+
     # ____________________________
     # END HERE
     # ____________________________
@@ -176,30 +222,6 @@ class Wallet(ConnectionBase):
         res = self._check_status_code(res, error_message)
 
         return res
-
-    def restore_wallet(self):
-        miners = self.network.miners
-        results = []
-        for miner in miners:
-            # Build URL
-            miner_id = miner["id"]
-            url = f"{self.network.url}/{miner_id}/v1/client/put"
-
-            # Build Data
-            headers = {"Accept": "application/json", "Content-Type": "application/json"}
-            data = {
-                "id": self.client_id,
-                "version": None,
-                "creation_date": None,
-                "public_key": self.public_key,
-            }
-
-            # Make request
-            res = requests.put(url, json=data, headers=headers)
-            results.append(res)
-
-            for res in results:
-                print(res.text)
 
     @staticmethod
     def from_object(config: dict, network: Network):

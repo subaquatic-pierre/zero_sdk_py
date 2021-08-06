@@ -14,7 +14,12 @@ import hashlib
 
 network = Network.from_object(default_network_config_obj)
 wallet = Wallet.from_object(default_wallet_config_obj, network)
+allocation = Allocation(
+    "296896621095a9d8a51e6e4dba2bdb5661ea94ffd8fdb0a084301bffd81fe7e6", wallet
+)
 
-res, data = wallet.create_read_pool()
+
+res = allocation.get_allocation_info()
+# res = wallet.list_allocations()
+
 pprint(res)
-print(data)

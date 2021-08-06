@@ -3,7 +3,7 @@ import json
 from zero_sdk.config import PROJECT_ROOT
 import requests
 from zero_sdk.connection_base import ConnectionBase
-from zero_sdk.const import Endpoints
+from zero_sdk.const import Endpoints, STORAGE_SMART_CONTRACT_ADDRESS
 from zero_sdk.workers import Blobber, Miner, Sharder
 from zero_sdk.utils import from_json, hostname_from_config_obj
 from zero_sdk.utils import generate_mnemonic
@@ -55,17 +55,6 @@ class Network(ConnectionBase):
         res = self._consensus_from_workers("sharders", endpoint)
         return res
 
-    def create_wallet(self):
-        mnemonic = generate_mnemonic()
-        keys = self._create_keys(mnemonic)
-        res = self._register_wallet(keys)
-        return res
-
-    def restore_wallet(self, mnemonic):
-        keys = self._create_keys(mnemonic)
-        res = self._register_wallet(keys)
-        return res
-
     def get_worker_stats(self, worker, worker_url=None):
         details = {}
         if not worker_url:
@@ -81,6 +70,29 @@ class Network(ConnectionBase):
             details.setdefault(worker_url, res)
 
         return details
+
+    def get_storage_smartcontract_for_key(self, key_name, key_value):
+        payload = json.dumps(
+            {
+                "key": f"{key_name}:{key_value}",
+                "sc_address": STORAGE_SMART_CONTRACT_ADDRESS,
+            }
+        )
+        res = self._consensus_from_workers(
+            "sharders", Endpoints.GET_SCSTATE, data=payload
+        )
+        return res
+
+    def create_wallet(self):
+        mnemonic = generate_mnemonic()
+        keys = self._create_keys(mnemonic)
+        res = self._register_wallet(keys)
+        return res
+
+    def restore_wallet(self, mnemonic):
+        keys = self._create_keys(mnemonic)
+        res = self._register_wallet(keys)
+        return res
 
     def _create_keys(self, mnemonic):
         keys = generate_keys(mnemonic)
@@ -119,9 +131,7 @@ class Network(ConnectionBase):
         if not hostname:
             hostname = hostname_from_config_obj(config_obj)
         miners = [Miner(url) for url in request_dns_workers(hostname, "miners")]
-        sharders = [
-            Sharder(url) for url in request_dns_workers(hostname, "sharders")
-        ] * 1000
+        sharders = [Sharder(url) for url in request_dns_workers(hostname, "sharders")]
 
         # Todo: Error check blobber load
         preferred_blobbers = [
