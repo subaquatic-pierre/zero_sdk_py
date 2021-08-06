@@ -19,7 +19,9 @@ allocation = Allocation(
 )
 
 
-res = allocation.get_allocation_info()
-# res = wallet.list_allocations()
+# res = allocation.get_allocation_info()
+res = wallet.list_allocations()
+pprint(res)
 
+res = wallet.allocate_storage()
 pprint(res)

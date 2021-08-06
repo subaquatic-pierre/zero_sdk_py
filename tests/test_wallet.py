@@ -88,3 +88,27 @@ class TestWalletMethods(TestCase):
     #     """Test add_token method add to wallet balance"""
     #     wallet = Wallet()
     #     self.assertTrue(wallet.add_tokens())
+
+
+class TestWalletAllocation(TestCase):
+    def setUp(self) -> None:
+        self.wallet = build_wallet()
+        return super().setUp()
+
+    def _setup_mock(self, filename):
+        res_obj = from_json(os.path.join(TEST_DIR, f"fixtures/wallet/{filename}"))
+        mock_response = MockResponse(200, res_obj)
+        request_mock = MagicMock(return_value=mock_response)
+        self.wallet._request = request_mock
+
+    def test_list_allocations(self):
+        """Test can list all allocations assigned to wallet"""
+        self._setup_mock("list_allocations.json")
+        allocations = self.wallet.list_allocations()
+        self.assertIsInstance(allocations, list)
+
+    def test_create_allocation(self):
+        """Can create storage allocation"""
+        self._setup_mock("create_allocation.json")
+        res = self.wallet.allocate_storage()
+        self.assertIn("entity", res)

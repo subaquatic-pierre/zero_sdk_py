@@ -135,7 +135,7 @@ class ConnectionBase(ABC):
             # if type(response) == dict:
 
             # JSON response may contain error, do not add to response map, not valid transaction
-            if not type(response) == str:
+            if not type(response) == str and type(response) != list:
                 if response:
                     err = response.get("error")
                     if err:

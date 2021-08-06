@@ -23,6 +23,7 @@ class AllocationTest(TestCase):
         self.allocation._request = request_mock
 
     def test_get_allocation_info(self):
+        """Test can get valid allocation info"""
         self._setup_mock("allocation_info.json")
         info = self.allocation.get_allocation_info()
         self.assertIn("data_shards", info)

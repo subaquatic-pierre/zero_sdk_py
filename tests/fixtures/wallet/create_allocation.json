@@ -1,0 +1,18 @@
+{
+    "async": true,
+    "entity": {
+        "hash": "b2c8981d7dbdbe9f6d6b728a9b86b786e6efe8fb3d731e25f27cd39e8f88a983",
+        "version": "1.0",
+        "client_id": "31680e6a4fa9bb9466b7c46d1c853026a672cb913ebaae8e4af9539b15cbe5d8",
+        "to_client_id": "6dba10422e368813802877a85039d3985d96760ed844092319743fb3a76712d7",
+        "chain_id": "0afc093ffb509f059c55478bc1a60351cef7b4e9c008a53a6cc8241ca8617dfe",
+        "transaction_data": "{\"name\": \"new_allocation_request\", \"input\": {\"data_shards\": 4, \"parity_shards\": 2, \"owner_id\": \"31680e6a4fa9bb9466b7c46d1c853026a672cb913ebaae8e4af9539b15cbe5d8\", \"owner_public_key\": \"812c1c446a6820f84d097ffeef684054606b7c9ae401a85bf0a71de96126e222777f7c69b282d46bfbbc735ca736502beac080446f27d4a5b2b22bf04459b500\", \"size\": 2, \"expiration_date\": 1630847407, \"read_price_range\": {\"min\": 0, \"max\": 10000000000}, \"write_price_range\": {\"min\": 0, \"max\": 10000000000}, \"max_challenge_completion_time\": 3600, \"preferred_blobbers\": null}}",
+        "transaction_value": 5000000000,
+        "signature": "b61de282629773dd8b55bedd25752b80ce0a574d363119264cdcc8daaf06fc93",
+        "creation_date": 1628255408,
+        "transaction_fee": 0,
+        "transaction_type": 1000,
+        "txn_output_hash": "",
+        "transaction_status": 0
+    }
+}
