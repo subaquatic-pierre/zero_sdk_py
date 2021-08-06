@@ -18,8 +18,11 @@ allocation = Allocation(
     "296896621095a9d8a51e6e4dba2bdb5661ea94ffd8fdb0a084301bffd81fe7e6", wallet
 )
 
+balance = wallet.get_balance()
+print(balance)
+res = wallet.add_tokens()
 
-res = allocation.get_stats("http://beta.0chain.net:31301")
-print(json.dumps(res, indent=4))
-# res = wallet.allocation_min_lock()
-# pprint(res)
+
+print(res)
+balance = wallet.get_balance()
+print(balance)

@@ -6,6 +6,7 @@ import json
 from zero_sdk.const import (
     AllocationConfig,
     Endpoints,
+    FAUCET_SMART_CONTRACT_ADDRESS,
     TransactionType,
     STORAGE_SMART_CONTRACT_ADDRESS,
 )
@@ -47,6 +48,8 @@ class Wallet(ConnectionBase):
         """
 
         def wrapper(self, *args, **kwargs):
+            print(self)
+
             if self.client_id is not None:
                 return method(self, *args, **kwargs)
             else:
@@ -70,6 +73,7 @@ class Wallet(ConnectionBase):
 
         return data
 
+    # TODO: Fix method
     def get_locked_tokens(self):
         endpoint = f"{Endpoints.GET_LOCKED_TOKENS}?client_id={self.client_id}"
         empty_return_value = {"locked_tokens": []}
@@ -86,6 +90,7 @@ class Wallet(ConnectionBase):
         )
         return res
 
+    # TODO: Fix method
     def create_read_pool(self):
         payload = json.dumps({"name": "new_read_pool", "input": None})
         res = self._execute_smart_contract(payload)
@@ -97,6 +102,20 @@ class Wallet(ConnectionBase):
         return self._submit_transaction(
             to_client_id, transaction_value, payload, TransactionType.SMART_CONTRACT
         )
+
+    def _execute_faucet_smart_contract(
+        self, method_name="pour", input="pour_tokens", transaction_value=1
+    ):
+        payload = json.dumps({"name": method_name, "input": input})
+
+        return self._execute_smart_contract(
+            to_client_id=FAUCET_SMART_CONTRACT_ADDRESS,
+            transaction_value=transaction_value,
+            payload=payload,
+        )
+
+    def add_tokens(self):
+        return self._execute_faucet_smart_contract()
 
     def _submit_transaction(self, to_client_id, value, payload, transaction_type):
         hash_payload = hash_string(payload)
@@ -132,6 +151,7 @@ class Wallet(ConnectionBase):
         )
         return res
 
+    # TODO: Fix method
     def allocate_storage(
         self,
         data_shards=AllocationConfig.DATA_SHARDS,
@@ -172,6 +192,7 @@ class Wallet(ConnectionBase):
         res = self._consensus_from_workers("sharders", url)
         return res
 
+    # TODO: Fix method
     def allocation_min_lock(
         self,
         data_shards=AllocationConfig.DATA_SHARDS,
@@ -211,53 +232,51 @@ class Wallet(ConnectionBase):
     # END HERE
     # ____________________________
 
-    # def _create
-
     def sign(self, payload):
         return sign_payload(self.private_key, payload)
 
-    @_validate_wallet
-    def add_tokens(self, amount=1) -> object:
-        url = f"{self.network.url}/miner01/v1/transaction/put"
-        headers = {"Content-Type": "application/json; charset=utf-8"}
+    # @_validate_wallet
+    # def add_tokens(self, amount=1) -> object:
+    #     url = f"{self.network.hostname}/miner01/v1/transaction/put"
+    #     headers = {"Content-Type": "application/json; charset=utf-8"}
 
-        # Creation date
-        creation_date = int(time())
+    #     # Creation date
+    #     creation_date = int(time())
 
-        # Transaction data hash
-        transaction_data_string = '{"name":"pour","input":{},"name":null}'
-        transaction_data_hash = hash_string(transaction_data_string)
+    #     # Transaction data hash
+    #     transaction_data_string = '{"name":"pour","input":{},"name":null}'
+    #     transaction_data_hash = hash_string(transaction_data_string)
 
-        # Main hash payload
-        payload_string = f"{creation_date}:{self.client_id}:{self.network.remote_client_id}:10000000000:{transaction_data_hash}"
-        hashed_payload = hash_string(payload_string)
+    #     # Main hash payload
+    #     payload_string = f"{creation_date}:{self.client_id}:{FAUCET_SMART_CONTRACT_ADDRESS}:10000000000:{transaction_data_hash}"
+    #     hashed_payload = hash_string(payload_string)
 
-        # signature = heroku_sign(hashed_payload)
-        signature = self.sign(self.private_key, hashed_payload)
-        if signature == False:
-            raise Exception("There was an error signing the transaction")
+    #     # signature = heroku_sign(hashed_payload)
+    #     signature = self.sign(hashed_payload)
+    #     if signature == False:
+    #         raise Exception("There was an error signing the transaction")
 
-        # Build raw data
-        data = {
-            "hash": hashed_payload,
-            "signature": signature,
-            "version": "1.0",
-            "client_id": self.client_id,
-            "creation_date": creation_date,
-            "to_client_id": self.network.remote_client_id,
-            "transaction_data": transaction_data_string,
-            "transaction_fee": 0,
-            "transaction_type": 1000,
-            "transaction_value": amount * 10000000000,
-            "txn_output_hash": "",
-            "public_key": self.public_key,
-        }
+    #     # Build raw data
+    #     data = {
+    #         "hash": hashed_payload,
+    #         "signature": signature,
+    #         "version": "1.0",
+    #         "client_id": self.client_id,
+    #         "creation_date": creation_date,
+    #         "to_client_id": FAUCET_SMART_CONTRACT_ADDRESS,
+    #         "transaction_data": transaction_data_string,
+    #         "transaction_fee": 0,
+    #         "transaction_type": 1000,
+    #         "transaction_value": amount * 10000000000,
+    #         "txn_output_hash": "",
+    #         "public_key": self.public_key,
+    #     }
 
-        res = requests.post(url, json=data, headers=headers)
-        error_message = "An error occurred adding tokens to wallet"
-        res = self._check_status_code(res, error_message)
+    #     res = requests.post(url, json=data, headers=headers)
+    #     error_message = "An error occurred adding tokens to wallet"
+    #     res = self._check_status_code(res, error_message)
 
-        return res
+    #     return res
 
     @staticmethod
     def from_object(config: dict, network: Network):
