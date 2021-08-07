@@ -61,42 +61,6 @@ class Wallet(ConnectionBase):
 
         return wrapper
 
-    @_validate_wallet
-    def get_balance(self) -> int:
-        """Get Wallet balance
-        Return float value of tokens
-        """
-        endpoint = f"{Endpoints.GET_BALANCE}?client_id={self.client_id}"
-        empty_return_value = {"balance": 0}
-        data = self._consensus_from_workers(
-            "sharders", endpoint, empty_return_value=empty_return_value
-        )
-
-        return data
-
-    # TODO: Fix method
-    def get_locked_tokens(self):
-        endpoint = f"{Endpoints.GET_LOCKED_TOKENS}?client_id={self.client_id}"
-        empty_return_value = {"locked_tokens": []}
-        res = self._consensus_from_workers(
-            "sharders", endpoint, empty_return_value=empty_return_value
-        )
-        return res
-
-    def get_user_pools(self):
-        endpoint = f"{Endpoints.GET_USER_POOLS}?client_id={self.client_id}"
-        empty_return_value = {"pools": {}}
-        res = self._consensus_from_workers(
-            "sharders", endpoint, empty_return_value=empty_return_value
-        )
-        return res
-
-    # TODO: Fix method
-    def create_read_pool(self):
-        payload = json.dumps({"name": "new_read_pool", "input": None})
-        res = self._execute_smart_contract(payload)
-        return res
-
     def _execute_smart_contract(self, payload, to_client_id=None, transaction_value=0):
         if not to_client_id:
             to_client_id = STORAGE_SMART_CONTRACT_ADDRESS
@@ -114,9 +78,6 @@ class Wallet(ConnectionBase):
             transaction_value=transaction_value,
             payload=payload,
         )
-
-    def add_tokens(self):
-        return self._execute_faucet_smart_contract()
 
     def _submit_transaction(self, to_client_id, value, payload, transaction_type):
         hash_payload = hash_string(payload)
@@ -152,7 +113,107 @@ class Wallet(ConnectionBase):
         )
         return res
 
-    # TODO: Fix method
+    def get_balance(self) -> int:
+        """Get Wallet balance
+        Return float value of tokens
+        """
+        endpoint = f"{Endpoints.GET_BALANCE}?client_id={self.client_id}"
+        empty_return_value = {"balance": 0}
+        data = self._consensus_from_workers(
+            "sharders", endpoint, empty_return_value=empty_return_value
+        )
+
+        return data
+
+    def get_user_pools(self):
+        endpoint = f"{Endpoints.GET_USER_POOLS}?client_id={self.client_id}"
+        empty_return_value = {"pools": {}}
+        res = self._consensus_from_workers(
+            "sharders", endpoint, empty_return_value=empty_return_value
+        )
+        return res
+
+    def add_tokens(self):
+        return self._execute_faucet_smart_contract()
+
+    def get_read_pool_info(self):
+        url = f"{Endpoints.SC_REST_READPOOL_STATS}?client_id={self.client_id}"
+        res = self._consensus_from_workers("sharders", url)
+        return res
+
+    def get_write_pool_info(self):
+        url = f"{Endpoints.SC_REST_WRITEPOOL_STATS}?client_id={self.client_id}"
+        res = self._consensus_from_workers("sharders", url)
+        return res
+
+    def list_allocations(self):
+        url = f"{Endpoints.SC_REST_ALLOCATIONS}?client={self.client_id}"
+        res = self._consensus_from_workers("sharders", url)
+        return res
+
+    def sign(self, payload):
+        return sign_payload(self.private_key, payload)
+
+    def save(self, wallet_name=None):
+        if not wallet_name:
+            wallet_name = generate_random_letters()
+
+        data = {
+            "client_id": self.client_id,
+            "client_key": self.public_key,
+            "keys": [{"public_key": self.public_key, "private_key": self.private_key}],
+            "mnemonics": self.mnemonics,
+            "version": self.version,
+            "date_created": self.date_created,
+        }
+
+        with open(
+            os.path.join(Path.home(), f".zcn/test_wallets/wallet_{wallet_name}.json"),
+            "w",
+        ) as f:
+            f.write(json.dumps(data, indent=4))
+
+    @staticmethod
+    def from_object(config: dict, network: Network):
+        """Returns fully configured instance of wallet
+        :param config: Wallet config object from json.loads function
+        :param network: Instance of configured network
+        """
+        return Wallet(
+            config.get("client_id"),
+            config.get("client_key"),
+            config.get("keys")[0]["public_key"],
+            config.get("keys")[0]["private_key"],
+            config.get("mnemonics"),
+            config.get("date_created"),
+            network,
+            config.get("version"),
+        )
+
+    def __repr__(self):
+        return f"Wallet(config, network)"
+
+    def __str__(self):
+        return f"client_id: {self.client_id} \nnetwork_url: {self.network.hostname}"
+
+    # -----------------
+    # TODO: Fix methods
+    # All below methods need confirmation
+    # -----------------
+
+    def get_locked_tokens(self):
+        endpoint = f"{Endpoints.GET_LOCKED_TOKENS}?client_id={self.client_id}"
+        empty_return_value = {"locked_tokens": []}
+        res = self._consensus_from_workers(
+            "sharders", endpoint, empty_return_value=empty_return_value
+        )
+        return res
+
+    def create_read_pool(self):
+        payload = json.dumps({"name": "new_read_pool", "input": None})
+        res = self._execute_smart_contract(payload)
+        return res
+
     def allocate_storage(
         self,
         data_shards=AllocationConfig.DATA_SHARDS,
@@ -188,34 +249,6 @@ class Wallet(ConnectionBase):
         res = self._execute_smart_contract(payload, transaction_value=lock_tokens)
         return res
 
-    def update_allocation(
-        self,
-        allocation_id,
-        tokens=1,
-        expiration_date=2592000,
-        size=2147483648,
-    ):
-        payload = json.dumps(
-            {
-                "name": "update_allocation_request",
-                "input": {
-                    "owner_id": self.client_id,
-                    "id": allocation_id,
-                    "size": size,
-                    "expiration_date": expiration_date,
-                },
-            }
-        )
-        res = self._execute_smart_contract(payload, transaction_value=tokens)
-
-        return res
-
-    def list_allocations(self):
-        url = f"{Endpoints.SC_REST_ALLOCATIONS}?client={self.client_id}"
-        res = self._consensus_from_workers("sharders", url)
-        return res
-
-    # TODO: Fix method
     def allocation_min_lock(
         self,
         data_shards=AllocationConfig.DATA_SHARDS,
@@ -251,104 +284,24 @@ class Wallet(ConnectionBase):
         )
         return res
 
-    def get_read_pool_info(self):
-        url = f"{Endpoints.SC_REST_READPOOL_STATS}?client_id={self.client_id}"
-        res = self._consensus_from_workers("sharders", url)
-        return res
-
-    def get_write_pool_info(self):
-        url = f"{Endpoints.SC_REST_WRITEPOOL_STATS}?client_id={self.client_id}"
-        res = self._consensus_from_workers("sharders", url)
-        return res
-
-    def sign(self, payload):
-        return sign_payload(self.private_key, payload)
-
-    def save(self, wallet_name=None):
-        if not wallet_name:
-            wallet_name = generate_random_letters()
-
-        data = {
-            "client_id": self.client_id,
-            "client_key": self.public_key,
-            "keys": [{"public_key": self.public_key, "private_key": self.private_key}],
-            "mnemonics": self.mnemonics,
-            "version": self.version,
-            "date_created": self.date_created,
-        }
-
-        with open(
-            os.path.join(Path.home(), f".zcn/test_wallets/wallet_{wallet_name}.json"),
-            "w",
-        ) as f:
-            f.write(json.dumps(data, indent=4))
-
-    # ____________________________
-    # END HERE
-    # ____________________________
-
-    # @_validate_wallet
-    # def add_tokens(self, amount=1) -> object:
-    #     url = f"{self.network.hostname}/miner01/v1/transaction/put"
-    #     headers = {"Content-Type": "application/json; charset=utf-8"}
-
-    #     # Creation date
-    #     creation_date = int(time())
-
-    #     # Transaction data hash
-    #     transaction_data_string = '{"name":"pour","input":{},"name":null}'
-    #     transaction_data_hash = hash_string(transaction_data_string)
-
-    #     # Main hash payload
-    #     payload_string = f"{creation_date}:{self.client_id}:{FAUCET_SMART_CONTRACT_ADDRESS}:10000000000:{transaction_data_hash}"
-    #     hashed_payload = hash_string(payload_string)
-
-    #     # signature = heroku_sign(hashed_payload)
-    #     signature = self.sign(hashed_payload)
-    #     if signature == False:
-    #         raise Exception("There was an error signing the transaction")
-
-    #     # Build raw data
-    #     data = {
-    #         "hash": hashed_payload,
-    #         "signature": signature,
-    #         "version": "1.0",
-    #         "client_id": self.client_id,
-    #         "creation_date": creation_date,
-    #         "to_client_id": FAUCET_SMART_CONTRACT_ADDRESS,
-    #         "transaction_data": transaction_data_string,
-    #         "transaction_fee": 0,
-    #         "transaction_type": 1000,
-    #         "transaction_value": amount * 10000000000,
-    #         "txn_output_hash": "",
-    #         "public_key": self.public_key,
-    #     }
-
-    #     res = requests.post(url, json=data, headers=headers)
-    #     error_message = "An error occurred adding tokens to wallet"
-    #     res = self._check_status_code(res, error_message)
-
-    #     return res
-
-    @staticmethod
-    def from_object(config: dict, network: Network):
-        """Returns fully configured instance of wallet
-        :param config: Wallet config object from json.loads function
-        :param network: Instance of configured network
-        """
-        return Wallet(
-            config.get("client_id"),
-            config.get("client_key"),
-            config.get("keys")[0]["public_key"],
-            config.get("keys")[0]["private_key"],
-            config.get("mnemonics"),
-            config.get("date_created"),
-            network,
-            config.get("version"),
+    def update_allocation(
+        self,
+        allocation_id,
+        tokens=1,
+        expiration_date=2592000,
+        size=2147483648,
+    ):
+        payload = json.dumps(
+            {
+                "name": "update_allocation_request",
+                "input": {
+                    "owner_id": self.client_id,
+                    "id": allocation_id,
+                    "size": size,
+                    "expiration_date": expiration_date,
+                },
+            }
         )
+        res = self._execute_smart_contract(payload, transaction_value=tokens)
 
-    def __repr__(self):
-        return f"Wallet(config, network)"
-
-    def __str__(self):
-        return f"client_id: {self.client_id} \nnetwork_url: {self.network.hostname}"
+        return res
