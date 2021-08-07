@@ -67,6 +67,18 @@ class TestWalletMethods(TestCase):
         pool = self.wallet.create_read_pool()
         self.assertIn("entity", pool)
 
+    def test_get_read_pool_info(self):
+        """Test can get read pool info"""
+        self._setup_mock("pool_info.json")
+        pool = self.wallet.get_read_pool_info()
+        self.assertIn("pools", pool)
+
+    def test_get_write_pool_info(self):
+        """Test get write pool info"""
+        self._setup_mock("pool_info.json")
+        pool = self.wallet.get_write_pool_info()
+        self.assertIn("pools", pool)
+
     # TODO - TESTS
     def test_execute_smart_contract(self):
         pass

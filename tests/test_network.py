@@ -1,6 +1,7 @@
 from unittest.case import TestCase
 from unittest.mock import MagicMock
 import os
+from zero_sdk.wallet import Wallet
 
 from zero_sdk.workers import Blobber, Miner, Sharder
 from zero_sdk.network import Network
@@ -132,4 +133,4 @@ class TestNetworkChainMethods(TestCase):
         """Test get_latest_finalized block returns valid data"""
         self._setup_mock("create.json")
         wallet = self.network.create_wallet()
-        self.assertIn("id", wallet)
+        self.assertIsInstance(wallet, Wallet)
