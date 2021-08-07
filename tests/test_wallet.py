@@ -124,3 +124,39 @@ class TestWalletAllocation(TestCase):
         self._setup_mock("create_allocation.json")
         res = self.wallet.allocate_storage()
         self.assertIn("entity", res)
+
+
+class TestWalletTokenLock(TestCase):
+    def setUp(self) -> None:
+        self.wallet = build_wallet()
+        return super().setUp()
+
+    def _setup_mock(self, filename):
+        res_obj = from_json(os.path.join(TEST_DIR, f"fixtures/wallet/{filename}"))
+        mock_response = MockResponse(200, res_obj)
+        request_mock = MagicMock(return_value=mock_response)
+        self.wallet._request = request_mock
+
+    def test_miner_lock_tokens(self):
+        """Test can lock tokens on miner"""
+        self._setup_mock("lock_token.json")
+        res = self.wallet.miner_lock_token(12, "miner_id", "transtype")
+        self.assertIsInstance(res, dict)
+
+    def test_miner_lock_tokens(self):
+        """Test can unlock tokens from miner"""
+        self._setup_mock("lock_token.json")
+        res = self.wallet.miner_lock_token("pool_id", "id", "transtype")
+        self.assertIsInstance(res, dict)
+
+    def test_blobber_lock_tokens(self):
+        """Test can lock tokens to blobber"""
+        self._setup_mock("lock_token.json")
+        res = self.wallet.blobber_lock_token(1, "blobber_id")
+        self.assertIsInstance(res, dict)
+
+    def test_blobber_unlock_tokens(self):
+        """Test can unlock tokens from blobber"""
+        self._setup_mock("lock_token.json")
+        res = self.wallet.blobber_unlock_token("pool_id", "blobber_id")
+        self.assertIsInstance(res, dict)

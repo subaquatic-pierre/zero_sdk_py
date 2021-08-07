@@ -17,11 +17,15 @@ class Allocation(ConnectionBase):
         # self.blobbers = self.get_allocation_info()["blobbers"]
 
     def get_allocation_info(self):
+        """Get full details of allocation, including overview of
+        stats and details of each blobber, including blobber ID"""
         url = f"{Endpoints.SC_REST_ALLOCATION}?allocation={self.id}"
         res = self._consensus_from_workers("sharders", url)
         return res
 
     def get_stats(self, url=None):
+        """Get stats of each blobber used by the allocation, detailed
+        information of allocation size and write markers per blobber"""
         if not url:
             blobbers = self.get_allocation_info()["blobbers"]
             urls = [blobber["url"] for blobber in blobbers]

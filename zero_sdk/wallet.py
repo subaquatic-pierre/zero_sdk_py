@@ -8,6 +8,7 @@ from zero_sdk.const import (
     AllocationConfig,
     Endpoints,
     FAUCET_SMART_CONTRACT_ADDRESS,
+    MINER_SMART_CONTRACT_ADDRESS,
     TransactionType,
     STORAGE_SMART_CONTRACT_ADDRESS,
 )
@@ -200,6 +201,58 @@ class Wallet(ConnectionBase):
     # TODO: Fix methods
     # All below methods need confirmation
     # -----------------
+
+    def miner_unlock_token(self, pool_id, id, type):
+        """Unlock tokens from miner"""
+        payload = json.dumps(
+            {
+                "name": "deleteFromDelegatePool",
+                "input": {"pool_id": pool_id, "id": id, "type": type},
+            }
+        )
+        res = self._execute_smart_contract(
+            to_client_id=MINER_SMART_CONTRACT_ADDRESS,
+            payload=payload,
+        )
+        return res
+
+    def miner_lock_token(self, transaction_value, id, type):
+        """Lock tokens on miner"""
+        payload = json.dumps(
+            {"name": "addToDelegatePool", "input": {"id": id, "type": type}}
+        )
+        res = self._execute_smart_contract(
+            to_client_id=MINER_SMART_CONTRACT_ADDRESS,
+            transaction_value=transaction_value,
+            payload=payload,
+        )
+        return res
+
+    def blobber_lock_token(self, transaction_value, blobber_id):
+        """Lock tokens on blobber"""
+        payload = json.dumps(
+            {"name": "stake_pool_lock", "input": {"blobber_id": blobber_id}}
+        )
+        res = self._execute_smart_contract(
+            to_client_id=STORAGE_SMART_CONTRACT_ADDRESS,
+            transaction_value=transaction_value,
+            payload=payload,
+        )
+        return res
+
+    def blobber_unlock_token(self, pool_id, blobber_id):
+        """Unlock tokens from pool id and blobber"""
+        payload = json.dumps(
+            {
+                "name": "stake_pool_unlock",
+                "input": {"pool_id": pool_id, "blobber_id": blobber_id},
+            }
+        )
+        res = self._execute_smart_contract(
+            to_client_id=STORAGE_SMART_CONTRACT_ADDRESS,
+            payload=payload,
+        )
+        return res
 
     def get_locked_tokens(self):
         endpoint = f"{Endpoints.GET_LOCKED_TOKENS}?client_id={self.client_id}"
