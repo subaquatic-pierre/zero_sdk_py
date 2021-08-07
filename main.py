@@ -1,4 +1,5 @@
 import json
+from zero_sdk.wallet import Wallet
 from zero_sdk.utils import (
     generate_mnemonic,
     generate_random_letters,
@@ -15,11 +16,8 @@ from zero_sdk.network import Network
 # txn_hash = "17297e21e21c59b32de70f082a8668166cc9cb06eb5071abd2907089c45c7238"
 
 
-# import hashlib
-import hashlib
-
 network = Network.from_object(default_network_config_obj)
-wallet = network.create_wallet()
-aloc = wallet.list_allocations()
-letters = generate_random_letters()
-wallet.save(letters)
+wallet = Wallet.from_object(default_wallet_config_obj, network)
+
+res = wallet.get_write_pool_info()
+pprint(res)

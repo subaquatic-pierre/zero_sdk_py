@@ -251,6 +251,16 @@ class Wallet(ConnectionBase):
         )
         return res
 
+    def get_read_pool_info(self):
+        url = f"{Endpoints.SC_REST_READPOOL_STATS}?client_id={self.client_id}"
+        res = self._consensus_from_workers("sharders", url)
+        return res
+
+    def get_write_pool_info(self):
+        url = f"{Endpoints.SC_REST_WRITEPOOL_STATS}?client_id={self.client_id}"
+        res = self._consensus_from_workers("sharders", url)
+        return res
+
     def sign(self, payload):
         return sign_payload(self.private_key, payload)
 
