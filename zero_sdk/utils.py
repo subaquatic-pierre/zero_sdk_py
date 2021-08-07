@@ -1,4 +1,6 @@
 import json
+import random
+import string
 from time import time
 import yaml
 import secrets
@@ -6,6 +8,12 @@ from pathlib import Path
 from hashlib import sha3_256
 
 from zero_sdk.lib.bip39 import encode_bytes
+
+
+def generate_random_letters(num_letters=5):
+    letters = string.ascii_lowercase
+    rand_letters = "".join(random.choices(letters, k=num_letters))
+    return rand_letters
 
 
 def pprint(dict):
@@ -73,3 +81,9 @@ def timer(f):
         return res
 
     return wrapper
+
+
+def create_wallet(data, network):
+    from zero_sdk.wallet import Wallet
+
+    return Wallet.from_object(data, network)

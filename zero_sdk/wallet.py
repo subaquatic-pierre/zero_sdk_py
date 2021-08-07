@@ -1,5 +1,6 @@
-from datetime import date, timedelta
-import requests
+from datetime import timedelta
+import os
+from pathlib import Path
 from time import time
 import json
 
@@ -11,7 +12,7 @@ from zero_sdk.const import (
     STORAGE_SMART_CONTRACT_ADDRESS,
 )
 from zero_sdk.network import Network
-from zero_sdk.utils import hash_string
+from zero_sdk.utils import hash_string, generate_random_letters
 from zero_sdk.bls import sign_payload
 from zero_sdk.connection_base import ConnectionBase
 
@@ -24,9 +25,9 @@ class Wallet(ConnectionBase):
         public_key,
         private_key,
         mnemonics,
-        version,
         date_created,
         network,
+        version="1.0",
     ):
         self.client_id = client_id
         self.client_key = client_key
@@ -187,6 +188,28 @@ class Wallet(ConnectionBase):
         res = self._execute_smart_contract(payload, transaction_value=lock_tokens)
         return res
 
+    def update_allocation(
+        self,
+        allocation_id,
+        tokens=1,
+        expiration_date=2592000,
+        size=2147483648,
+    ):
+        payload = json.dumps(
+            {
+                "name": "update_allocation_request",
+                "input": {
+                    "owner_id": self.client_id,
+                    "id": allocation_id,
+                    "size": size,
+                    "expiration_date": expiration_date,
+                },
+            }
+        )
+        res = self._execute_smart_contract(payload, transaction_value=tokens)
+
+        return res
+
     def list_allocations(self):
         url = f"{Endpoints.SC_REST_ALLOCATIONS}?client={self.client_id}"
         res = self._consensus_from_workers("sharders", url)
@@ -228,12 +251,31 @@ class Wallet(ConnectionBase):
         )
         return res
 
+    def sign(self, payload):
+        return sign_payload(self.private_key, payload)
+
+    def save(self, wallet_name=None):
+        if not wallet_name:
+            wallet_name = generate_random_letters()
+
+        data = {
+            "client_id": self.client_id,
+            "client_key": self.public_key,
+            "keys": [{"public_key": self.public_key, "private_key": self.private_key}],
+            "mnemonics": self.mnemonics,
+            "version": self.version,
+            "date_created": self.date_created,
+        }
+
+        with open(
+            os.path.join(Path.home(), f".zcn/test_wallets/wallet_{wallet_name}.json"),
+            "w",
+        ) as f:
+            f.write(json.dumps(data, indent=4))
+
     # ____________________________
     # END HERE
     # ____________________________
-
-    def sign(self, payload):
-        return sign_payload(self.private_key, payload)
 
     # @_validate_wallet
     # def add_tokens(self, amount=1) -> object:
@@ -290,9 +332,9 @@ class Wallet(ConnectionBase):
             config.get("keys")[0]["public_key"],
             config.get("keys")[0]["private_key"],
             config.get("mnemonics"),
-            config.get("version"),
             config.get("date_created"),
             network,
+            config.get("version"),
         )
 
     def __repr__(self):

@@ -2,11 +2,12 @@ import os
 import json
 from zero_sdk.config import PROJECT_ROOT
 import requests
+
 from zero_sdk.connection_base import ConnectionBase
 from zero_sdk.const import Endpoints, STORAGE_SMART_CONTRACT_ADDRESS
 from zero_sdk.workers import Blobber, Miner, Sharder
-from zero_sdk.utils import from_json, hostname_from_config_obj
-from zero_sdk.utils import generate_mnemonic
+from zero_sdk.utils import hostname_from_config_obj
+from zero_sdk.utils import generate_mnemonic, create_wallet
 from zero_sdk.bls import generate_keys
 
 
@@ -87,7 +88,22 @@ class Network(ConnectionBase):
         mnemonic = generate_mnemonic()
         keys = self._create_keys(mnemonic)
         res = self._register_wallet(keys)
-        return res
+        data = {
+            "client_id": res["id"],
+            "client_key": keys["public_key"],
+            "keys": [
+                {
+                    "public_key": keys["public_key"],
+                    "private_key": keys["private_key"],
+                }
+            ],
+            "mnemonics": mnemonic,
+            "version": res["version"],
+            "date_created": res["creation_date"],
+        }
+
+        wallet = create_wallet(data, self)
+        return wallet
 
     def restore_wallet(self, mnemonic):
         keys = self._create_keys(mnemonic)
