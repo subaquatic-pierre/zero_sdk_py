@@ -105,7 +105,7 @@ class Wallet(ConnectionBase):
                 "version": "1.0",
             }
         )
-        headers = {"Content-Type": "application/json"}
+        headers = {"Content-Type": "application/json", "Connection": "keep-alive"}
         res = self._consensus_from_workers(
             "miners",
             endpoint=Endpoints.PUT_TRANSACTION,
@@ -124,7 +124,6 @@ class Wallet(ConnectionBase):
         res = self._consensus_from_workers(
             "sharders", endpoint, empty_return_value=empty_return_value
         )
-
         try:
             bal = res.get("balance")
             if format == "default":

@@ -61,7 +61,6 @@ class ConnectionBase(ABC):
         :param files: Tuple or List
         :param error_message: String, message to display if error
         """
-        sleep(2)
         try:
             res = requests.request(method, url, headers=headers, data=data, files=files)
             return res
@@ -93,7 +92,7 @@ class ConnectionBase(ABC):
                 "num_confirmations": confirmation_weight,
             }
 
-    def _check_highest_consensus(self, consensus_data, num_total_workers):
+    def _check_highest_consensus(self, consensus_data={}, num_total_workers=0):
         """Check consensus data for highest confirmation count,
         return object and percentage of confirmations"""
         greatest_num_confirmations = 0
@@ -110,9 +109,9 @@ class ConnectionBase(ABC):
         percentage_confirmations = (
             greatest_num_confirmations / num_total_workers
         ) * 100
-        highest_confirmations = consensus_data.get(key_for_highest_confirmations)
+        highest_confirmations = consensus_data.get(key_for_highest_confirmations, {})
 
-        return (percentage_confirmations, highest_confirmations["data"])
+        return (percentage_confirmations, highest_confirmations.get("data", {}))
 
     # -----------------------------------------------------
 
@@ -136,11 +135,12 @@ class ConnectionBase(ABC):
             min_confirmation = self._get_min_confirmation()
         worker_string = worker
         workers = self._get_workers(worker_string)
+        num_requests = 0
 
         future_responses = []
         consensus_data = {}
 
-        with ThreadPoolExecutor(max_workers=2) as executor:
+        with ThreadPoolExecutor(max_workers=10) as executor:
             for worker in workers:
                 url = f"{worker.url}/{endpoint}"
                 future = executor.submit(
@@ -168,18 +168,25 @@ class ConnectionBase(ABC):
                         if err:
                             continue
 
-                # Build consesus data object on future completion
-                self._append_response_to_consensus_data(response_data, consensus_data)
-
                 # Check highest percentage of consensus as each future is completed
                 percentage_consensus, highest_consensus = self._check_highest_consensus(
                     consensus_data, len(workers)
                 )
 
-        # Raise exception if minimum consensus not acheived
-        self._check_minimum_consensus_achieved(percentage_consensus, min_confirmation)
+                # Raise exception if minimum consensus not acheived
+                minimum_consensus_reached = self._check_minimum_consensus_achieved(
+                    percentage_consensus, min_confirmation, num_requests, len(workers)
+                )
 
-        return highest_consensus
+                if minimum_consensus_reached:
+                    executor.shutdown(wait=False)
+                    return highest_consensus
+                else:
+                    # Build consesus data object on future completion
+                    num_requests += 1
+                    self._append_response_to_consensus_data(
+                        response_data, consensus_data
+                    )
 
     def _calculate_confirmation_weighting(
         self, response_data, endpoint="", current_weighting=1
@@ -193,11 +200,19 @@ class ConnectionBase(ABC):
             return weight
         return current_weighting
 
-    def _check_minimum_consensus_achieved(self, percentage_consensus, min_confirmation):
-        if int(percentage_consensus) < self._get_min_confirmation():
-            raise ConsensusError(
-                "Minimum consesus requirement not met, check network config settings or network worker availability"
-            )
+    def _check_minimum_consensus_achieved(
+        self, percentage_consensus, min_confirmation, num_requests, num_workers
+    ):
+        if num_requests >= num_workers:
+            if int(percentage_consensus) < min_confirmation:
+                raise ConsensusError(
+                    "Minimum consesus requirement not met, check network config settings or network worker availability"
+                )
+        else:
+            if int(percentage_consensus) > min_confirmation:
+                return True
+
+        return False
 
     def _get_workers(self, worker):
         if self.__class__.__name__ == "Network":
