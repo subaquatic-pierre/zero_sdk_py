@@ -8,11 +8,17 @@
 
 - get_locked_tokens
 - create_read_pool
-- allocate_storage
 - allocation_min_lock
 
-### Class: Allocation
+## Tests to write
 
-#### Methods
+#### Wallet
 
--
+- test_execute_smart_contract
+- test_submit_transaction
+
+#### Allocation
+
+- get_write_lock_token info
+- get_read_lock_token info
+- Save allocation

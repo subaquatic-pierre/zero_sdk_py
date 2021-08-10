@@ -6,6 +6,7 @@ from zero_sdk.wallet import Wallet
 from zero_sdk.wallet import Wallet
 from zero_sdk.utils import from_json
 from zero_sdk.exceptions import ConsensusError
+from zero_sdk.allocation import Allocation
 
 from tests.utils import TEST_DIR, build_network, build_wallet
 from tests.mock_response import MockResponse
@@ -47,7 +48,7 @@ class TestWalletMethods(TestCase):
         """Test Balance is integer"""
         self._setup_mock("balance.json")
         balance = self.wallet.get_balance()
-        self.assertIn("balance", balance)
+        self.assertIsInstance(balance, int)
 
     def test_get_locked_tokens(self):
         """Test get_locked tokens"""
@@ -122,8 +123,11 @@ class TestWalletAllocation(TestCase):
     def test_create_allocation(self):
         """Can create storage allocation"""
         self._setup_mock("create_allocation.json")
-        res = self.wallet.allocate_storage()
-        self.assertIn("entity", res)
+        self.wallet.network.check_transaction_status = MagicMock(
+            return_value={"hash": True}
+        )
+        res = self.wallet.create_allocation()
+        self.assertIsInstance(res, Allocation)
 
 
 class TestWalletTokenLock(TestCase):

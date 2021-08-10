@@ -89,7 +89,7 @@ def create_wallet(data, network):
     return Wallet.from_object(data, network)
 
 
-def create_allocation(allocation_id, wallet_id):
+def create_allocation(allocation_id, wallet):
     from zero_sdk.allocation import Allocation
 
-    return Allocation(allocation_id, wallet_id)
+    return Allocation(allocation_id, wallet)

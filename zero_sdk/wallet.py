@@ -1,4 +1,5 @@
 from datetime import timedelta
+from time import sleep
 import os
 from pathlib import Path
 from time import time
@@ -114,17 +115,27 @@ class Wallet(ConnectionBase):
         )
         return res
 
-    def get_balance(self) -> int:
+    def get_balance(self, format="default") -> int:
         """Get Wallet balance
         Return float value of tokens
         """
         endpoint = f"{Endpoints.GET_BALANCE}?client_id={self.client_id}"
         empty_return_value = {"balance": 0}
-        data = self._consensus_from_workers(
+        res = self._consensus_from_workers(
             "sharders", endpoint, empty_return_value=empty_return_value
         )
 
-        return data
+        try:
+            bal = res.get("balance")
+            if format == "default":
+                return bal
+            elif format == "human":
+                return "%.10f" % (bal / 10000000000)
+            else:
+                return bal
+
+        except AttributeError:
+            return res
 
     def get_user_pools(self):
         endpoint = f"{Endpoints.GET_USER_POOLS}?client_id={self.client_id}"
@@ -140,6 +151,7 @@ class Wallet(ConnectionBase):
     def get_read_pool_info(self, allocation_id=None):
         url = f"{Endpoints.SC_REST_READPOOL_STATS}?client_id={self.client_id}"
         res = self._consensus_from_workers("sharders", url)
+
         if allocation_id:
             return self._filter_by_allocation(res, allocation_id)
         return res
@@ -147,10 +159,56 @@ class Wallet(ConnectionBase):
     def get_write_pool_info(self, allocation_id=None):
         url = f"{Endpoints.SC_REST_WRITEPOOL_STATS}?client_id={self.client_id}"
         res = self._consensus_from_workers("sharders", url)
+
         if allocation_id:
             return self._filter_by_allocation(res, allocation_id)
 
         return res
+
+    def create_allocation(
+        self,
+        data_shards=AllocationConfig.DATA_SHARDS,
+        parity_shards=AllocationConfig.PARITY_SHARDS,
+        size=AllocationConfig.SIZE,
+        lock_tokens=AllocationConfig.TOKEN_LOCK,
+        preferred_blobbers=AllocationConfig.PREFERRED_BLOBBERS,
+        write_price=AllocationConfig.WRITE_PRICE,
+        read_price=AllocationConfig.READ_PRICE,
+        max_challenge_completion_time=AllocationConfig.MAX_CHALLENGE_COMPLETION_TIME,
+        expiration_date=time(),
+    ):
+        future = int(expiration_date + timedelta(days=30).total_seconds())
+
+        payload = json.dumps(
+            {
+                "name": "new_allocation_request",
+                "input": {
+                    "data_shards": data_shards,
+                    "parity_shards": parity_shards,
+                    "owner_id": self.client_id,
+                    "owner_public_key": self.public_key,
+                    "size": size,
+                    "expiration_date": future,
+                    "read_price_range": read_price,
+                    "write_price_range": write_price,
+                    "max_challenge_completion_time": max_challenge_completion_time,
+                    "preferred_blobbers": preferred_blobbers,
+                },
+            }
+        )
+
+        res = self._execute_smart_contract(payload, transaction_value=lock_tokens)
+        transaction_hash = res["entity"]["hash"]
+        sleep(5)
+        confirmation = self.network.check_transaction_status(transaction_hash)
+        hash = confirmation.get("hash")
+        if hash:
+            return create_allocation(hash, self)
+
+        return {
+            "status": "unconfirmed",
+            "message": "Allocation creation could not be confirmed",
+        }
 
     def _filter_by_allocation(self, res, allocation_id):
         pool_info = []
@@ -284,41 +342,6 @@ class Wallet(ConnectionBase):
     def create_read_pool(self):
         payload = json.dumps({"name": "new_read_pool", "input": None})
         res = self._execute_smart_contract(payload)
-        return res
-
-    def allocate_storage(
-        self,
-        data_shards=AllocationConfig.DATA_SHARDS,
-        parity_shards=AllocationConfig.PARITY_SHARDS,
-        size=AllocationConfig.SIZE,
-        lock_tokens=AllocationConfig.TOKEN_LOCK,
-        preferred_blobbers=AllocationConfig.PREFERRED_BLOBBERS,
-        write_price=AllocationConfig.WRITE_PRICE,
-        read_price=AllocationConfig.READ_PRICE,
-        max_challenge_completion_time=AllocationConfig.MAX_CHALLENGE_COMPLETION_TIME,
-        expiration_date=time(),
-    ):
-        future = int(expiration_date + timedelta(days=30).total_seconds())
-
-        payload = json.dumps(
-            {
-                "name": "new_allocation_request",
-                "input": {
-                    "data_shards": data_shards,
-                    "parity_shards": parity_shards,
-                    "owner_id": self.client_id,
-                    "owner_public_key": self.public_key,
-                    "size": size,
-                    "expiration_date": future,
-                    "read_price_range": read_price,
-                    "write_price_range": write_price,
-                    "max_challenge_completion_time": max_challenge_completion_time,
-                    "preferred_blobbers": preferred_blobbers,
-                },
-            }
-        )
-
-        res = self._execute_smart_contract(payload, transaction_value=lock_tokens)
         return res
 
     def allocation_min_lock(

@@ -192,7 +192,6 @@ class ConnectionBase(ABC):
         percentage_of_workers = (greatest_num_confirmations / total_workers) * 100
         highest_confirmations = consensus_data.get(key_for_highest_confirmations)
         if percentage_of_workers < min_confirmation:
-            print(consensus_data)
             raise ConsensusError(
                 "Minimum consesus requirement not met, check network config settings or network worker availability"
             )

@@ -1,11 +1,11 @@
 import json
+from pathlib import Path
 from time import time
 from zero_sdk.data_display import DataDisplay
 import requests
 import os
-from requests_toolbelt.multipart.encoder import MultipartEncoder
 from zero_sdk.network import ConnectionBase
-from zero_sdk.utils import hash_string
+from zero_sdk.utils import hash_string, generate_random_letters
 from zero_sdk.const import Endpoints, STORAGE_SMART_CONTRACT_ADDRESS
 from random import randint
 from reedsolo import RSCodec
@@ -15,7 +15,6 @@ class Allocation(ConnectionBase):
     def __init__(self, id, wallet) -> None:
         self.id = id
         self.wallet = wallet
-        # self.blobbers = self.get_allocation_info()["blobbers"]
 
     def get_allocation_info(self):
         """Get full details of allocation, including overview of
@@ -65,8 +64,19 @@ class Allocation(ConnectionBase):
         )
         return data_display.build_list_display()
 
-    def save(self):
-        pass
+    def save(self, allocation_name=None):
+        if not allocation_name:
+            allocation_name = generate_random_letters()
+
+        data = self.get_allocation_info()
+
+        with open(
+            os.path.join(
+                Path.home(), f".zcn/test_allocations/allocation_{allocation_name}.json"
+            ),
+            "w",
+        ) as f:
+            f.write(json.dumps(data, indent=4))
 
     # def get_file_path(self, blobber, remote_path, headers):
     #     url = (
