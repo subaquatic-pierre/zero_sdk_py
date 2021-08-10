@@ -4,6 +4,7 @@ from time import sleep
 from zero_sdk.const import Endpoints
 import requests
 from concurrent.futures import ThreadPoolExecutor, as_completed
+from threading import Thread
 
 import json
 from requests.models import Response
@@ -115,12 +116,6 @@ class ConnectionBase(ABC):
 
     # -----------------------------------------------------
 
-    def _check_terminate_executor(self, percentage_consensus, min_confirmation):
-        print(percentage_consensus)
-        print(min_confirmation)
-        if int(percentage_consensus) > min_confirmation:
-            _STOP_THREAD = True
-
     def _consensus_from_workers(
         self,
         worker,
@@ -143,10 +138,7 @@ class ConnectionBase(ABC):
         workers = self._get_workers(worker_string)
 
         future_responses = []
-        percentage_consensus = 0
         consensus_data = {}
-
-        num_req = 0
 
         with ThreadPoolExecutor(max_workers=2) as executor:
             for worker in workers:
@@ -161,9 +153,6 @@ class ConnectionBase(ABC):
                 )
 
                 future_responses.append(future)
-                print(_STOP_THREAD)
-                if _STOP_THREAD:
-                    executor.shutdown(wait=False)
 
             for future in as_completed(future_responses):
                 response = future.result()
@@ -187,12 +176,10 @@ class ConnectionBase(ABC):
                     consensus_data, len(workers)
                 )
 
-                self._check_terminate_executor(percentage_consensus, min_confirmation)
-
         # Raise exception if minimum consensus not acheived
         self._check_minimum_consensus_achieved(percentage_consensus, min_confirmation)
 
-        return num_req, highest_consensus
+        return highest_consensus
 
     def _calculate_confirmation_weighting(
         self, response_data, endpoint="", current_weighting=1
