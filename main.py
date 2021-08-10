@@ -24,14 +24,9 @@ network = Network.from_object(default_network_config_obj)
 wallet = Wallet.from_object(default_wallet_config_obj, network)
 aloc = Allocation(aloc_id, wallet)
 
-res = wallet.create_read_pool()
+write_pool = aloc.get_write_pool_info()
+print(write_pool)
 
-write_pool = wallet.get_write_pool_info()
-print("Write Pool")
-pprint(write_pool)
-
-read_pool = wallet.get_read_pool_info()
-print("Read Pool")
-pprint(read_pool)
-
+read_pool = aloc.get_read_pool_info()
+print(read_pool)
 # hash = res["entity"]["hash"]

@@ -50,6 +50,12 @@ class Allocation(ConnectionBase):
     def lock_write_tokens(self):
         pass
 
+    def get_read_pool_info(self):
+        return self.wallet.get_read_pool_info(self.id)
+
+    def get_write_pool_info(self):
+        return self.wallet.get_write_pool_info(self.id)
+
     def save(self):
         pass
 

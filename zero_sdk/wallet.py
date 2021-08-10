@@ -137,15 +137,34 @@ class Wallet(ConnectionBase):
     def add_tokens(self):
         return self._execute_faucet_smart_contract()
 
-    def get_read_pool_info(self):
+    def get_read_pool_info(self, allocation_id=None):
         url = f"{Endpoints.SC_REST_READPOOL_STATS}?client_id={self.client_id}"
         res = self._consensus_from_workers("sharders", url)
+        if allocation_id:
+            return self._filter_by_allocation(res, allocation_id)
         return res
 
-    def get_write_pool_info(self):
+    def get_write_pool_info(self, allocation_id=None):
         url = f"{Endpoints.SC_REST_WRITEPOOL_STATS}?client_id={self.client_id}"
         res = self._consensus_from_workers("sharders", url)
+        if allocation_id:
+            return self._filter_by_allocation(res, allocation_id)
+
         return res
+
+    def _filter_by_allocation(self, res, allocation_id):
+        pool_info = []
+
+        if allocation_id and res["pools"]:
+            pools = res["pools"]
+            for pool in pools:
+                if pool["allocation_id"] == allocation_id:
+                    pool_info.append(pool)
+
+            if len(pool_info) == 0:
+                return []
+            else:
+                return pool_info
 
     def list_allocations(self):
         url = f"{Endpoints.SC_REST_ALLOCATIONS}?client={self.client_id}"
