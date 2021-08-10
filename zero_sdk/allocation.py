@@ -23,10 +23,10 @@ class Allocation(ConnectionBase):
         res = self._consensus_from_workers("sharders", url)
         return res
 
-    def get_stats(self, url=None):
+    def get_stats(self, blobber_url=None, blobber_id=None):
         """Get stats of each blobber used by the allocation, detailed
         information of allocation size and write markers per blobber"""
-        if not url:
+        if not blobber_url:
             blobbers = self.get_allocation_info()["blobbers"]
             urls = [blobber["url"] for blobber in blobbers]
             results = []
@@ -36,10 +36,19 @@ class Allocation(ConnectionBase):
                 res = self._check_status_code(res)
                 results.append(res)
 
+            if blobber_id:
+                found_blobber = None
+                for blobber in blobbers:
+                    if blobber["id"] == blobber_id:
+                        found_blobber = blobber
+                if not found_blobber:
+                    return {"error": "Blobber with that ID not found"}
+                return found_blobber
+
             return results
 
         else:
-            endpoint = f"{url}/getstats"
+            endpoint = f"{blobber_url}/getstats"
             res = self._request(endpoint)
             res = self._check_status_code(res)
             return res

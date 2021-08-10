@@ -25,13 +25,9 @@ wallet = Wallet.from_object(default_wallet_config_obj, network)
 
 aloc = Allocation(aloc_id, wallet)
 
-info = aloc.get_allocation_info()
-pprint(info)
-res = wallet.update_allocation(aloc.id, extend_expiration_hours=1)
+stats = aloc.get_stats(
+    blobber_id="2f653412095b69bb149b1b7d2c662ff5bec31f574c23ab3a97a6201bd8b6775d"
+)
 
-pprint(res)
-
-sleep(5)
-new_info = aloc.get_allocation_info()
-
-pprint(new_info)
+print("Blobber ID: 2f653412095b69bb149b1b7d2c662ff5bec31f574c23ab3a97a6201bd8b6775d")
+pprint(stats)
