@@ -1,5 +1,6 @@
 import json
 from time import time
+from zero_sdk.data_display import DataDisplay
 import requests
 import os
 from requests_toolbelt.multipart.encoder import MultipartEncoder
@@ -51,10 +52,20 @@ class Allocation(ConnectionBase):
         pass
 
     def get_read_pool_info(self):
-        return self.wallet.get_read_pool_info(self.id)
+        data = self.wallet.get_read_pool_info(self.id)
+        data_display = DataDisplay()
+        data_display.from_list(
+            data, fields=["id", "balance", "allocation_id"], heading="Read Pool Info"
+        )
+        return data_display.build_list_display()
 
     def get_write_pool_info(self):
-        return self.wallet.get_write_pool_info(self.id)
+        data = self.wallet.get_write_pool_info(self.id)
+        data_display = DataDisplay()
+        data_display.from_list(
+            data, fields=["id", "balance", "allocation_id"], heading="Write Pool Info"
+        )
+        return data_display.build_list_display()
 
     def save(self):
         pass
