@@ -13,7 +13,7 @@ from zero_sdk.const import (
     STORAGE_SMART_CONTRACT_ADDRESS,
 )
 from zero_sdk.network import Network
-from zero_sdk.utils import hash_string, generate_random_letters
+from zero_sdk.utils import hash_string, generate_random_letters, create_allocation
 from zero_sdk.bls import sign_payload
 from zero_sdk.connection_base import ConnectionBase
 
@@ -70,7 +70,7 @@ class Wallet(ConnectionBase):
         )
 
     def _execute_faucet_smart_contract(
-        self, method_name="pour", input="pour_tokens", transaction_value=1
+        self, method_name="pour", input="pour_tokens", transaction_value=10000000000
     ):
         payload = json.dumps({"name": method_name, "input": input})
 
@@ -280,6 +280,7 @@ class Wallet(ConnectionBase):
         expiration_date=time(),
     ):
         future = int(expiration_date + timedelta(days=30).total_seconds())
+        # future = 1628610719
 
         payload = json.dumps(
             {
@@ -298,6 +299,8 @@ class Wallet(ConnectionBase):
                 },
             }
         )
+
+        print("Request Payload", json.dumps(payload, indent=4))
 
         res = self._execute_smart_contract(payload, transaction_value=lock_tokens)
         return res

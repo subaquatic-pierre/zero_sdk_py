@@ -21,11 +21,30 @@ aloc_id = "296896621095a9d8a51e6e4dba2bdb5661ea94ffd8fdb0a084301bffd81fe7e6"
 
 network = Network.from_object(default_network_config_obj)
 wallet = Wallet.from_object(default_wallet_config_obj, network)
-allocation = Allocation(aloc_id, wallet)
 
-info_info = allocation.get_allocation_info()
-blobber_list = info_info["blobbers"]
-blobber = Blobber(blobber_list[0]["url"], blobber_list[0]["id"])
+res = wallet.get_balance()
+# pool = wallet.create_read_pool()
+# print(pool)
+# aloc = wallet.allocate_storage()
+# pprint(aloc)
 
-res = wallet.blobber_unlock_token("someid", "id")
-pprint(res)
+alocs = wallet.list_allocations()
+pprint(alocs)
+
+# txn = wallet.add_tokens()
+
+# print(txn)
+
+# res = wallet.get_balance()
+
+# print(res["balance"])
+
+
+# allocation = Allocation(aloc_id, wallet)
+
+# info_info = allocation.get_allocation_info()
+# blobber_list = info_info["blobbers"]
+# blobber = Blobber(blobber_list[0]["url"], blobber_list[0]["id"])
+
+# res = wallet.blobber_unlock_token("someid", "id")
+# pprint(res)

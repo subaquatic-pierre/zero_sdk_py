@@ -77,7 +77,6 @@ class ConnectionBase(ABC):
         with ThreadPoolExecutor(max_workers=20) as executor:
             for worker in workers:
                 url = f"{worker.url}/{endpoint}"
-
                 future = executor.submit(
                     self._request,
                     method=method,
@@ -124,6 +123,7 @@ class ConnectionBase(ABC):
         # Loop through workers
         for response in responses:
             response = self._check_status_code(response)
+            confirmation_weight = 1
 
             # Check if get_balance request and empty wallet, return empty balance value as data
             # if type(response) == str:
@@ -131,15 +131,15 @@ class ConnectionBase(ABC):
                 response, empty_return_value, endpoint
             )
 
-            # May be string response if node is down, ensure valid dict object
-            # if type(response) == dict:
-
             # JSON response may contain error, do not add to response map, not valid transaction
             if not type(response) == str and type(response) != list:
                 if response:
                     err = response.get("error")
                     if err:
                         continue
+
+            if type(response) == str:
+                confirmation_weight = confirmation_weight / 2
 
             # Build response hash string
             response_hash_string = hash_string(json.dumps(response))
@@ -152,13 +152,13 @@ class ConnectionBase(ABC):
                 prev_count = existing_response_key.get("num_confirmations")
                 response_hash_map[response_hash_string] = {
                     "data": response,
-                    "num_confirmations": prev_count + 1,
+                    "num_confirmations": prev_count + confirmation_weight,
                 }
             # Add key to response map if does not exists
             else:
                 response_hash_map[response_hash_string] = {
                     "data": response,
-                    "num_confirmations": 1,
+                    "num_confirmations": confirmation_weight,
                 }
 
         if len(response_hash_map) < 1:

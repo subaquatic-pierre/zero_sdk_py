@@ -107,14 +107,14 @@ class Endpoints:
 
 
 class AllocationConfig:
-    DATA_SHARDS = 4
+    DATA_SHARDS = 2
     PARITY_SHARDS = 2
-    SIZE = 2
-    TOKEN_LOCK = 5000000000
+    SIZE = 1628610719
+    TOKEN_LOCK = 20000000000
     PREFERRED_BLOBBERS = None
-    READ_PRICE = {"min": 0, "max": 10000000000}
-    WRITE_PRICE = {"min": 0, "max": 10000000000}
-    MAX_CHALLENGE_COMPLETION_TIME = 3600
+    READ_PRICE = {"min": 0, "max": 9223372036854775807}
+    WRITE_PRICE = {"min": 0, "max": 9223372036854775807}
+    MAX_CHALLENGE_COMPLETION_TIME = 3600000000000
 
 
 #   "dataShards" : 4,

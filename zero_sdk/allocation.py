@@ -44,6 +44,9 @@ class Allocation(ConnectionBase):
             res = self._check_status_code(res)
             return res
 
+    def save(self):
+        pass
+
     # def get_file_path(self, blobber, remote_path, headers):
     #     url = (
     #         f'{blobber["url"]}/v1/file/referencepath/{self.id}?paths=["{remote_path}"]'
