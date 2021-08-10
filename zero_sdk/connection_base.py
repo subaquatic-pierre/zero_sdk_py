@@ -138,7 +138,7 @@ class ConnectionBase(ABC):
                     if err:
                         continue
 
-            if type(response) == str:
+            if type(response) == str and "entity_not_found" not in response:
                 confirmation_weight = confirmation_weight / 2
 
             # Build response hash string
@@ -192,6 +192,7 @@ class ConnectionBase(ABC):
         percentage_of_workers = (greatest_num_confirmations / total_workers) * 100
         highest_confirmations = consensus_data.get(key_for_highest_confirmations)
         if percentage_of_workers < min_confirmation:
+            print(consensus_data)
             raise ConsensusError(
                 "Minimum consesus requirement not met, check network config settings or network worker availability"
             )

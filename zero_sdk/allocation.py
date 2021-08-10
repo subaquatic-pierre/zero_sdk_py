@@ -44,6 +44,12 @@ class Allocation(ConnectionBase):
             res = self._check_status_code(res)
             return res
 
+    def lock_read_tokens(self):
+        pass
+
+    def lock_write_tokens(self):
+        pass
+
     def save(self):
         pass
 
@@ -342,7 +348,7 @@ class Allocation(ConnectionBase):
             {
                 "id": self.id,
                 "wallet_id": self.wallet.client_id,
-                "network_url": self.wallet.network.url,
+                "network_url": self.wallet.network.hostname,
             },
             indent=4,
         )

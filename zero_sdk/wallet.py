@@ -280,7 +280,6 @@ class Wallet(ConnectionBase):
         expiration_date=time(),
     ):
         future = int(expiration_date + timedelta(days=30).total_seconds())
-        # future = 1628610719
 
         payload = json.dumps(
             {
@@ -299,8 +298,6 @@ class Wallet(ConnectionBase):
                 },
             }
         )
-
-        print("Request Payload", json.dumps(payload, indent=4))
 
         res = self._execute_smart_contract(payload, transaction_value=lock_tokens)
         return res
