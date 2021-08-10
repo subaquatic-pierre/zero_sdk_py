@@ -1,13 +1,16 @@
 from abc import ABC
+import copy
 from time import sleep
 from zero_sdk.const import Endpoints
 import requests
-from concurrent.futures import ThreadPoolExecutor
+from concurrent.futures import ThreadPoolExecutor, as_completed
 
 import json
 from requests.models import Response
 from zero_sdk.utils import hash_string, timer
 from zero_sdk.exceptions import ConsensusError
+
+_STOP_THREAD = False
 
 
 class ConnectionBase(ABC):
@@ -57,6 +60,7 @@ class ConnectionBase(ABC):
         :param files: Tuple or List
         :param error_message: String, message to display if error
         """
+        sleep(2)
         try:
             res = requests.request(method, url, headers=headers, data=data, files=files)
             return res
@@ -64,31 +68,58 @@ class ConnectionBase(ABC):
         except requests.exceptions.RequestException as e:
             return e
 
-    def _parallel_requests(
-        self,
-        workers,
-        endpoint,
-        method,
-        data,
-        files,
-        headers,
-    ):
-        future_responses = []
-        with ThreadPoolExecutor(max_workers=20) as executor:
-            for worker in workers:
-                url = f"{worker.url}/{endpoint}"
-                future = executor.submit(
-                    self._request,
-                    method=method,
-                    url=url,
-                    data=data,
-                    files=files,
-                    headers=headers,
-                )
-                future_responses.append(future)
+    def _append_response_to_consensus_data(self, response_data, consensus_data):
+        """Build consensus data as each response comes in"""
+        confirmation_weight = self._calculate_confirmation_weighting(response_data)
 
-        responses = [future.result() for future in future_responses]
-        return responses
+        # Build response hash string
+        response_hash_string = hash_string(json.dumps(response_data))
+
+        # Check if key exists in response map
+        existing_response_key = consensus_data.get(response_hash_string)
+
+        # Increment consensus count if key exists
+        if existing_response_key:
+            prev_count = existing_response_key.get("num_confirmations")
+            consensus_data[response_hash_string] = {
+                "data": response_data,
+                "num_confirmations": prev_count + confirmation_weight,
+            }
+        # Add key to response map if does not exists
+        else:
+            consensus_data[response_hash_string] = {
+                "data": response_data,
+                "num_confirmations": confirmation_weight,
+            }
+
+    def _check_highest_consensus(self, consensus_data, num_total_workers):
+        """Check consensus data for highest confirmation count,
+        return object and percentage of confirmations"""
+        greatest_num_confirmations = 0
+        key_for_highest_confirmations = ""
+
+        # Get data for highest confirmation count
+        for key, value in consensus_data.items():
+            num_confirmations = value.get("num_confirmations")
+            if num_confirmations >= greatest_num_confirmations:
+                greatest_num_confirmations = num_confirmations
+                key_for_highest_confirmations = key
+
+        # Check num confirmations reaches min_confirm amount
+        percentage_confirmations = (
+            greatest_num_confirmations / num_total_workers
+        ) * 100
+        highest_confirmations = consensus_data.get(key_for_highest_confirmations)
+
+        return (percentage_confirmations, highest_confirmations["data"])
+
+    # -----------------------------------------------------
+
+    def _check_terminate_executor(self, percentage_consensus, min_confirmation):
+        print(percentage_consensus)
+        print(min_confirmation)
+        if int(percentage_consensus) > min_confirmation:
+            _STOP_THREAD = True
 
     def _consensus_from_workers(
         self,
@@ -106,108 +137,80 @@ class ConnectionBase(ABC):
         :param worker: String, name of worker to request data,
         :param endpoint: String, endpoint to request from worker
         """
+        if not min_confirmation:
+            min_confirmation = self._get_min_confirmation()
         worker_string = worker
         workers = self._get_workers(worker_string)
 
-        responses = self._parallel_requests(
-            workers=workers,
-            endpoint=endpoint,
-            method=method,
-            data=data,
-            files=files,
-            headers=headers,
-        )
+        future_responses = []
+        percentage_consensus = 0
+        consensus_data = {}
 
-        response_hash_map = {}
+        num_req = 0
 
-        # Loop through workers
-        for response in responses:
-            response = self._check_status_code(response)
-            confirmation_weight = 1
-
-            # Check if get_balance request and empty wallet, return empty balance value as data
-            # if type(response) == str:
-            response = self._handle_empty_return_value(
-                response, empty_return_value, endpoint
-            )
-
-            # JSON response may contain error, do not add to response map, not valid transaction
-            if not type(response) == str and type(response) != list:
-                if response:
-                    err = response.get("error")
-                    if err:
-                        continue
-
-                confirmation_weight = self._calculate_consensus_weighting(
-                    confirmation_weight, response, endpoint
+        with ThreadPoolExecutor(max_workers=2) as executor:
+            for worker in workers:
+                url = f"{worker.url}/{endpoint}"
+                future = executor.submit(
+                    self._request,
+                    method=method,
+                    url=url,
+                    data=data,
+                    files=files,
+                    headers=headers,
                 )
 
-            # Build response hash string
-            response_hash_string = hash_string(json.dumps(response))
+                future_responses.append(future)
+                print(_STOP_THREAD)
+                if _STOP_THREAD:
+                    executor.shutdown(wait=False)
 
-            # Check if key exists in response map
-            existing_response_key = response_hash_map.get(response_hash_string)
+            for future in as_completed(future_responses):
+                response = future.result()
 
-            # Increment consensus count if key exists
-            if existing_response_key:
-                prev_count = existing_response_key.get("num_confirmations")
-                response_hash_map[response_hash_string] = {
-                    "data": response,
-                    "num_confirmations": prev_count + confirmation_weight,
-                }
-            # Add key to response map if does not exists
-            else:
-                response_hash_map[response_hash_string] = {
-                    "data": response,
-                    "num_confirmations": confirmation_weight,
-                }
+                # Response error checking
+                response_data = self._check_status_code(response)
+                response_data = self._handle_empty_return_value(
+                    response_data, empty_return_value, endpoint
+                )
+                if not type(response_data) == str and type(response_data) != list:
+                    if response_data:
+                        err = response_data.get("error")
+                        if err:
+                            continue
 
-        if len(response_hash_map) < 1:
-            raise ConsensusError("No consesus reached from workers")
+                # Build consesus data object on future completion
+                self._append_response_to_consensus_data(response_data, consensus_data)
 
-        consensus_data = self._get_consensus_data(
-            response_hash_map, workers, min_confirmation
-        )
-        return consensus_data
+                # Check highest percentage of consensus as each future is completed
+                percentage_consensus, highest_consensus = self._check_highest_consensus(
+                    consensus_data, len(workers)
+                )
 
-    def _get_consensus_data(self, consensus_data, workers, min_confirmation):
-        """Take all consensus data, check min required confirmations,
-        return highest number of confirmations in data, ensure min confirmation count met
-        :param consensus_data: Dict, received from _consensus_from_workers
-        :param worker: String, string for name of worker
-        """
-        if not min_confirmation:
-            min_confirmation = self._get_min_confirmation()
-        greatest_num_confirmations = 0
-        key_for_highest_confirmations = ""
+                self._check_terminate_executor(percentage_consensus, min_confirmation)
 
-        # Get data for highest confirmation count
-        for key, value in consensus_data.items():
-            num_confirmations = value.get("num_confirmations")
-            if num_confirmations >= greatest_num_confirmations:
-                greatest_num_confirmations = num_confirmations
-                key_for_highest_confirmations = key
+        # Raise exception if minimum consensus not acheived
+        self._check_minimum_consensus_achieved(percentage_consensus, min_confirmation)
 
-        # Check num confirmations reaches min_confirm amount
-        total_workers = len(workers)
-        percentage_of_workers = (greatest_num_confirmations / total_workers) * 100
-        highest_confirmations = consensus_data.get(key_for_highest_confirmations)
-        if percentage_of_workers < min_confirmation:
-            raise ConsensusError(
-                "Minimum consesus requirement not met, check network config settings or network worker availability"
-            )
+        return num_req, highest_consensus
 
-        return highest_confirmations["data"]
-
-    def _calculate_consensus_weighting(self, current_weighting, response, endpoint):
+    def _calculate_confirmation_weighting(
+        self, response_data, endpoint="", current_weighting=1
+    ):
         if (
-            type(response) == str
-            and "entity_not_found" not in response
+            type(response_data) == str
+            and "entity_not_found" not in response_data
             and "whoami" not in endpoint
         ):
             weight = current_weighting / 2
             return weight
         return current_weighting
+
+    def _check_minimum_consensus_achieved(self, percentage_consensus, min_confirmation):
+        if int(percentage_consensus) < self._get_min_confirmation():
+            raise ConsensusError(
+                "Minimum consesus requirement not met, check network config settings or network worker availability"
+            )
 
     def _get_workers(self, worker):
         if self.__class__.__name__ == "Network":

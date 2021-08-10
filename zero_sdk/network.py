@@ -19,7 +19,7 @@ class Network(ConnectionBase):
         self.miners: list = miners
         self.sharders: list = sharders
         self.preferred_blobbers: list = preferred_blobbers
-        self.min_confirmation: int = min_confirmation
+        self.min_confirmation: int = 1
 
     def get_chain_stats(self):
         endpoint = Endpoints.GET_CHAIN_STATS
@@ -147,7 +147,7 @@ class Network(ConnectionBase):
     def from_object(config_obj, hostname=None):
         if not hostname:
             hostname = hostname_from_config_obj(config_obj)
-        miners = [Miner(url) for url in request_dns_workers(hostname, "miners")]
+        miners = [Miner(url) for url in request_dns_workers(hostname, "miners")] * 10
         sharders = [Sharder(url) for url in request_dns_workers(hostname, "sharders")]
 
         # Todo: Error check blobber load
