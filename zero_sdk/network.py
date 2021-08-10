@@ -63,12 +63,13 @@ class Network(ConnectionBase):
             for worker in workers:
                 url = f"{worker.url}/_nh/whoami"
                 res = self._request(url)
-                arr = res.split(",")
-                details.setdefault(worker.url, arr)
+                valid_data = self._check_status_code(res)
+                details.setdefault(worker.url, valid_data)
         else:
             url = f"{worker_url}/_nh/whoami"
             res = self._request(url)
-            details.setdefault(worker_url, res)
+            valid_data = self._check_status_code(res)
+            details.setdefault(worker.url, valid_data)
 
         return details
 

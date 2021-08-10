@@ -134,3 +134,6 @@ class TestNetworkChainMethods(TestCase):
         self._setup_mock("create.json")
         wallet = self.network.create_wallet()
         self.assertIsInstance(wallet, Wallet)
+
+    def test_get_worker_stats(self):
+        pass

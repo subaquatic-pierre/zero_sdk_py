@@ -23,11 +23,5 @@ aloc_id = "296896621095a9d8a51e6e4dba2bdb5661ea94ffd8fdb0a084301bffd81fe7e6"
 network = Network.from_object(default_network_config_obj)
 wallet = Wallet.from_object(default_wallet_config_obj, network)
 
-aloc = Allocation(aloc_id, wallet)
-
-stats = aloc.get_stats(
-    blobber_id="2f653412095b69bb149b1b7d2c662ff5bec31f574c23ab3a97a6201bd8b6775d"
-)
-
-print("Blobber ID: 2f653412095b69bb149b1b7d2c662ff5bec31f574c23ab3a97a6201bd8b6775d")
-pprint(stats)
+stats = network.get_worker_stats("sharders")
+print(stats)

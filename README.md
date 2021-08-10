@@ -12,6 +12,10 @@
 
 ## Tests to write
 
+#### Network
+
+- get_worker_stats
+
 #### Wallet
 
 - test_execute_smart_contract

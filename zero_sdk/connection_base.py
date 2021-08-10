@@ -138,8 +138,9 @@ class ConnectionBase(ABC):
                     if err:
                         continue
 
-            if type(response) == str and "entity_not_found" not in response:
-                confirmation_weight = confirmation_weight / 2
+                confirmation_weight = self._calculate_consensus_weighting(
+                    confirmation_weight, response, endpoint
+                )
 
             # Build response hash string
             response_hash_string = hash_string(json.dumps(response))
@@ -197,6 +198,16 @@ class ConnectionBase(ABC):
             )
 
         return highest_confirmations["data"]
+
+    def _calculate_consensus_weighting(self, current_weighting, response, endpoint):
+        if (
+            type(response) == str
+            and "entity_not_found" not in response
+            and "whoami" not in endpoint
+        ):
+            weight = current_weighting / 2
+            return weight
+        return current_weighting
 
     def _get_workers(self, worker):
         if self.__class__.__name__ == "Network":
