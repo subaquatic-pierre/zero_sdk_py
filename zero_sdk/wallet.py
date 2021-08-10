@@ -383,9 +383,11 @@ class Wallet(ConnectionBase):
         self,
         allocation_id,
         tokens=1,
-        expiration_date=2592000,
-        size=2147483648,
+        extend_expiration_hours=720,
+        size=2147483652,
     ):
+        future = int(time() + timedelta(hours=extend_expiration_hours).total_seconds())
+
         payload = json.dumps(
             {
                 "name": "update_allocation_request",
@@ -393,7 +395,7 @@ class Wallet(ConnectionBase):
                     "owner_id": self.client_id,
                     "id": allocation_id,
                     "size": size,
-                    "expiration_date": expiration_date,
+                    "expiration_date": future,
                 },
             }
         )

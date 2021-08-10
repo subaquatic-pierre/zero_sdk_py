@@ -23,5 +23,15 @@ aloc_id = "296896621095a9d8a51e6e4dba2bdb5661ea94ffd8fdb0a084301bffd81fe7e6"
 network = Network.from_object(default_network_config_obj)
 wallet = Wallet.from_object(default_wallet_config_obj, network)
 
-locked_tokens = wallet.get_locked_tokens()
-print(locked_tokens)
+aloc = Allocation(aloc_id, wallet)
+
+info = aloc.get_allocation_info()
+pprint(info)
+res = wallet.update_allocation(aloc.id, extend_expiration_hours=1)
+
+pprint(res)
+
+sleep(5)
+new_info = aloc.get_allocation_info()
+
+pprint(new_info)
