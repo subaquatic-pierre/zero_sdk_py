@@ -31,11 +31,11 @@ class AllocationTest(TestCase):
     def test_get_all_blobber_stats(self):
         """Test can stats for all blobbers"""
         self._setup_mock("all_blobber_stats.json")
-        res = self.allocation.get_stats()
+        res = self.allocation.get_blobber_stats()
         self.assertIsInstance(res, list)
 
     def test_get_all_blobber_stats(self):
         """Test can stats for single blobber"""
         self._setup_mock("blobber_stats.json")
-        res = self.allocation.get_stats("http://beta.0chain.net:31301")
+        res = self.allocation.get_blobber_stats("http://beta.0chain.net:31301")
         self.assertIn("allocated_size", res)

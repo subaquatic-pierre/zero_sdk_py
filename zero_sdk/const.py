@@ -59,6 +59,8 @@ class Endpoints:
     SC_BLOBBER_STATS = "v1/screst/" + STORAGE_SMART_CONTRACT_ADDRESS + "/getblobbers"
     SC_SHARDER_LIST = "v1/screst/" + MINER_SMART_CONTRACT_ADDRESS + "/getSharderList"
     SC_MINERS_STATS = "v1/screst/" + MINER_SMART_CONTRACT_ADDRESS + "/getMinerList"
+    SC_CONFIGS = "v1/screst/" + MINER_SMART_CONTRACT_ADDRESS + "/configs"
+    SC_NODE_STAT = "v1/screst/" + MINER_SMART_CONTRACT_ADDRESS + "/nodeStat"
     SC_REST_ALLOCATION_MIN_LOCK = (
         "v1/screst/" + STORAGE_SMART_CONTRACT_ADDRESS + "/allocation_min_lock"
     )

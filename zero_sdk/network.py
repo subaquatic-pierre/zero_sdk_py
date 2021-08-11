@@ -21,6 +21,36 @@ class Network(ConnectionBase):
         self.preferred_blobbers: list = preferred_blobbers
         self.min_confirmation: int = min_confirmation
 
+    def get_miner_list(self):
+        endpoint = Endpoints.SC_MINERS_STATS
+        res = self._consensus_from_workers("miners", endpoint)
+        return res
+
+    def get_miner_config(self):
+        endpoint = Endpoints.SC_CONFIGS
+        res = self._consensus_from_workers("sharders", endpoint)
+        return res
+
+    def get_node_stats(self, node_id=None):
+        if not node_id:
+            raise Exception("Please provide node ID")
+        endpoint = f"{Endpoints.SC_NODE_STAT}?id={node_id}"
+        res = self._consensus_from_workers("sharders", endpoint)
+        return res
+
+    def get_sharder_list(self):
+        res = self.get_latest_finalized_magic_block()
+        try:
+            sharders = res.get("magic_block").get("sharders").get("nodes")
+            return sharders
+        except:
+            return {"error": "not found"}
+
+    def get_miner_list(self):
+        endpoint = Endpoints.SC_MINERS_STATS
+        res = self._consensus_from_workers("sharders", endpoint)
+        return res
+
     def get_chain_stats(self):
         endpoint = Endpoints.GET_CHAIN_STATS
         res = self._consensus_from_workers("sharders", endpoint)
