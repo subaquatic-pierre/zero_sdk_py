@@ -116,14 +116,15 @@ class Endpoints:
         "v1/screst/" + INTEREST_POOL_SMART_CONTRACT_ADDRESS + "/getLockConfig"
     )
 
-    GET_USER_POOLS = "v1/screst/" + MINER_SMART_CONTRACT_ADDRESS + "/getUserPools"
-
     # STAKING
     GET_STORAGESC_POOL_STATS = (
         "v1/screst/" + STORAGE_SMART_CONTRACT_ADDRESS + "/getUserStakePoolStat"
     )
-    GET_MINERSC_POOL_STATS = (
+    GET_MINERSC_USER_STATS = (
         "v1/screst/" + MINER_SMART_CONTRACT_ADDRESS + "/getUserPools"
+    )
+    GET_MINERSC_POOL_STATS = (
+        "v1/screst/" + MINER_SMART_CONTRACT_ADDRESS + "/nodePoolStat"
     )
 
     # VESTING

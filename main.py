@@ -24,13 +24,9 @@ network = Network.from_object(default_network_config_obj)
 wallet = Wallet.from_object(default_wallet_config_obj, network)
 aloc = Allocation(aloc_id, wallet)
 
-data = wallet.get_locked_tokens()
+data = wallet.add_tokens()
 
 pprint(data)
-
-# data = wallet.lock_tokens(2, minutes=10)
-
-# pprint(data)
 
 # new_aloc = wallet.create_allocation(lock_tokens=2)
 

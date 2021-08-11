@@ -80,13 +80,13 @@ class Transaction(ConnectionBase):
             payload,
         )
 
-    def validate(self, raise_exception=False):
-        for i in range(5):
+    def validate(self, raise_exception=False, hash=None):
+        if not hash:
+            hash = self.hash
+        for i in range(10):
             sleep(1)
             try:
-                self.confirmation_data = self.network.check_transaction_status(
-                    self.hash
-                )
+                self.confirmation_data = self.network.check_transaction_status(hash)
                 self.status = self.confirmation_data.get("transaction_status")
             except:
                 pass
@@ -108,8 +108,8 @@ class Transaction(ConnectionBase):
         transaction_type,
         input,
         wallet,
-        value=0,
-        sc_address=STORAGE_SMART_CONTRACT_ADDRESS,
+        value,
+        sc_address,
     ):
         return Transaction(
             sc_address,

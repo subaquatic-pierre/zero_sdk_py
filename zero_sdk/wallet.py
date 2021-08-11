@@ -11,6 +11,7 @@ from zero_sdk.network import Network
 from zero_sdk.utils import generate_random_letters, create_allocation
 from zero_sdk.bls import sign_payload
 from zero_sdk.connection import ConnectionBase
+from zero_sdk.miner_settings import miner_delegate_pool
 from zero_sdk.const import (
     INTEREST_POOL_SMART_CONTRACT_ADDRESS,
     STORAGE_SMART_CONTRACT_ADDRESS,
@@ -88,13 +89,24 @@ class Wallet(ConnectionBase):
         except AttributeError:
             return res
 
-    def get_user_pools(self):
-        endpoint = f"{Endpoints.GET_USER_POOLS}?client_id={self.client_id}"
+    def get_pool_info(self, node_id, pool_id):
+        endpoint = f"{Endpoints.GET_MINERSC_POOL_STATS}?id={node_id}&pool_id={pool_id}"
         empty_return_value = {"pools": {}}
         res = self._consensus_from_workers(
             "sharders", endpoint, empty_return_value=empty_return_value
         )
         return res
+
+    def get_user_pool_info(self):
+        endpoint = f"{Endpoints.GET_MINERSC_USER_STATS}?client_id={self.client_id}"
+        empty_return_value = {"pools": {}}
+        res = self._consensus_from_workers(
+            "sharders", endpoint, empty_return_value=empty_return_value
+        )
+        try:
+            return res.get("pools")
+        except:
+            return res
 
     def get_read_pool_info(self, allocation_id=None):
         url = f"{Endpoints.SC_REST_READPOOL_STATS}?client_id={self.client_id}"
@@ -128,18 +140,12 @@ class Wallet(ConnectionBase):
 
     def add_tokens(self):
         input = "give me tokens"
-        transaction = Transaction.create_transaction(
+        return self._handle_transaction(
             sc_address=FAUCET_SMART_CONTRACT_ADDRESS,
             transaction_name=TransactionName.ADD_TOKEN,
-            transaction_type=TransactionType.SMART_CONTRACT,
             input=input,
             value=1,
-            wallet=self,
         )
-        transaction.execute()
-        data = transaction.validate()
-
-        return data
 
     def create_allocation(
         self,
@@ -167,50 +173,32 @@ class Wallet(ConnectionBase):
             "preferred_blobbers": preferred_blobbers,
         }
 
-        transaction = Transaction.create_transaction(
+        return self._handle_transaction(
             transaction_name=TransactionName.NEW_ALLOCATION_REQUEST,
-            transaction_type=TransactionType.SMART_CONTRACT,
             input=input,
-            wallet=self,
             value=lock_tokens,
-            sc_address=STORAGE_SMART_CONTRACT_ADDRESS,
         )
-        transaction.execute()
-        data = transaction.validate()
-
-        return data
 
     def lock_tokens(self, amount, hours=0, minutes=0):
         if hours < 0 or minutes < 0:
             raise Exception("Invalid time")
 
-        duration = f"{hours}h{minutes}m"
-
-        input = {"duration": duration}
-        transaction = Transaction.create_transaction(
+        input = {"duration": f"{hours}h{minutes}m"}
+        return self._handle_transaction(
             transaction_name=TransactionName.LOCK_TOKEN,
-            transaction_type=TransactionType.SMART_CONTRACT,
             input=input,
             wallet=self,
             value=amount,
             sc_address=INTEREST_POOL_SMART_CONTRACT_ADDRESS,
         )
-        transaction.execute()
-        data = transaction.validate()
-        return data
 
     def create_read_pool(self):
         input = None
-        transaction = Transaction.create_transaction(
+        return self._handle_transaction(
             transaction_name=TransactionName.STORAGESC_CREATE_READ_POOL,
-            transaction_type=TransactionType.SMART_CONTRACT,
             input=input,
-            wallet=self,
+            raise_exception=True,
         )
-        transaction.execute()
-        data = transaction.validate()
-
-        return data
 
     def miner_lock_token(
         self,
@@ -219,22 +207,93 @@ class Wallet(ConnectionBase):
     ):
         """Lock tokens on miner"""
         input = {"id": id}
-        transaction = Transaction.create_transaction(
+        return self._handle_transaction(
             transaction_name=TransactionName.MINERSC_LOCK,
-            transaction_type=TransactionType.SMART_CONTRACT,
             input=input,
-            wallet=self,
             value=amount,
             sc_address=MINER_SMART_CONTRACT_ADDRESS,
+            raise_exception=True,
         )
-        transaction.execute()
-        data = transaction.validate()
 
-        return data
+    def miner_unlock_token(self, node_id, pool_id):
+        input = {"id": node_id, "pool_id": pool_id}
+        return self._handle_transaction(
+            transaction_name=TransactionName.MINERSC_UNLOCK,
+            input=input,
+            sc_address=MINER_SMART_CONTRACT_ADDRESS,
+            raise_exception=True,
+        )
+
+    def update_miner_settings(
+        self,
+        miner_id="",
+        miner_url="",
+        delegate_wallet="",
+        service_charge=0,
+        num_delegates=0,
+        min_stake=0,
+        max_stake=0,
+        block_reward=None,
+        service_charge_stat=None,
+        users_fee=None,
+        block_sharders_fee=None,
+        sharder_rewards=None,
+        pending_pools=[miner_delegate_pool],
+        active_pools=[miner_delegate_pool],
+        deleting_pools=[miner_delegate_pool],
+    ):
+
+        miner_stat = {
+            "block_reward,omitempty": block_reward,
+            "service_charge,omitempty": service_charge_stat,
+            "users_fee,omitempty": users_fee,
+            "block_sharders_fee,omitempty": block_sharders_fee,
+            "sharder_rewards,omitempty": sharder_rewards,
+        }
+
+        simple_miner_info = {
+            "id": miner_id,
+            "url": miner_url,
+            "delegate_wallet": delegate_wallet,
+            "service_charge": service_charge,
+            "number_of_delegates": num_delegates,
+            "min_stake": min_stake,
+            "max_stake": max_stake,
+            "stat": miner_stat,
+        }
+
+        input = {
+            "simple_miner": simple_miner_info,
+            "pending": pending_pools,
+            "active": active_pools,
+            "deleting_pools": deleting_pools,
+        }
 
     # --------------
     # Private Methods
     # --------------
+
+    def _handle_transaction(
+        self,
+        transaction_name,
+        input,
+        transaction_type=TransactionType.SMART_CONTRACT,
+        value=0,
+        sc_address=STORAGE_SMART_CONTRACT_ADDRESS,
+        raise_exception=False,
+    ):
+        transaction = Transaction.create_transaction(
+            transaction_name=transaction_name,
+            transaction_type=transaction_type,
+            input=input,
+            wallet=self,
+            value=value,
+            sc_address=sc_address,
+        )
+        transaction.execute()
+        data = transaction.validate(raise_exception)
+
+        return data
 
     def _filter_by_allocation(self, res, allocation_id, format="dict"):
         pool_info = []
@@ -312,20 +371,6 @@ class Wallet(ConnectionBase):
     # TODO: Fix methods
     # All below methods need confirmation
     # -----------------
-
-    def miner_unlock_token(self, pool_id, id, type):
-        """Unlock tokens from miner"""
-        payload = json.dumps(
-            {
-                "name": "deleteFromDelegatePool",
-                "input": {"pool_id": pool_id, "id": id, "type": type},
-            }
-        )
-        res = self._execute_smart_contract(
-            to_client_id=MINER_SMART_CONTRACT_ADDRESS,
-            payload=payload,
-        )
-        return res
 
     def blobber_lock_token(self, transaction_value, blobber_id):
         """Lock tokens on blobber"""
