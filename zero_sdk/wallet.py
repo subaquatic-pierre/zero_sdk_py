@@ -89,7 +89,24 @@ class Wallet(ConnectionBase):
         except AttributeError:
             return res
 
-    def get_pool_info(self, node_id, pool_id):
+    def get_lock_tokens(self):
+        endpoint = f"{Endpoints.GET_LOCKED_TOKENS}?client_id={self.client_id}"
+        empty_return_value = {
+            "message": "Failed to get locked tokens.",
+            "code": "resource_not_found",
+            "error": "resource_not_found: can't find user node",
+        }
+        res = self._consensus_from_workers(
+            "sharders", endpoint, empty_return_value=empty_return_value
+        )
+        return res
+
+    def get_lock_config(self):
+        endpoint = Endpoints.GET_LOCK_CONFIG
+        res = self._consensus_from_workers("sharders", endpoint)
+        return res
+
+    def get_stake_pool_info(self, node_id, pool_id):
         endpoint = f"{Endpoints.GET_MINERSC_POOL_STATS}?id={node_id}&pool_id={pool_id}"
         empty_return_value = {"pools": {}}
         res = self._consensus_from_workers(
@@ -97,7 +114,7 @@ class Wallet(ConnectionBase):
         )
         return res
 
-    def get_user_pool_info(self):
+    def list_stake_pool_info(self):
         endpoint = f"{Endpoints.GET_MINERSC_USER_STATS}?client_id={self.client_id}"
         empty_return_value = {"pools": {}}
         res = self._consensus_from_workers(
@@ -107,6 +124,28 @@ class Wallet(ConnectionBase):
             return res.get("pools")
         except:
             return res
+
+    # def get_vesting_pool_info(self):
+    #     endpoint = f"{Endpoints.GET_MINERSC_USER_STATS}?client_id={self.client_id}"
+    #     empty_return_value = {"pools": {}}
+    #     res = self._consensus_from_workers(
+    #         "sharders", endpoint, empty_return_value=empty_return_value
+    #     )
+    #     try:
+    #         return res.get("pools")
+    #     except:
+    #         return res
+
+    # def list_vesting_pool_info(self):
+    #     endpoint = f"{Endpoints.GET_MINERSC_USER_STATS}?client_id={self.client_id}"
+    #     empty_return_value = {"pools": {}}
+    #     res = self._consensus_from_workers(
+    #         "sharders", endpoint, empty_return_value=empty_return_value
+    #     )
+    #     try:
+    #         return res.get("pools")
+    #     except:
+    #         return res
 
     def get_read_pool_info(self, allocation_id=None):
         url = f"{Endpoints.SC_REST_READPOOL_STATS}?client_id={self.client_id}"
@@ -179,7 +218,7 @@ class Wallet(ConnectionBase):
             value=lock_tokens,
         )
 
-    def lock_tokens(self, amount, hours=0, minutes=0):
+    def lock_token(self, amount, hours=0, minutes=0):
         if hours < 0 or minutes < 0:
             raise Exception("Invalid time")
 
@@ -187,8 +226,15 @@ class Wallet(ConnectionBase):
         return self._handle_transaction(
             transaction_name=TransactionName.LOCK_TOKEN,
             input=input,
-            wallet=self,
             value=amount,
+            sc_address=INTEREST_POOL_SMART_CONTRACT_ADDRESS,
+        )
+
+    def unlock_token(self, pool_id):
+        input = {"pool_id": pool_id}
+        return self._handle_transaction(
+            transaction_name=TransactionName.UNLOCK_TOKEN,
+            input=input,
             sc_address=INTEREST_POOL_SMART_CONTRACT_ADDRESS,
         )
 
@@ -412,23 +458,6 @@ class Wallet(ConnectionBase):
             to_client_id=STORAGE_SMART_CONTRACT_ADDRESS,
             payload=payload,
         )
-        return res
-
-    def get_locked_tokens(self):
-        endpoint = f"{Endpoints.GET_LOCKED_TOKENS}?client_id={self.client_id}"
-        empty_return_value = {
-            "message": "Failed to get locked tokens.",
-            "code": "resource_not_found",
-            "error": "resource_not_found: can't find user node",
-        }
-        res = self._consensus_from_workers(
-            "sharders", endpoint, empty_return_value=empty_return_value
-        )
-        return res
-
-    def get_lock_config(self):
-        endpoint = Endpoints.GET_LOCK_CONFIG
-        res = self._consensus_from_workers("sharders", endpoint)
         return res
 
     def allocation_min_lock(

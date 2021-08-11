@@ -129,6 +129,7 @@ class Endpoints:
 
     # VESTING
     VP_GET_CONFIG = "v1/screst/" + VESTING_SMART_CONTRACT_ADDRESS + "/getConfig"
+    VP_GET_CONFIG = "v1/screst/" + VESTING_SMART_CONTRACT_ADDRESS + "/getConfig"
 
     # BLOBBER
     ALLOCATION_FILE_LIST = "/v1/file/list/"

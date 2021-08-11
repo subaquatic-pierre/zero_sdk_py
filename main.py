@@ -25,8 +25,13 @@ network = Network.from_object(default_network_config_obj)
 wallet = Wallet.from_object(default_wallet_config_obj, network)
 aloc = Allocation(aloc_id, wallet)
 
-data = wallet.send_tokens(send_wallet_id, 3, "Cool send")
+# data = wallet.lock_tokens(4, 1, minutes=14)
 
+# pprint(data)
+
+data = wallet.unlock_token(
+    "f814d525296e867b643e596b5fcc583f2cee8fa0964b0afd0865082f39e4f5bd"
+)
 pprint(data)
 
 # new_aloc = wallet.create_allocation(lock_tokens=2)
