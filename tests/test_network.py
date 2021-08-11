@@ -77,9 +77,8 @@ class TestNetworkChainMethods(TestCase):
 
     def _setup_mock(self, filename):
         res_obj = from_json(os.path.join(TEST_DIR, f"fixtures/network/{filename}"))
-        mock_response = MockResponse(200, res_obj)
-        request_mock = MagicMock(return_value=mock_response)
-        self.network._request = request_mock
+        request_mock = MagicMock(return_value=res_obj)
+        self.network._consensus_from_workers = request_mock
 
     def test_get_network_chain_stats(self):
         """Test get_network_chain_stats returns valid data"""

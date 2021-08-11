@@ -101,15 +101,6 @@ class TestGetConsensus(TestCase):
         )
         self.assertIn("current_round", final_data)
 
-    def test_error_key_in_response(self):
-        chain_stats_obj = get_chain_stats()
-        chain_stats_obj["error"] = "There was an error"
-        self._setup_mock(200, chain_stats_obj)
-        with self.assertRaises(Exception):
-            self.connection._consensus_from_workers(
-                "sharders", "http://placeholder.com"
-            )
-
     def test_min_consensus_error(self):
         self.connection = build_network(200)
         self._setup_mock(200, get_chain_stats())

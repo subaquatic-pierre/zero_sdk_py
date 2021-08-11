@@ -92,7 +92,7 @@ class ConnectionBase(ABC):
                 "num_confirmations": confirmation_weight,
             }
 
-    def _check_highest_consensus(self, consensus_data={}, num_total_workers=0):
+    def _check_highest_consensus(self, consensus_data, num_total_workers=0):
         """Check consensus data for highest confirmation count,
         return object and percentage of confirmations"""
         greatest_num_confirmations = 0
@@ -109,9 +109,9 @@ class ConnectionBase(ABC):
         percentage_confirmations = (
             greatest_num_confirmations / num_total_workers
         ) * 100
-        highest_confirmations = consensus_data.get(key_for_highest_confirmations, {})
+        highest_confirmations = consensus_data.get(key_for_highest_confirmations)
 
-        return (percentage_confirmations, highest_confirmations.get("data", {}))
+        return (percentage_confirmations, highest_confirmations.get("data"))
 
     # -----------------------------------------------------
 
@@ -157,16 +157,15 @@ class ConnectionBase(ABC):
             for future in as_completed(future_responses):
                 response = future.result()
 
-                # Response error checking
+                # Error checking and parsing
                 response_data = self._check_status_code(response)
                 response_data = self._handle_empty_return_value(
                     response_data, empty_return_value, endpoint
                 )
-                if not type(response_data) == str and type(response_data) != list:
-                    if response_data:
-                        err = response_data.get("error")
-                        if err:
-                            continue
+
+                # Build consesus data object
+                num_requests += 1
+                self._append_response_to_consensus_data(response_data, consensus_data)
 
                 # Check highest percentage of consensus as each future is completed
                 percentage_consensus, highest_consensus = self._check_highest_consensus(
@@ -174,19 +173,13 @@ class ConnectionBase(ABC):
                 )
 
                 # Raise exception if minimum consensus not acheived
-                minimum_consensus_reached = self._check_minimum_consensus_achieved(
+                min_consensus_reached = self._check_min_consensus_achieved(
                     percentage_consensus, min_confirmation, num_requests, len(workers)
                 )
 
-                if minimum_consensus_reached:
+                if min_consensus_reached:
                     executor.shutdown(wait=False)
                     return highest_consensus
-                else:
-                    # Build consesus data object on future completion
-                    num_requests += 1
-                    self._append_response_to_consensus_data(
-                        response_data, consensus_data
-                    )
 
     def _calculate_confirmation_weighting(
         self, response_data, endpoint="", current_weighting=1
@@ -200,7 +193,7 @@ class ConnectionBase(ABC):
             return weight
         return current_weighting
 
-    def _check_minimum_consensus_achieved(
+    def _check_min_consensus_achieved(
         self, percentage_consensus, min_confirmation, num_requests, num_workers
     ):
         if num_requests >= num_workers:
