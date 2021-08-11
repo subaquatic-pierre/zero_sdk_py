@@ -5,6 +5,7 @@ from zero_sdk.const import Endpoints
 from zero_sdk.utils import hash_string
 from zero_sdk.connection import ConnectionBase
 from zero_sdk.exceptions import TransactionError
+from zero_sdk.const import STORAGE_SMART_CONTRACT_ADDRESS
 
 
 class Transaction(ConnectionBase):
@@ -64,6 +65,7 @@ class Transaction(ConnectionBase):
         try:
             response_hash = self.response_data.get("entity").get("hash")
         except:
+            print(self.response_data)
             raise TransactionError("Response doesnt contain hash")
 
         if response_hash != self.hash:
@@ -78,7 +80,7 @@ class Transaction(ConnectionBase):
             payload,
         )
 
-    def validate(self):
+    def validate(self, raise_exception=False):
         for i in range(5):
             sleep(1)
             try:
@@ -93,13 +95,21 @@ class Transaction(ConnectionBase):
                 break
 
         if self.status == 1:
-            return (self.status == 1, self.confirmation_data)
+            return self.confirmation_data
 
-        return False, self.response_data
+        if raise_exception:
+            raise TransactionError("Transaction could to be confirmed")
+        else:
+            return self.response_data
 
     @staticmethod
     def create_transaction(
-        sc_address, transaction_name, transaction_type, input, value, wallet
+        transaction_name,
+        transaction_type,
+        input,
+        wallet,
+        value=0,
+        sc_address=STORAGE_SMART_CONTRACT_ADDRESS,
     ):
         return Transaction(
             sc_address,

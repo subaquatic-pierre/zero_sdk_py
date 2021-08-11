@@ -57,14 +57,15 @@
 | list               |                                |                  | list files from blobbers                                  |
 | list-all           |                                |                  | list all files from blobbers                              |
 | listallocations    | Wallet.list_allocations        | Tested           | List allocations for the client                           |
-| ls-blobbers        |                                |                  | Show active blobbers in storage SC.                       |
+| ls-blobbers        | Allocation.list_blobbers       | No Tests         | Show active blobbers in storage SC.                       |
 | meta               |                                |                  | get meta data of files from blobbers                      |
 | move               |                                |                  | move an object(file/folder) to another folder on blobbers |
 | newallocation      | Wallet.create_allocation       | Tested           | Creates a new allocation                                  |
 | register           | Network.create_wallet          | Tested           | Registers the wallet with the blockchain                  |
 | rename             |                                |                  | rename an object(file/folder) on blobbers                 |
-| rp-create          | Wallet.create_read_pool        |                  | Create read pool if missing                               |
-| rp-info            | Wallet.read_pool_info          |                  | Read pool information.                                    |
+| rp-create          | Wallet.create_read_pool        | No Tests         | Create read pool if missing                               |
+| rp-info            | Wallet.get_read_pool_info      | No Tests         | Read pool information.                                    |
+|                    | Allocation.get_read_pool_info  | No Tests         |                                                           |
 | rp-lock            |                                |                  | Lock some tokens in read pool.                            |
 | rp-unlock          |                                |                  | Unlock some expired tokens in a read pool.                |
 | sc-config          |                                |                  | Show storage SC configuration.                            |
@@ -98,13 +99,13 @@
 | getblobbers        | Allocation.get_blobber_stats   | Tested   | Get registered blobbers from sharders                             |
 | getid              | Network.get_worker_id          | No Tests | Get Miner or Sharder ID from its URL                              |
 | getlockedtokens    | Wallet.get_locked_tokens       | No Tests | Get locked tokens                                                 |
-| lock               |                                |          | Lock tokens                                                       |
+| lock               | Wallet.lock_tokens             | No Tests | Lock tokens                                                       |
 | lockconfig         | Wallet.get_lock_config         | No Tests | Get lock configuration                                            |
 | ls-miners          | Network.get_miner_list         | No Tests | Get list of all active miners fro Miner SC                        |
 | ls-sharders        | Network.get_sharder_list       | No Tests | Get list of all active sharders fro Miner SC                      |
 | mn-config          | Network.get_miner_config       | No Tests | Get miner SC global info.                                         |
 | mn-info            | Network.get_node_stats         | No Tests | Get miner/sharder info from Miner SC.                             |
-| mn-lock            |                                |          | Add miner/sharder stake.                                          |
+| mn-lock            | Wallet.miner_lock_token        |          | Add miner/sharder stake.                                          |
 | mn-pool-info       |                                |          | Get miner/sharder pool info from Miner SC.                        |
 | mn-unlock          |                                |          | Unlock miner/sharder stake.                                       |
 | mn-update-settings |                                |          | Change miner/sharder settings in Miner SC.                        |
@@ -112,7 +113,7 @@
 | recoverwallet      | Network.recover_wallet         | Tested   | Recover wallet                                                    |
 | register           | Network.create_wallet          | Tested   | Registers the wallet with the blockchain                          |
 | send               |                                |          | Send ZCN tokens to another wallet                                 |
-| unlock             |                                |          | Unlock tokens                                                     |
+| unlock             | Wallet.unlock_tokens           | No Tests | Unlock tokens                                                     |
 | verify             |                                |          | verify transaction                                                |
 | version            |                                |          | Prints version information                                        |
 | vp-add             |                                |          | Add a vesting pool                                                |

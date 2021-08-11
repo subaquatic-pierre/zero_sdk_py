@@ -67,27 +67,6 @@ class Wallet(ConnectionBase):
 
         return wrapper
 
-    def lock_tokens(self, amount_tokens, hours, minutes):
-        if hours < 0 or minutes < 0:
-            raise Exception("Invalid time")
-
-        duration = f"{hours}h{minutes}m"
-        num_tokens = amount_tokens * 10000000000
-
-        payload = json.dumps(
-            {
-                "name": TransactionName.LOCK_TOKEN,
-                "input": {"duration": duration},
-            }
-        )
-
-        res = self._execute_smart_contract(
-            to_client_id=INTEREST_POOL_SMART_CONTRACT_ADDRESS,
-            payload=payload,
-            transaction_value=num_tokens,
-        )
-        return res
-
     def get_balance(self, format="default") -> int:
         """Get Wallet balance
         Return float value of tokens
@@ -117,22 +96,6 @@ class Wallet(ConnectionBase):
         )
         return res
 
-    def add_tokens(self):
-        input = "give me tokens"
-        transaction = Transaction.create_transaction(
-            sc_address=FAUCET_SMART_CONTRACT_ADDRESS,
-            transaction_name=TransactionName.ADD_TOKEN,
-            transaction_type=TransactionType.SMART_CONTRACT,
-            input=input,
-            value=1,
-            wallet=self,
-        )
-        transaction.execute()
-        valid, data = transaction.validate()
-        if not valid:
-            raise TransactionError("Transaction could to be confirmed")
-        return data
-
     def get_read_pool_info(self, allocation_id=None):
         url = f"{Endpoints.SC_REST_READPOOL_STATS}?client_id={self.client_id}"
         res = self._consensus_from_workers("sharders", url)
@@ -150,6 +113,34 @@ class Wallet(ConnectionBase):
 
         return res
 
+    def list_allocations(self):
+        url = f"{Endpoints.SC_REST_ALLOCATIONS}?client={self.client_id}"
+        res = self._consensus_from_workers("sharders", url)
+        return res
+
+    def get_allocation_info(self, allocation_id):
+        alocs = self.list_allocations()
+        return self._filter_by_allocation(alocs, allocation_id, "list")
+
+    # --------------
+    # Smart Contract Methods
+    # --------------
+
+    def add_tokens(self):
+        input = "give me tokens"
+        transaction = Transaction.create_transaction(
+            sc_address=FAUCET_SMART_CONTRACT_ADDRESS,
+            transaction_name=TransactionName.ADD_TOKEN,
+            transaction_type=TransactionType.SMART_CONTRACT,
+            input=input,
+            value=1,
+            wallet=self,
+        )
+        transaction.execute()
+        data = transaction.validate()
+
+        return data
+
     def create_allocation(
         self,
         data_shards=AllocationConfig.DATA_SHARDS,
@@ -163,42 +154,96 @@ class Wallet(ConnectionBase):
         expiration_date=time(),
     ):
         future_date = int(expiration_date + timedelta(days=30).total_seconds())
-
-        payload = json.dumps(
-            {
-                "name": "new_allocation_request",
-                "input": {
-                    "data_shards": data_shards,
-                    "parity_shards": parity_shards,
-                    "owner_id": self.client_id,
-                    "owner_public_key": self.public_key,
-                    "size": size,
-                    "expiration_date": future_date,
-                    "read_price_range": read_price,
-                    "write_price_range": write_price,
-                    "max_challenge_completion_time": max_challenge_completion_time,
-                    "preferred_blobbers": preferred_blobbers,
-                },
-            }
-        )
-
-        res = self._execute_smart_contract(payload, transaction_value=lock_tokens)
-        transaction_hash = res["entity"]["hash"]
-        sleep(5)
-        confirmation = self.network.check_transaction_status(transaction_hash)
-        hash = confirmation.get("hash")
-        if hash:
-            return create_allocation(hash, self)
-
-        return {
-            "status": "unconfirmed",
-            "message": "Allocation creation could not be confirmed",
+        input = {
+            "data_shards": data_shards,
+            "parity_shards": parity_shards,
+            "owner_id": self.client_id,
+            "owner_public_key": self.public_key,
+            "size": size,
+            "expiration_date": future_date,
+            "read_price_range": read_price,
+            "write_price_range": write_price,
+            "max_challenge_completion_time": max_challenge_completion_time,
+            "preferred_blobbers": preferred_blobbers,
         }
 
-    def _filter_by_allocation(self, res, allocation_id):
-        pool_info = []
+        transaction = Transaction.create_transaction(
+            transaction_name=TransactionName.NEW_ALLOCATION_REQUEST,
+            transaction_type=TransactionType.SMART_CONTRACT,
+            input=input,
+            wallet=self,
+            value=lock_tokens,
+            sc_address=STORAGE_SMART_CONTRACT_ADDRESS,
+        )
+        transaction.execute()
+        data = transaction.validate()
 
-        if allocation_id and res["pools"]:
+        return data
+
+    def lock_tokens(self, amount, hours=0, minutes=0):
+        if hours < 0 or minutes < 0:
+            raise Exception("Invalid time")
+
+        duration = f"{hours}h{minutes}m"
+
+        input = {"duration": duration}
+        transaction = Transaction.create_transaction(
+            transaction_name=TransactionName.LOCK_TOKEN,
+            transaction_type=TransactionType.SMART_CONTRACT,
+            input=input,
+            wallet=self,
+            value=amount,
+            sc_address=INTEREST_POOL_SMART_CONTRACT_ADDRESS,
+        )
+        transaction.execute()
+        data = transaction.validate()
+        return data
+
+    def create_read_pool(self):
+        input = None
+        transaction = Transaction.create_transaction(
+            transaction_name=TransactionName.STORAGESC_CREATE_READ_POOL,
+            transaction_type=TransactionType.SMART_CONTRACT,
+            input=input,
+            wallet=self,
+        )
+        transaction.execute()
+        data = transaction.validate()
+
+        return data
+
+    def miner_lock_token(
+        self,
+        amount,
+        id,
+    ):
+        """Lock tokens on miner"""
+        input = {"id": id}
+        transaction = Transaction.create_transaction(
+            transaction_name=TransactionName.MINERSC_LOCK,
+            transaction_type=TransactionType.SMART_CONTRACT,
+            input=input,
+            wallet=self,
+            value=amount,
+            sc_address=MINER_SMART_CONTRACT_ADDRESS,
+        )
+        transaction.execute()
+        data = transaction.validate()
+
+        return data
+
+    # --------------
+    # Private Methods
+    # --------------
+
+    def _filter_by_allocation(self, res, allocation_id, format="dict"):
+        pool_info = []
+        if format == "list":
+            for aloc in res:
+                if aloc["id"] == allocation_id:
+                    return aloc
+
+        elif allocation_id and res["pools"]:
             pools = res["pools"]
             for pool in pools:
                 if pool["allocation_id"] == allocation_id:
@@ -208,11 +253,6 @@ class Wallet(ConnectionBase):
                 return []
             else:
                 return pool_info
-
-    def list_allocations(self):
-        url = f"{Endpoints.SC_REST_ALLOCATIONS}?client={self.client_id}"
-        res = self._consensus_from_workers("sharders", url)
-        return res
 
     # --------------------
     # Versing pool methods
@@ -287,18 +327,6 @@ class Wallet(ConnectionBase):
         )
         return res
 
-    def miner_lock_token(self, transaction_value, id, type):
-        """Lock tokens on miner"""
-        payload = json.dumps(
-            {"name": "addToDelegatePool", "input": {"id": id, "type": type}}
-        )
-        res = self._execute_smart_contract(
-            to_client_id=MINER_SMART_CONTRACT_ADDRESS,
-            transaction_value=transaction_value,
-            payload=payload,
-        )
-        return res
-
     def blobber_lock_token(self, transaction_value, blobber_id):
         """Lock tokens on blobber"""
         payload = json.dumps(
@@ -340,11 +368,6 @@ class Wallet(ConnectionBase):
     def get_lock_config(self):
         endpoint = Endpoints.GET_LOCK_CONFIG
         res = self._consensus_from_workers("sharders", endpoint)
-        return res
-
-    def create_read_pool(self):
-        payload = json.dumps({"name": "new_read_pool", "input": None})
-        res = self._execute_smart_contract(payload)
         return res
 
     def allocation_min_lock(

@@ -23,6 +23,9 @@ class Allocation(ConnectionBase):
         res = self._consensus_from_workers("sharders", url)
         return res
 
+    def list_blobbers(self):
+        return self.get_blobber_stats()
+
     def get_blobber_stats(self, blobber_url=None, blobber_id=None):
         """Get stats of each blobber used by the allocation, detailed
         information of allocation size and write markers per blobber"""
@@ -61,10 +64,11 @@ class Allocation(ConnectionBase):
 
     def get_read_pool_info(self):
         data = self.wallet.get_read_pool_info(self.id)
-        data_display = DataDisplay.from_list(
-            data, fields=["id", "balance", "allocation_id"], heading="Read Pool Info"
-        )
-        return data_display.build_list_display()
+        return data
+        # data_display = DataDisplay.from_list(
+        #     data, fields=["id", "balance", "allocation_id"], heading="Read Pool Info"
+        # )
+        # return data_display.build_list_display()
 
     def get_write_pool_info(self):
         data = self.wallet.get_write_pool_info(self.id)

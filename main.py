@@ -18,8 +18,22 @@ from zero_sdk.utils import pprint
 from zero_sdk.network import Network
 
 # txn_hash = "17297e21e21c59b32de70f082a8668166cc9cb06eb5071abd2907089c45c7238"
-aloc_id = "296896621095a9d8a51e6e4dba2bdb5661ea94ffd8fdb0a084301bffd81fe7e6"
+aloc_id = "fd1835c64f4b96f87ccfb478712a8fb09149ad38bbfada9c9e2c9986f62c7202"
 
 network = Network.from_object(default_network_config_obj)
 wallet = Wallet.from_object(default_wallet_config_obj, network)
 aloc = Allocation(aloc_id, wallet)
+
+data = wallet.get_locked_tokens()
+
+pprint(data)
+
+# data = wallet.lock_tokens(2, minutes=10)
+
+# pprint(data)
+
+# new_aloc = wallet.create_allocation(lock_tokens=2)
+
+# pprint(data)
+
+# print(new_aloc.get_allocation_info())
