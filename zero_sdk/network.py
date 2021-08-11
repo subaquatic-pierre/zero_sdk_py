@@ -3,7 +3,7 @@ import json
 from zero_sdk.config import PROJECT_ROOT
 import requests
 
-from zero_sdk.connection_base import ConnectionBase
+from zero_sdk.connection import ConnectionBase
 from zero_sdk.const import Endpoints, STORAGE_SMART_CONTRACT_ADDRESS
 from zero_sdk.workers import Blobber, Miner, Sharder
 from zero_sdk.utils import hostname_from_config_obj

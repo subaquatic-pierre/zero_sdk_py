@@ -5,6 +5,12 @@ from pathlib import Path
 from time import time
 import json
 
+from zero_sdk.exceptions import TransactionError
+from zero_sdk.transaction import Transaction
+from zero_sdk.network import Network
+from zero_sdk.utils import generate_random_letters, create_allocation
+from zero_sdk.bls import sign_payload
+from zero_sdk.connection import ConnectionBase
 from zero_sdk.const import (
     INTEREST_POOL_SMART_CONTRACT_ADDRESS,
     STORAGE_SMART_CONTRACT_ADDRESS,
@@ -15,10 +21,6 @@ from zero_sdk.const import (
     TransactionType,
     TransactionName,
 )
-from zero_sdk.network import Network
-from zero_sdk.utils import hash_string, generate_random_letters, create_allocation
-from zero_sdk.bls import sign_payload
-from zero_sdk.connection_base import ConnectionBase
 
 
 class Wallet(ConnectionBase):
@@ -64,66 +66,6 @@ class Wallet(ConnectionBase):
                 )
 
         return wrapper
-
-    def _execute_smart_contract(
-        self,
-        payload,
-        to_client_id=None,
-        transaction_value=0,
-    ):
-        if not to_client_id:
-            to_client_id = STORAGE_SMART_CONTRACT_ADDRESS
-        return self._submit_transaction(
-            to_client_id,
-            transaction_value,
-            payload,
-            transaction_type=TransactionType.SMART_CONTRACT,
-        )
-
-    def _execute_faucet_smart_contract(
-        self, method_name="pour", input="pour_tokens", transaction_value=10000000000
-    ):
-        payload = json.dumps({"name": method_name, "input": input})
-
-        return self._execute_smart_contract(
-            to_client_id=FAUCET_SMART_CONTRACT_ADDRESS,
-            transaction_value=transaction_value,
-            payload=payload,
-        )
-
-    def _submit_transaction(self, to_client_id, value, payload, transaction_type):
-        hash_payload = hash_string(payload)
-        ts = int(time())
-
-        hashdata = f"{ts}:{self.client_id}:{to_client_id}:{value}:{hash_payload}"
-
-        hash = hash_string(hashdata)
-        signature = self.sign(hash)
-
-        data = json.dumps(
-            {
-                "client_id": self.client_id,
-                "public_key": self.public_key,
-                "transaction_value": value,
-                "transaction_data": payload,
-                "transaction_type": transaction_type,
-                "creation_date": ts,
-                "to_client_id": to_client_id,
-                "hash": hash,
-                "transaction_fee": 0,
-                "signature": signature,
-                "version": "1.0",
-            }
-        )
-        headers = {"Content-Type": "application/json", "Connection": "keep-alive"}
-        res = self._consensus_from_workers(
-            "miners",
-            endpoint=Endpoints.PUT_TRANSACTION,
-            method="POST",
-            data=data,
-            headers=headers,
-        )
-        return res
 
     def lock_tokens(self, amount_tokens, hours, minutes):
         if hours < 0 or minutes < 0:
@@ -176,7 +118,20 @@ class Wallet(ConnectionBase):
         return res
 
     def add_tokens(self):
-        return self._execute_faucet_smart_contract()
+        input = "give me tokens"
+        transaction = Transaction.create_transaction(
+            sc_address=FAUCET_SMART_CONTRACT_ADDRESS,
+            transaction_name=TransactionName.ADD_TOKEN,
+            transaction_type=TransactionType.SMART_CONTRACT,
+            input=input,
+            value=1,
+            wallet=self,
+        )
+        transaction.execute()
+        valid, data = transaction.validate()
+        if not valid:
+            raise TransactionError("Transaction could to be confirmed")
+        return data
 
     def get_read_pool_info(self, allocation_id=None):
         url = f"{Endpoints.SC_REST_READPOOL_STATS}?client_id={self.client_id}"
@@ -207,7 +162,7 @@ class Wallet(ConnectionBase):
         max_challenge_completion_time=AllocationConfig.MAX_CHALLENGE_COMPLETION_TIME,
         expiration_date=time(),
     ):
-        future = int(expiration_date + timedelta(days=30).total_seconds())
+        future_date = int(expiration_date + timedelta(days=30).total_seconds())
 
         payload = json.dumps(
             {
@@ -218,7 +173,7 @@ class Wallet(ConnectionBase):
                     "owner_id": self.client_id,
                     "owner_public_key": self.public_key,
                     "size": size,
-                    "expiration_date": future,
+                    "expiration_date": future_date,
                     "read_price_range": read_price,
                     "write_price_range": write_price,
                     "max_challenge_completion_time": max_challenge_completion_time,
@@ -257,6 +212,15 @@ class Wallet(ConnectionBase):
     def list_allocations(self):
         url = f"{Endpoints.SC_REST_ALLOCATIONS}?client={self.client_id}"
         res = self._consensus_from_workers("sharders", url)
+        return res
+
+    # --------------------
+    # Versing pool methods
+    # --------------------
+
+    def get_vesting_pool_config(self):
+        endpoint = Endpoints.VP_GET_CONFIG
+        res = self._consensus_from_workers("sharders", endpoint)
         return res
 
     def sign(self, payload):
@@ -440,13 +404,4 @@ class Wallet(ConnectionBase):
         )
         res = self._execute_smart_contract(payload, transaction_value=tokens)
 
-        return res
-
-    # --------------------
-    # Versing pool methods
-    # --------------------
-
-    def get_vesting_pool_config(self):
-        endpoint = Endpoints.VP_GET_CONFIG
-        res = self._consensus_from_workers("sharders", endpoint)
         return res

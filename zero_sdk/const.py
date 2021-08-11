@@ -56,6 +56,8 @@ class TransactionName:
     STORAGESC_ADD_CURATOR = "add_curator"
     STORAGESC_CURATOR_TRANSFER = "curator_transfer_allocation"
 
+    ADD_TOKEN = "pour"
+
     #  Miner SC
     MINERSC_LOCK = "addToDelegatePool"
     MINERSC_UNLOCK = "deleteFromDelegatePool"
