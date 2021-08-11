@@ -29,9 +29,10 @@ aloc = Allocation(aloc_id, wallet)
 
 # pprint(data)
 
-data = wallet.unlock_token(
-    "f814d525296e867b643e596b5fcc583f2cee8fa0964b0afd0865082f39e4f5bd"
-)
+# vp_id = "ce4387472f04c3f5514134691d88663fde4187d1db32509c9ee8421ee95a1358"
+vp_id = "2bba5b05949ea59c80aed3ac3474d7379d3be737e8eb5a968c52295e48333ead:vestingpool:ce4387472f04c3f5514134691d88663fde4187d1db32509c9ee8421ee95a1358"
+
+data = wallet.get_vesting_pool_info(vp_id)
 pprint(data)
 
 # new_aloc = wallet.create_allocation(lock_tokens=2)

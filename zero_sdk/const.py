@@ -128,8 +128,11 @@ class Endpoints:
     )
 
     # VESTING
-    VP_GET_CONFIG = "v1/screst/" + VESTING_SMART_CONTRACT_ADDRESS + "/getConfig"
-    VP_GET_CONFIG = "v1/screst/" + VESTING_SMART_CONTRACT_ADDRESS + "/getConfig"
+    VESTINGSC_PFX = f"/v1/screst/{VESTING_SMART_CONTRACT_ADDRESS}"
+
+    GET_VESTING_CONFIG = f"{VESTINGSC_PFX}/getConfig"
+    GET_VESTING_POOL_INFO = f"{VESTINGSC_PFX}/getPoolInfo"
+    GET_VESTING_CLIENT_POOLS = f"{VESTINGSC_PFX}/getClientPools"
 
     # BLOBBER
     ALLOCATION_FILE_LIST = "/v1/file/list/"

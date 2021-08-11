@@ -125,27 +125,23 @@ class Wallet(ConnectionBase):
         except:
             return res
 
-    # def get_vesting_pool_info(self):
-    #     endpoint = f"{Endpoints.GET_MINERSC_USER_STATS}?client_id={self.client_id}"
-    #     empty_return_value = {"pools": {}}
-    #     res = self._consensus_from_workers(
-    #         "sharders", endpoint, empty_return_value=empty_return_value
-    #     )
-    #     try:
-    #         return res.get("pools")
-    #     except:
-    #         return res
+    def get_vesting_pool_config(self):
+        endpoint = Endpoints.GET_VESTING_CONFIG
+        res = self._consensus_from_workers("sharders", endpoint)
+        return res
 
-    # def list_vesting_pool_info(self):
-    #     endpoint = f"{Endpoints.GET_MINERSC_USER_STATS}?client_id={self.client_id}"
-    #     empty_return_value = {"pools": {}}
-    #     res = self._consensus_from_workers(
-    #         "sharders", endpoint, empty_return_value=empty_return_value
-    #     )
-    #     try:
-    #         return res.get("pools")
-    #     except:
-    #         return res
+    def get_vesting_pool_info(self, pool_id):
+        endpoint = f"{Endpoints.GET_VESTING_POOL_INFO}?pool_id={pool_id}"
+        res = self._consensus_from_workers("sharders", endpoint)
+        return res
+
+    def list_vesting_pool_info(self):
+        endpoint = f"{Endpoints.GET_VESTING_CLIENT_POOLS}?client_id={self.client_id}"
+        res = self._consensus_from_workers("sharders", endpoint)
+        try:
+            return res.get("pools")
+        except:
+            return res
 
     def get_read_pool_info(self, allocation_id=None):
         url = f"{Endpoints.SC_REST_READPOOL_STATS}?client_id={self.client_id}"
@@ -280,56 +276,8 @@ class Wallet(ConnectionBase):
             sc_address=to_client_id,
         )
 
-    def update_miner_settings(
-        self,
-        miner_id="",
-        miner_url="",
-        delegate_wallet="",
-        service_charge=0,
-        num_delegates=0,
-        min_stake=0,
-        max_stake=0,
-        block_reward=None,
-        service_charge_stat=None,
-        users_fee=None,
-        block_sharders_fee=None,
-        sharder_rewards=None,
-        pending_pools=[miner_delegate_pool],
-        active_pools=[miner_delegate_pool],
-        deleting_pools=[miner_delegate_pool],
-    ):
-
-        miner_stat = {
-            "block_reward": block_reward,
-            "service_charge": service_charge_stat,
-            "users_fee": users_fee,
-            "block_sharders_fee": block_sharders_fee,
-            "sharder_rewards": sharder_rewards,
-        }
-
-        simple_miner_info = {
-            "id": miner_id,
-            "url": miner_url,
-            "delegate_wallet": delegate_wallet,
-            "service_charge": service_charge,
-            "number_of_delegates": num_delegates,
-            "min_stake": min_stake,
-            "max_stake": max_stake,
-            "stat": miner_stat,
-        }
-
-        input = {
-            "simple_miner": simple_miner_info,
-            "pending": pending_pools,
-            "active": active_pools,
-            "deleting_pools": deleting_pools,
-        }
-
-        return self._handle_transaction(
-            transaction_name=TransactionName.MINERSC_SETTINGS,
-            input=input,
-            sc_address=MINER_SMART_CONTRACT_ADDRESS,
-        )
+    def create_vesting_pool(miner_id, amount, hours=0, minutes=0):
+        pass
 
     # --------------
     # Private Methods
@@ -374,15 +322,6 @@ class Wallet(ConnectionBase):
                 return []
             else:
                 return pool_info
-
-    # --------------------
-    # Versing pool methods
-    # --------------------
-
-    def get_vesting_pool_config(self):
-        endpoint = Endpoints.VP_GET_CONFIG
-        res = self._consensus_from_workers("sharders", endpoint)
-        return res
 
     def sign(self, payload):
         return sign_payload(self.private_key, payload)
@@ -433,6 +372,57 @@ class Wallet(ConnectionBase):
     # TODO: Fix methods
     # All below methods need confirmation
     # -----------------
+
+    def update_miner_settings(
+        self,
+        miner_id="",
+        miner_url="",
+        delegate_wallet="",
+        service_charge=0,
+        num_delegates=0,
+        min_stake=0,
+        max_stake=0,
+        block_reward=None,
+        service_charge_stat=None,
+        users_fee=None,
+        block_sharders_fee=None,
+        sharder_rewards=None,
+        pending_pools=[miner_delegate_pool],
+        active_pools=[miner_delegate_pool],
+        deleting_pools=[miner_delegate_pool],
+    ):
+
+        miner_stat = {
+            "block_reward": block_reward,
+            "service_charge": service_charge_stat,
+            "users_fee": users_fee,
+            "block_sharders_fee": block_sharders_fee,
+            "sharder_rewards": sharder_rewards,
+        }
+
+        simple_miner_info = {
+            "id": miner_id,
+            "url": miner_url,
+            "delegate_wallet": delegate_wallet,
+            "service_charge": service_charge,
+            "number_of_delegates": num_delegates,
+            "min_stake": min_stake,
+            "max_stake": max_stake,
+            "stat": miner_stat,
+        }
+
+        input = {
+            "simple_miner": simple_miner_info,
+            "pending": pending_pools,
+            "active": active_pools,
+            "deleting_pools": deleting_pools,
+        }
+
+        return self._handle_transaction(
+            transaction_name=TransactionName.MINERSC_SETTINGS,
+            input=input,
+            sc_address=MINER_SMART_CONTRACT_ADDRESS,
+        )
 
     def blobber_lock_token(self, transaction_value, blobber_id):
         """Lock tokens on blobber"""
