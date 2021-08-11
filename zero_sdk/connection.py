@@ -1,17 +1,13 @@
+import json
 from abc import ABC
-import copy
 from time import sleep
-from zero_sdk.const import Endpoints
+from requests.models import Response
 import requests
 from concurrent.futures import ThreadPoolExecutor, as_completed
-from threading import Thread
 
-import json
-from requests.models import Response
-from zero_sdk.utils import hash_string, timer
+from zero_sdk.const import Endpoints
+from zero_sdk.utils import hash_string
 from zero_sdk.exceptions import ConsensusError
-
-_STOP_THREAD = False
 
 
 class ConnectionBase(ABC):
@@ -173,11 +169,11 @@ class ConnectionBase(ABC):
                 )
 
                 # Raise exception if minimum consensus not acheived
-                min_consensus_reached = self._check_min_consensus_achieved(
+                is_min_consensus_reached = self._check_min_consensus_achieved(
                     percentage_consensus, min_confirmation, num_requests, len(workers)
                 )
 
-                if min_consensus_reached:
+                if is_min_consensus_reached:
                     executor.shutdown(wait=False)
                     return highest_consensus
 

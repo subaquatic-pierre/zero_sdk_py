@@ -9,7 +9,7 @@ from tests.mock_response import MockResponse
 
 from zero_sdk.const import Endpoints
 from zero_sdk.utils import from_json
-from zero_sdk.connection_base import ConnectionBase
+from zero_sdk.connection import ConnectionBase
 
 
 class Connection(ConnectionBase):

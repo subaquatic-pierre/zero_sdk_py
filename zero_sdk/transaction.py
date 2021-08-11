@@ -1,0 +1,111 @@
+import json
+from time import time, sleep
+
+from zero_sdk.const import Endpoints
+from zero_sdk.utils import hash_string
+from zero_sdk.connection import ConnectionBase
+from zero_sdk.exceptions import TransactionError
+
+
+class Transaction(ConnectionBase):
+    def __init__(
+        self,
+        sc_address,
+        transaction_name,
+        transaction_type,
+        input,
+        value,
+        wallet,
+    ) -> None:
+        self.sc_address = sc_address
+        self.input = input
+        self.name = transaction_name
+        self.type = transaction_type
+        self.value = value * 10000000000
+        self.network = wallet.network
+        self.wallet = wallet
+        self.status = 0
+        self.hash = None
+        self.response_data = None
+        self.confirmation_data = None
+
+    def _submit_transaction(self, payload):
+        hash_payload = hash_string(payload)
+        ts = int(time())
+
+        hashdata = f"{ts}:{self.wallet.client_id}:{self.sc_address}:{self.value}:{hash_payload}"
+
+        self.hash = hash_string(hashdata)
+        signature = self.wallet.sign(self.hash)
+
+        data = json.dumps(
+            {
+                "client_id": self.wallet.client_id,
+                "public_key": self.wallet.public_key,
+                "transaction_value": self.value,
+                "transaction_data": payload,
+                "transaction_type": self.type,
+                "creation_date": ts,
+                "to_client_id": self.sc_address,
+                "hash": self.hash,
+                "transaction_fee": 0,
+                "signature": signature,
+                "version": "1.0",
+            }
+        )
+        headers = {"Content-Type": "application/json", "Connection": "keep-alive"}
+        self.response_data = self._consensus_from_workers(
+            "miners",
+            endpoint=Endpoints.PUT_TRANSACTION,
+            method="POST",
+            data=data,
+            headers=headers,
+        )
+        try:
+            response_hash = self.response_data.get("entity").get("hash")
+        except:
+            raise TransactionError("Response doesnt contain hash")
+
+        if response_hash != self.hash:
+            raise TransactionError("Request hash and response hash do not match")
+
+        return self.response_data
+
+    def execute(self):
+        payload = json.dumps({"name": self.name, "input": self.input})
+
+        return self._submit_transaction(
+            payload,
+        )
+
+    def validate(self):
+        for i in range(5):
+            sleep(1)
+            try:
+                self.confirmation_data = self.network.check_transaction_status(
+                    self.hash
+                )
+                self.status = self.confirmation_data.get("transaction_status")
+            except:
+                pass
+
+            if self.status == 1:
+                break
+
+        if self.status == 1:
+            return (self.status == 1, self.confirmation_data)
+
+        return False, self.response_data
+
+    @staticmethod
+    def create_transaction(
+        sc_address, transaction_name, transaction_type, input, value, wallet
+    ):
+        return Transaction(
+            sc_address,
+            transaction_name,
+            transaction_type,
+            input,
+            value,
+            wallet,
+        )
