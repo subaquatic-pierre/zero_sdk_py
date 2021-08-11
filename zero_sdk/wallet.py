@@ -224,6 +224,16 @@ class Wallet(ConnectionBase):
             raise_exception=True,
         )
 
+    def send_token(self, to_client_id, amount, description=""):
+        input = description
+
+        return self._handle_transaction(
+            transaction_type=TransactionType.SEND,
+            input=input,
+            value=amount,
+            sc_address=to_client_id,
+        )
+
     def update_miner_settings(
         self,
         miner_id="",
@@ -244,11 +254,11 @@ class Wallet(ConnectionBase):
     ):
 
         miner_stat = {
-            "block_reward,omitempty": block_reward,
-            "service_charge,omitempty": service_charge_stat,
-            "users_fee,omitempty": users_fee,
-            "block_sharders_fee,omitempty": block_sharders_fee,
-            "sharder_rewards,omitempty": sharder_rewards,
+            "block_reward": block_reward,
+            "service_charge": service_charge_stat,
+            "users_fee": users_fee,
+            "block_sharders_fee": block_sharders_fee,
+            "sharder_rewards": sharder_rewards,
         }
 
         simple_miner_info = {
@@ -269,14 +279,20 @@ class Wallet(ConnectionBase):
             "deleting_pools": deleting_pools,
         }
 
+        return self._handle_transaction(
+            transaction_name=TransactionName.MINERSC_SETTINGS,
+            input=input,
+            sc_address=MINER_SMART_CONTRACT_ADDRESS,
+        )
+
     # --------------
     # Private Methods
     # --------------
 
     def _handle_transaction(
         self,
-        transaction_name,
         input,
+        transaction_name=None,
         transaction_type=TransactionType.SMART_CONTRACT,
         value=0,
         sc_address=STORAGE_SMART_CONTRACT_ADDRESS,

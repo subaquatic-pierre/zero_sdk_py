@@ -74,7 +74,10 @@ class Transaction(ConnectionBase):
         return self.response_data
 
     def execute(self):
-        payload = json.dumps({"name": self.name, "input": self.input})
+        if not self.name:
+            payload = self.input
+        else:
+            payload = json.dumps({"name": self.name, "input": self.input})
 
         return self._submit_transaction(
             payload,
