@@ -92,15 +92,14 @@
 
 | Go SDK             | Python SDK                     | Status   | Description                                                       |
 | ------------------ | ------------------------------ | -------- | ----------------------------------------------------------------- |
-| createmswallet     | Network.create_wallet          | Tested   | create multisig wallet                                            |
+| createmswallet     |                                |          | create multisig wallet                                            |
 | faucet             | Wallet.add_tokens              | Tested   | Faucet smart contract                                             |
 | getbalance         | Wallet.get_balance             | Tested   | Get balance from sharders                                         |
 | getblobbers        | Allocation.get_blobber_stats   | Tested   | Get registered blobbers from sharders                             |
 | getid              | Network.get_worker_id          | No Tests | Get Miner or Sharder ID from its URL                              |
-| getlockedtokens    |                                |          | Get locked tokens                                                 |
-| help               |                                |          | Help about any command                                            |
+| getlockedtokens    | Wallet.get_locked_tokens       | No Tests | Get locked tokens                                                 |
 | lock               |                                |          | Lock tokens                                                       |
-| lockconfig         |                                |          | Get lock configuration                                            |
+| lockconfig         | Wallet.get_lock_config         | No Tests | Get lock configuration                                            |
 | ls-miners          | Network.get_miner_list         | No Tests | Get list of all active miners fro Miner SC                        |
 | ls-sharders        | Network.get_sharder_list       | No Tests | Get list of all active sharders fro Miner SC                      |
 | mn-config          | Network.get_miner_config       | No Tests | Get miner SC global info.                                         |
@@ -111,7 +110,7 @@
 | mn-update-settings |                                |          | Change miner/sharder settings in Miner SC.                        |
 | mn-user-info       |                                |          | Get miner/sharder user pools info from Miner SC.                  |
 | recoverwallet      | Network.recover_wallet         | Tested   | Recover wallet                                                    |
-| register           | Network.register               | No Tests | Registers the wallet with the blockchain                          |
+| register           | Network.create_wallet          | Tested   | Registers the wallet with the blockchain                          |
 | send               |                                |          | Send ZCN tokens to another wallet                                 |
 | unlock             |                                |          | Unlock tokens                                                     |
 | verify             |                                |          | verify transaction                                                |

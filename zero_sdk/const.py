@@ -21,6 +21,47 @@ INTEREST_POOL_SMART_CONTRACT_ADDRESS = (
 )
 
 
+class TransactionName:
+    NEW_ALLOCATION_REQUEST = "new_allocation_request"
+    NEW_FREE_ALLOCATION = "free_allocation_request"
+    UPDATE_ALLOCATION_REQUEST = "update_allocation_request"
+    FREE_UPDATE_ALLOCATION = "free_update_allocation"
+    LOCK_TOKEN = "lock"
+    UNLOCK_TOKEN = "unlock"
+
+    ADD_FREE_ALLOCATION_ASSIGNER = "add_free_storage_assigner"
+
+    #  Vesting SC
+    VESTING_TRIGGER = "trigger"
+    VESTING_STOP = "stop"
+    VESTING_UNLOCK = "unlock"
+    VESTING_ADD = "add"
+    VESTING_DELETE = "delete"
+    VESTING_UPDATE_CONFIG = "update_config"
+
+    #  Storage SC
+    STORAGESC_FINALIZE_ALLOCATION = "finalize_allocation"
+    STORAGESC_CANCEL_ALLOCATION = "cancel_allocation"
+    STORAGESC_CREATE_ALLOCATION = "new_allocation_request"
+    STORAGESC_CREATE_READ_POOL = "new_read_pool"
+    STORAGESC_READ_POOL_LOCK = "read_pool_lock"
+    STORAGESC_READ_POOL_UNLOCK = "read_pool_unlock"
+    STORAGESC_STAKE_POOL_LOCK = "stake_pool_lock"
+    STORAGESC_STAKE_POOL_UNLOCK = "stake_pool_unlock"
+    STORAGESC_STAKE_POOL_PAY_INTERESTS = "stake_pool_pay_interests"
+    STORAGESC_UPDATE_BLOBBER_SETTINGS = "update_blobber_settings"
+    STORAGESC_UPDATE_ALLOCATION = "update_allocation_request"
+    STORAGESC_WRITE_POOL_LOCK = "write_pool_lock"
+    STORAGESC_WRITE_POOL_UNLOCK = "write_pool_unlock"
+    STORAGESC_ADD_CURATOR = "add_curator"
+    STORAGESC_CURATOR_TRANSFER = "curator_transfer_allocation"
+
+    #  Miner SC
+    MINERSC_LOCK = "addToDelegatePool"
+    MINERSC_UNLOCK = "deleteFromDelegatePool"
+    MINERSC_SETTINGS = "update_settings"
+
+
 class TransactionType:
     SEND = 0
     DATA = 10
@@ -65,9 +106,14 @@ class Endpoints:
         "v1/screst/" + STORAGE_SMART_CONTRACT_ADDRESS + "/allocation_min_lock"
     )
 
+    # INTEREST POOL
     GET_LOCKED_TOKENS = (
         "v1/screst/" + INTEREST_POOL_SMART_CONTRACT_ADDRESS + "/getPoolsStats"
     )
+    GET_LOCK_CONFIG = (
+        "v1/screst/" + INTEREST_POOL_SMART_CONTRACT_ADDRESS + "/getLockConfig"
+    )
+
     GET_USER_POOLS = "v1/screst/" + MINER_SMART_CONTRACT_ADDRESS + "/getUserPools"
 
     # STAKING

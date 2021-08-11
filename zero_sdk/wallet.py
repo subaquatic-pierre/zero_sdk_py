@@ -6,12 +6,14 @@ from time import time
 import json
 
 from zero_sdk.const import (
-    AllocationConfig,
-    Endpoints,
+    INTEREST_POOL_SMART_CONTRACT_ADDRESS,
+    STORAGE_SMART_CONTRACT_ADDRESS,
     FAUCET_SMART_CONTRACT_ADDRESS,
     MINER_SMART_CONTRACT_ADDRESS,
+    Endpoints,
+    AllocationConfig,
     TransactionType,
-    STORAGE_SMART_CONTRACT_ADDRESS,
+    TransactionName,
 )
 from zero_sdk.network import Network
 from zero_sdk.utils import hash_string, generate_random_letters, create_allocation
@@ -63,11 +65,19 @@ class Wallet(ConnectionBase):
 
         return wrapper
 
-    def _execute_smart_contract(self, payload, to_client_id=None, transaction_value=0):
+    def _execute_smart_contract(
+        self,
+        payload,
+        to_client_id=None,
+        transaction_value=0,
+    ):
         if not to_client_id:
             to_client_id = STORAGE_SMART_CONTRACT_ADDRESS
         return self._submit_transaction(
-            to_client_id, transaction_value, payload, TransactionType.SMART_CONTRACT
+            to_client_id,
+            transaction_value,
+            payload,
+            transaction_type=TransactionType.SMART_CONTRACT,
         )
 
     def _execute_faucet_smart_contract(
@@ -112,6 +122,27 @@ class Wallet(ConnectionBase):
             method="POST",
             data=data,
             headers=headers,
+        )
+        return res
+
+    def lock_tokens(self, amount_tokens, hours, minutes):
+        if hours < 0 or minutes < 0:
+            raise Exception("Invalid time")
+
+        duration = f"{hours}h{minutes}m"
+        num_tokens = amount_tokens * 10000000000
+
+        payload = json.dumps(
+            {
+                "name": TransactionName.LOCK_TOKEN,
+                "input": {"duration": duration},
+            }
+        )
+
+        res = self._execute_smart_contract(
+            to_client_id=INTEREST_POOL_SMART_CONTRACT_ADDRESS,
+            payload=payload,
+            transaction_value=num_tokens,
         )
         return res
 
@@ -332,10 +363,19 @@ class Wallet(ConnectionBase):
 
     def get_locked_tokens(self):
         endpoint = f"{Endpoints.GET_LOCKED_TOKENS}?client_id={self.client_id}"
-        empty_return_value = {"locked_tokens": []}
+        empty_return_value = {
+            "message": "Failed to get locked tokens.",
+            "code": "resource_not_found",
+            "error": "resource_not_found: can't find user node",
+        }
         res = self._consensus_from_workers(
             "sharders", endpoint, empty_return_value=empty_return_value
         )
+        return res
+
+    def get_lock_config(self):
+        endpoint = Endpoints.GET_LOCK_CONFIG
+        res = self._consensus_from_workers("sharders", endpoint)
         return res
 
     def create_read_pool(self):

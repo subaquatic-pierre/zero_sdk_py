@@ -24,17 +24,16 @@ network = Network.from_object(default_network_config_obj)
 wallet = Wallet.from_object(default_wallet_config_obj, network)
 aloc = Allocation(aloc_id, wallet)
 
-info = network.get_worker_stats("sharders")
-worker_id = network.get_worker_id("https://beta.0chain.net/sharder01")
+# info = network.get_worker_stats("sharders")
+# worker_id = network.get_worker_id("https://beta.0chain.net/sharder01")
 
 # info = aloc.get_blobber_stats(
 #     blobber_id="144a94640cb78130434a79a7a12d0b2c85f819e3ea8856db31c7fde30c30a820"
 # )
 
-# info = wallet.get_vesting_pool_config()
+info = wallet.lock_tokens(1, hours=0, minutes=10)
 
 pprint(info)
-print(worker_id)
 # req, data = wallet.add_tokens()
 
 # print("Req Num: ", req)
