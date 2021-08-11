@@ -45,29 +45,6 @@ class Wallet(ConnectionBase):
         self.date_created = date_created
         self.network = network
 
-    def _init_wallet(self):
-        # Implement wallet init
-        pass
-
-    def _validate_wallet(method):
-        """Initialize wallet
-        Check the wallet is initialized before every API request
-        If wallet is not initialized, create a new wallet.
-        """
-
-        def wrapper(self, *args, **kwargs):
-            print(self)
-
-            if self.client_id is not None:
-                return method(self, *args, **kwargs)
-            else:
-                self._init_wallet()
-                raise Exception(
-                    "Wallet is not initialized, call 'create_wallet, init_wallet or recover_wallet' methods to configure wallet"
-                )
-
-        return wrapper
-
     def get_balance(self, format="default") -> int:
         """Get Wallet balance
         Return float value of tokens
@@ -279,9 +256,54 @@ class Wallet(ConnectionBase):
     def create_vesting_pool(miner_id, amount, hours=0, minutes=0):
         pass
 
+    def sign(self, payload):
+        return sign_payload(self.private_key, payload)
+
+    def save(self, wallet_name=None):
+        if not wallet_name:
+            wallet_name = generate_random_letters()
+
+        data = {
+            "client_id": self.client_id,
+            "client_key": self.public_key,
+            "keys": [{"public_key": self.public_key, "private_key": self.private_key}],
+            "mnemonics": self.mnemonics,
+            "version": self.version,
+            "date_created": self.date_created,
+        }
+
+        with open(
+            os.path.join(Path.home(), f".zcn/test_wallets/wallet_{wallet_name}.json"),
+            "w",
+        ) as f:
+            f.write(json.dumps(data, indent=4))
+
     # --------------
     # Private Methods
     # --------------
+
+    def _init_wallet(self):
+        # Implement wallet init
+        pass
+
+    def _validate_wallet(method):
+        """Initialize wallet
+        Check the wallet is initialized before every API request
+        If wallet is not initialized, create a new wallet.
+        """
+
+        def wrapper(self, *args, **kwargs):
+            print(self)
+
+            if self.client_id is not None:
+                return method(self, *args, **kwargs)
+            else:
+                self._init_wallet()
+                raise Exception(
+                    "Wallet is not initialized, call 'create_wallet, init_wallet or recover_wallet' methods to configure wallet"
+                )
+
+        return wrapper
 
     def _handle_transaction(
         self,
@@ -322,28 +344,6 @@ class Wallet(ConnectionBase):
                 return []
             else:
                 return pool_info
-
-    def sign(self, payload):
-        return sign_payload(self.private_key, payload)
-
-    def save(self, wallet_name=None):
-        if not wallet_name:
-            wallet_name = generate_random_letters()
-
-        data = {
-            "client_id": self.client_id,
-            "client_key": self.public_key,
-            "keys": [{"public_key": self.public_key, "private_key": self.private_key}],
-            "mnemonics": self.mnemonics,
-            "version": self.version,
-            "date_created": self.date_created,
-        }
-
-        with open(
-            os.path.join(Path.home(), f".zcn/test_wallets/wallet_{wallet_name}.json"),
-            "w",
-        ) as f:
-            f.write(json.dumps(data, indent=4))
 
     @staticmethod
     def from_object(config: dict, network: Network):
