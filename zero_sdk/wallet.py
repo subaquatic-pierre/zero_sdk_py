@@ -401,3 +401,12 @@ class Wallet(ConnectionBase):
         res = self._execute_smart_contract(payload, transaction_value=tokens)
 
         return res
+
+    # --------------------
+    # Versing pool methods
+    # --------------------
+
+    def get_vesting_pool_config(self):
+        endpoint = Endpoints.VP_GET_CONFIG
+        res = self._consensus_from_workers("sharders", endpoint)
+        return res

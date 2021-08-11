@@ -78,6 +78,9 @@ class Endpoints:
         "v1/screst/" + MINER_SMART_CONTRACT_ADDRESS + "/getUserPools"
     )
 
+    # VESTING
+    VP_GET_CONFIG = "v1/screst/" + VESTING_SMART_CONTRACT_ADDRESS + "/getConfig"
+
     # BLOBBER
     ALLOCATION_FILE_LIST = "/v1/file/list/"
     FILE_STATS_ENDPOINT = "/v1/file/stats/"

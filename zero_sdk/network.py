@@ -86,20 +86,23 @@ class Network(ConnectionBase):
         res = self._consensus_from_workers("sharders", endpoint)
         return res
 
-    def get_worker_stats(self, worker, worker_url=None):
+    def get_worker_stats(self, worker):
         details = {}
-        if not worker_url:
-            workers = self._get_workers(worker)
-            for worker in workers:
-                url = f"{worker.url}/_nh/whoami"
-                res = self._request(url)
-                valid_data = self._check_status_code(res)
-                details.setdefault(worker.url, valid_data)
-        else:
-            url = f"{worker_url}/_nh/whoami"
+        workers = self._get_workers(worker)
+        for worker in workers:
+            url = f"{worker.url}/_nh/whoami"
             res = self._request(url)
             valid_data = self._check_status_code(res)
             details.setdefault(worker.url, valid_data)
+
+        return details
+
+    def get_worker_id(self, worker_url):
+        details = {}
+        url = f"{worker_url}/_nh/whoami"
+        res = self._request(url)
+        valid_data = self._check_status_code(res)
+        details.setdefault(worker_url, valid_data)
 
         return details
 
