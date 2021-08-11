@@ -117,11 +117,11 @@
 | verify             | Network.check_transaction_status / | Tested      | verify transaction                                                |
 |                    | Transaction.validate               |             |                                                                   |
 | version            |                                    |             | Prints version information                                        |
-| vp-add             | Wallet.create_vesting_pool         | No Tests    | Add a vesting pool                                                |
+| vp-add             | Wallet.create_vesting_pool         | Unconfirmed | Add a vesting pool                                                |
 | vp-config          | Wallet.get_vesting_pool_config     | No Tests    | Check out vesting pool configurations.                            |
-| vp-delete          |                                    |             | Delete a vesting pool                                             |
-| vp-info            | Wallet.get_vesting_pool_info       |             | Check out vesting pool information.                               |
-| vp-list            | Wallet.list_vesting_pool_info      |             | Check out vesting pools list.                                     |
-| vp-stop            |                                    |             | Stop vesting for one of destinations and unlock tokens not vested |
-| vp-trigger         |                                    |             | Trigger a vesting pool work.                                      |
-| vp-unlock          |                                    |             | Unlock tokens of a vesting pool                                   |
+| vp-delete          | Wallet.vesting_pool_delete         | No Tests    | Delete a vesting pool                                             |
+| vp-info            | Wallet.get_vesting_pool_info       | No Tests    | Check out vesting pool information.                               |
+| vp-list            | Wallet.list_vesting_pool_info      | No Tests    | Check out vesting pools list.                                     |
+| vp-stop            | Wallet.vesting_pool_stop           | Unconfirmed | Stop vesting for one of destinations and unlock tokens not vested |
+| vp-trigger         | Wallet.vesting_pool_trigger        | No Tests    | Trigger a vesting pool work.                                      |
+| vp-unlock          | Wallet.vesting_pool_unlock         | Unconfirmed | Unlock tokens of a vesting pool                                   |

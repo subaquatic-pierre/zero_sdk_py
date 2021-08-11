@@ -1,14 +1,12 @@
 from datetime import timedelta
-from time import sleep
 import os
 from pathlib import Path
 from time import time
 import json
 
-from zero_sdk.exceptions import TransactionError
 from zero_sdk.transaction import Transaction
 from zero_sdk.network import Network
-from zero_sdk.utils import generate_random_letters, create_allocation
+from zero_sdk.utils import generate_random_letters
 from zero_sdk.bls import sign_payload
 from zero_sdk.connection import ConnectionBase
 from zero_sdk.miner_settings import miner_delegate_pool
@@ -21,6 +19,7 @@ from zero_sdk.const import (
     AllocationConfig,
     TransactionType,
     TransactionName,
+    VESTING_SMART_CONTRACT_ADDRESS,
 )
 
 
@@ -253,8 +252,66 @@ class Wallet(ConnectionBase):
             sc_address=to_client_id,
         )
 
-    def create_vesting_pool(miner_id, amount, hours=0, minutes=0):
-        pass
+    def vesting_pool_create(
+        self,
+        destinations,
+        hours=0,
+        minutes=0,
+        days=0,
+        description="",
+        start_time=int(time()),
+    ):
+        duration = 140000000000
+        # duration = int(
+        #     timedelta(days=days, hours=hours, minutes=minutes).total_seconds()
+        # )
+        input = {
+            "description": description,
+            "start_time": start_time,
+            "duration": duration,
+            "destinations": destinations,
+        }
+        return self._handle_transaction(
+            input=input,
+            transaction_name=TransactionName.VESTING_ADD,
+            sc_address=VESTING_SMART_CONTRACT_ADDRESS,
+        )
+
+    def vesting_pool_delete(self, pool_id):
+        input = {"pool_id": pool_id}
+        return self._handle_transaction(
+            input=input,
+            transaction_name=TransactionName.VESTING_DELETE,
+            sc_address=VESTING_SMART_CONTRACT_ADDRESS,
+        )
+
+    def vesting_pool_unlock(self, pool_id):
+        input = {"pool_id": pool_id}
+        return self._handle_transaction(
+            input=input,
+            transaction_name=TransactionName.VESTING_UNLOCK,
+            sc_address=VESTING_SMART_CONTRACT_ADDRESS,
+        )
+
+    def vesting_pool_trigger(self, pool_id):
+        input = {"pool_id": pool_id}
+        return self._handle_transaction(
+            input=input,
+            transaction_name=TransactionName.VESTING_TRIGGER,
+            sc_address=VESTING_SMART_CONTRACT_ADDRESS,
+        )
+
+    def vesting_pool_stop(self, miner_id, pool_id):
+        input = {"pool_id": pool_id, "destination": miner_id}
+        return self._handle_transaction(
+            input=input,
+            transaction_name=TransactionName.VESTING_STOP,
+            sc_address=VESTING_SMART_CONTRACT_ADDRESS,
+        )
+
+    # --------------------
+    # Utility methods
+    # --------------------
 
     def sign(self, payload):
         return sign_payload(self.private_key, payload)

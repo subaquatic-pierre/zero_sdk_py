@@ -29,10 +29,25 @@ aloc = Allocation(aloc_id, wallet)
 
 # pprint(data)
 
+destinations = [
+    {
+        "id": "6be0d6abe9bfebdcc0e07a3c68f5e1d403d273b5680d1e57191fd51a96104f6f",
+        "amount": 20000000000,
+    }
+]
+
 # vp_id = "ce4387472f04c3f5514134691d88663fde4187d1db32509c9ee8421ee95a1358"
 vp_id = "2bba5b05949ea59c80aed3ac3474d7379d3be737e8eb5a968c52295e48333ead:vestingpool:ce4387472f04c3f5514134691d88663fde4187d1db32509c9ee8421ee95a1358"
+miner_id = "99dfe67a348281ba40a979db7e5cffabdedea3c432bb41079d0fbc6e2d554143"
 
-data = wallet.get_vesting_pool_info(vp_id)
+# data = wallet.vesting_pool_create(destinations=destinations)
+# pprint(data)
+
+# data = wallet.get_vesting_pool_config()
+# print("Vesting pool config: ")
+# pprint(data)
+
+data = wallet.list_vesting_pool_info()
 pprint(data)
 
 # new_aloc = wallet.create_allocation(lock_tokens=2)
