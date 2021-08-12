@@ -1,37 +1,5 @@
 # Python SDK for 0Chain
 
-## Issue methods
-
-### Class: Wallet
-
-#### Methods
-
-- get_locked_tokens
-- create_read_pool
-- allocation_min_lock
-
-## Tests to write
-
-#### Network
-
-- get_worker_stats
-
-#### Wallet
-
-- test_execute_smart_contract
-- test_submit_transaction
-
-#### Allocation
-
-- get_write_lock_token info
-- get_read_lock_token info
-- Save allocation
-
-## Hard coded values
-
-- Allocation creation size
-- Allocation lock tokens on creation
-
 ## ZBox CLI method map
 
 | Go SDK             | Python SDK                     | Status           | Description                                               |
@@ -64,7 +32,7 @@
 | register           | Network.create_wallet          | Tested           | Registers the wallet with the blockchain                  |
 | rename             |                                |                  | rename an object(file/folder) on blobbers                 |
 | rp-create          | Wallet.create_read_pool        | No Tests         | Create read pool if missing                               |
-| rp-info            | Wallet.get_read_pool_info      | No Tests         | Read pool information.                                    |
+| rp-info            | Wallet.list_read_pool_info     | No Tests         | Read pool information.                                    |
 |                    | Allocation.get_read_pool_info  | No Tests         |                                                           |
 | rp-lock            |                                |                  | Lock some tokens in read pool.                            |
 | rp-unlock          |                                |                  | Unlock some expired tokens in a read pool.                |
@@ -85,7 +53,7 @@
 | updateallocation   | Wallet.update_allocation       | Unconfirmed      | Updates allocation's expiry and size                      |
 | upload             |                                |                  | upload file to blobbers                                   |
 | version            |                                |                  | Prints version information                                |
-| wp-info            | Allocation.get_write_pool_info | Tested           | Write pool information.                                   |
+| wp-info            | Wallet.list_write_pool_info    | Tested           | Write pool information.                                   |
 | wp-lock            | Allocation.lock_write_tokens   | Unimplemented    | Lock some tokens in write pool.                           |
 | wp-unlock          |                                |                  | Unlock some expired tokens in a write pool.               |
 
@@ -97,19 +65,19 @@
 | faucet             | Wallet.add_tokens                  | Tested      | Faucet smart contract                                             |
 | getbalance         | Wallet.get_balance                 | Tested      | Get balance from sharders                                         |
 | getblobbers        | Allocation.get_blobber_stats       | Tested      | Get registered blobbers from sharders                             |
-| getid              | Network.get_worker_id              | No Tests    | Get Miner or Sharder ID from its URL                              |
-| getlockedtokens    | Wallet.get_locked_tokens           | No Tests    | Get locked tokens                                                 |
-| lock               | Wallet.lock_token                  | No Tests    | Lock tokens                                                       |
-| lockconfig         | Wallet.get_lock_config             | No Tests    | Get lock configuration                                            |
-| ls-miners          | Network.get_miner_list             | No Tests    | Get list of all active miners fro Miner SC                        |
-| ls-sharders        | Network.get_sharder_list           | No Tests    | Get list of all active sharders fro Miner SC                      |
+| getid              | Network.get_worker_id              | Tested      | Get Miner or Sharder ID from its URL                              |
+| getlockedtokens    | Wallet.list_lock_token             | Tested      | Get locked tokens                                                 |
+| lock               | Wallet.lock_token                  | Tested      | Lock tokens                                                       |
+| lockconfig         | Wallet.get_lock_config             | Tested      | Get lock configuration                                            |
+| ls-miners          | Wallet.list_miners                 | Tested      | Get list of all active miners fro Miner SC                        |
+| ls-sharders        | Wallet.list_sharders               | Tested      | Get list of all active sharders fro Miner SC                      |
 | mn-config          | Network.get_miner_config           | No Tests    | Get miner SC global info.                                         |
 | mn-info            | Network.get_node_stats             | No Tests    | Get miner/sharder info from Miner SC.                             |
 | mn-lock            | Wallet.miner_lock_token            | No Tests    | Add miner/sharder stake.                                          |
-| mn-pool-info       | Wallet.get_stake_pool_info         | No Tests    | Get miner/sharder pool info from Miner SC.                        |
+| mn-pool-info       | Wallet.get_stake_pool_info         | Tested      | Get miner/sharder pool info from Miner SC.                        |
 | mn-unlock          | Wallet.miner_unlock_token          | No Tests    | Unlock miner/sharder stake.                                       |
 | mn-update-settings | Wallet.update_miner_settings       | Unconfirmed | Change miner/sharder settings in Miner SC.                        |
-| mn-user-info       | Wallet.list_stake_pool_info        | No Tests    | Get miner/sharder user pools info from Miner SC.                  |
+| mn-user-info       | Wallet.list_stake_pool_info        | Tested      | Get miner/sharder user pools info from Miner SC.                  |
 | recoverwallet      | Network.recover_wallet             | Tested      | Recover wallet                                                    |
 | register           | Network.create_wallet              | Tested      | Registers the wallet with the blockchain                          |
 | send               | Wallet.send_token                  | No Tests    | Send ZCN tokens to another wallet                                 |
@@ -125,3 +93,29 @@
 | vp-stop            | Wallet.vesting_pool_stop           | Unconfirmed | Stop vesting for one of destinations and unlock tokens not vested |
 | vp-trigger         | Wallet.vesting_pool_trigger        | No Tests    | Trigger a vesting pool work.                                      |
 | vp-unlock          | Wallet.vesting_pool_unlock         | Unconfirmed | Unlock tokens of a vesting pool                                   |
+
+## Tests to write
+
+#### Transaction
+
+- test_execute_smart_contract
+- test_submit_transaction
+
+#### Network
+
+- get_worker_stats
+
+#### ConnectionBase
+
+- handle_empty_return_value
+
+#### Allocation
+
+- get_write_lock_token info
+- get_read_lock_token info
+- Save allocation
+
+## Hard coded values
+
+- Allocation creation size
+- Allocation lock tokens on creation

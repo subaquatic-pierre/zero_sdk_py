@@ -1,0 +1,64 @@
+[{
+        "simple_miner": {
+            "id": "99dfe67a348281ba40a979db7e5cffabdedea3c432bb41079d0fbc6e2d554143",
+            "n2n_host": "beta.0chain.net",
+            "host": "beta.0chain.net",
+            "port": 31201,
+            "path": "miner01",
+            "public_key": "6d2e639189f762a54e9911dd1cb24bdeea8c2d4b070bd5e812497e5f6fb8e114bfbdbb86f4c92888036715a8e19eef32afc6b4d226d4ec8e6057488c627d7500",
+            "short_name": "localhost.m01",
+            "build_tag": "587fe20464dcc92916d605765aaf5d610fb12d1b",
+            "total_stake": 0,
+            "delegate_wallet": "99dfe67a348281ba40a979db7e5cffabdedea3c432bb41079d0fbc6e2d554143",
+            "service_charge": 0.1,
+            "number_of_delegates": 10,
+            "min_stake": 0,
+            "max_stake": 1000000000000,
+            "stat": {},
+            "node_type": "miner",
+            "last_health_check": 1628748274
+        }
+    },
+    {
+        "simple_miner": {
+            "id": "6be0d6abe9bfebdcc0e07a3c68f5e1d403d273b5680d1e57191fd51a96104f6f",
+            "n2n_host": "beta.0chain.net",
+            "host": "beta.0chain.net",
+            "port": 31202,
+            "path": "miner02",
+            "public_key": "785de1911e7590d91c33557e673a24b32afc16e067b6b3e108a99b731e42ca218919bdd270cab79eff0510c26e7f97b5fef424f3d8f59e1786e43785dde92089",
+            "short_name": "localhost.m02",
+            "build_tag": "587fe20464dcc92916d605765aaf5d610fb12d1b",
+            "total_stake": 0,
+            "delegate_wallet": "6be0d6abe9bfebdcc0e07a3c68f5e1d403d273b5680d1e57191fd51a96104f6f",
+            "service_charge": 0.1,
+            "number_of_delegates": 10,
+            "min_stake": 0,
+            "max_stake": 1000000000000,
+            "stat": {},
+            "node_type": "miner",
+            "last_health_check": 1628748239
+        }
+    },
+    {
+        "simple_miner": {
+            "id": "1aa6750e0cd545af2b573b066535959bd170bed99bfbfd5d32ab16e1c1ca2a13",
+            "n2n_host": "beta.0chain.net",
+            "host": "beta.0chain.net",
+            "port": 31203,
+            "path": "miner03",
+            "public_key": "30ba4b724b4c68c4af88a6cf541279af7a1f60e626972d5f8189b763a7f7d80ced9fab7ef74f077231b2c919492ca2846b090b6f97ef0cceae0371561029a60c",
+            "short_name": "localhost.m03",
+            "build_tag": "587fe20464dcc92916d605765aaf5d610fb12d1b",
+            "total_stake": 0,
+            "delegate_wallet": "1aa6750e0cd545af2b573b066535959bd170bed99bfbfd5d32ab16e1c1ca2a13",
+            "service_charge": 0.1,
+            "number_of_delegates": 10,
+            "min_stake": 0,
+            "max_stake": 1000000000000,
+            "stat": {},
+            "node_type": "miner",
+            "last_health_check": 1628748273
+        }
+    }
+]

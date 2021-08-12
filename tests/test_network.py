@@ -19,19 +19,6 @@ default_network_config = from_yaml(
 )
 
 
-class TestNetworkInit(TestCase):
-    def test_from_object(self):
-        """Test network can be instantiated from standard config object"""
-        network = Network.from_object(default_network_config)
-        self.assertTrue(network)
-
-    def test_error_from_object(self):
-        """Test an error is thrown on incorrect config object sent to from object method"""
-        with self.assertRaises(Exception):
-            network = Network.from_object({})
-            self.assertTrue(network)
-
-
 class TestNetworkAttributes(TestCase):
     def setUp(self) -> None:
         self.network = Network.from_object(default_network_config)
@@ -51,17 +38,6 @@ class TestNetworkAttributes(TestCase):
         """Test network has atleast one shrader"""
         min_confirmation = self.network.min_confirmation
         self.assertGreater(min_confirmation, 0)
-
-
-class TestNetworkMethods(TestCase):
-    def setUp(self) -> None:
-        self.network = Network.from_object(default_network_config)
-        return super().setUp()
-
-    def test_json(self):
-        """Test json method returns valid json"""
-        network_json = self.network.json()
-        self.assertIsInstance(network_json, dict)
 
 
 class TestNetworkChainMethods(TestCase):
@@ -134,5 +110,67 @@ class TestNetworkChainMethods(TestCase):
         wallet = self.network.create_wallet()
         self.assertIsInstance(wallet, Wallet)
 
-    def test_get_worker_stats(self):
-        pass
+
+class TestNetworkMethods(TestCase):
+    def setUp(self) -> None:
+        self.network = Network(
+            "url",
+            [Miner("url")],
+            [Sharder("url")],
+            [Blobber("url")],
+            min_confirmation=50,
+        )
+        return super().setUp()
+
+    def _setup_mock(self, filename):
+        if type(filename) == dict:
+            res_obj = filename
+        else:
+            res_obj = from_json(os.path.join(TEST_DIR, f"fixtures/network/{filename}"))
+        request_mock = MagicMock(return_value=res_obj)
+        self.network._consensus_from_workers = request_mock
+
+    def test_json(self):
+        """Test json method returns valid json"""
+        network_json = self.network.json()
+        self.assertIsInstance(network_json, dict)
+
+    def test_list_miners(self):
+        """Test list all miners"""
+        self._setup_mock("miner_list.json")
+        data = self.network.list_miners()
+        self.assertIsInstance(data, list)
+
+    def test_list_sharders(self):
+        """Test list all sharders"""
+        self._setup_mock({"magic_block": {"sharders": {"nodes": {"version": "1"}}}})
+        data = self.network.list_sharders()
+        self.assertIn("version", data)
+
+
+class TestNetworkRequest(TestCase):
+    def setUp(self) -> None:
+        self.network = Network(
+            "url",
+            [Miner("url")],
+            [Sharder("url")],
+            [Blobber("url")],
+            min_confirmation=50,
+        )
+        return super().setUp()
+
+    def _setup_mock(self, filename):
+        if type(filename) == dict:
+            res_obj = filename
+            response = MockResponse(200, res_obj)
+        else:
+            res_obj = from_json(os.path.join(TEST_DIR, f"fixtures/network/{filename}"))
+            response = MockResponse(200, res_obj)
+        request_mock = MagicMock(return_value=response)
+        self.network._request = request_mock
+
+    def test_get_worker_id(self):
+        """Test get worker id from url"""
+        self._setup_mock("worker_id.json")
+        data = self.network.get_worker_id("someurl")
+        self.assertIsInstance(data, dict)

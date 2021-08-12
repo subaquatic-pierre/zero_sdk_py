@@ -21,10 +21,17 @@ class Network(ConnectionBase):
         self.preferred_blobbers: list = preferred_blobbers
         self.min_confirmation: int = min_confirmation
 
-    def get_miner_list(self):
+    def list_network_dns(self):
+        return request_dns_workers()
+
+    def list_miners(self):
         endpoint = Endpoints.SC_MINERS_STATS
         res = self._consensus_from_workers("miners", endpoint)
-        return res
+        try:
+            miners = res.get("Nodes")
+            return miners
+        except:
+            return res
 
     def get_miner_config(self):
         endpoint = Endpoints.SC_CONFIGS
@@ -38,7 +45,7 @@ class Network(ConnectionBase):
         res = self._consensus_from_workers("sharders", endpoint)
         return res
 
-    def get_sharder_list(self):
+    def list_sharders(self):
         res = self.get_latest_finalized_magic_block()
         try:
             sharders = res.get("magic_block").get("sharders").get("nodes")

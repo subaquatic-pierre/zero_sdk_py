@@ -65,7 +65,7 @@ class Wallet(ConnectionBase):
         except AttributeError:
             return res
 
-    def get_lock_tokens(self):
+    def list_lock_token(self):
         endpoint = f"{Endpoints.GET_LOCKED_TOKENS}?client_id={self.client_id}"
         empty_return_value = {
             "message": "Failed to get locked tokens.",
@@ -81,6 +81,12 @@ class Wallet(ConnectionBase):
         endpoint = Endpoints.GET_LOCK_CONFIG
         res = self._consensus_from_workers("sharders", endpoint)
         return res
+
+    def list_miners(self):
+        return self.network.list_miners()
+
+    def list_sharders(self):
+        return self.network.list_sharders()
 
     def get_stake_pool_info(self, node_id, pool_id):
         endpoint = f"{Endpoints.GET_MINERSC_POOL_STATS}?id={node_id}&pool_id={pool_id}"
@@ -119,7 +125,7 @@ class Wallet(ConnectionBase):
         except:
             return res
 
-    def get_read_pool_info(self, allocation_id=None):
+    def list_read_pool_info(self, allocation_id=None):
         url = f"{Endpoints.SC_REST_READPOOL_STATS}?client_id={self.client_id}"
         res = self._consensus_from_workers("sharders", url)
 
@@ -127,7 +133,7 @@ class Wallet(ConnectionBase):
             return self._filter_by_allocation(res, allocation_id)
         return res
 
-    def get_write_pool_info(self, allocation_id=None):
+    def list_write_pool_info(self, allocation_id=None):
         url = f"{Endpoints.SC_REST_WRITEPOOL_STATS}?client_id={self.client_id}"
         res = self._consensus_from_workers("sharders", url)
 
