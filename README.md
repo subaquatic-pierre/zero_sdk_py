@@ -1,5 +1,7 @@
 # Python SDK for 0Chain
 
+This is a Python SDK for 0Chain Blockchain network. Below is a mapping from current ZBox and ZWallet CLI methods to Python SDK methods
+
 ## ZBox CLI method map
 
 | Go SDK             | Python SDK                     | Status           | Description                                               |
