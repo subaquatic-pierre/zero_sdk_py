@@ -117,6 +117,12 @@ class TestWalletTokenLock(TestCase):
         pool = self.wallet.create_read_pool()
         self.assertIn("entity", pool)
 
+    def test_send_token(self):
+        """Test can send token to wallet"""
+        self._setup_mock("send_token.json")
+        data = self.wallet.send_token("somewalletid", 1, "Test send token")
+        self.assertIn("hash", data)
+
     # def test_blobber_lock_tokens(self):
     #     """Test can lock tokens to blobber"""
     #     self._setup_mock("lock_token.json")

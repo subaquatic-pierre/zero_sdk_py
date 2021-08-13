@@ -1,0 +1,40 @@
+{
+    "version": "1.0",
+    "hash": "22c123a7b6b02a1303bb6b79e7c41bf7ea52a82b72093175c62fc7f1b05bed79",
+    "block_hash": "79f787ebee9e7ca96569ec5f4e5317fb1ea01eb40bebca5d2158a0264591e6b3",
+    "previous_block_hash": "e4cecbadb68cbd00e5402d7f32edb74faf7516de8f98bc0082d482ceeba0a8fd",
+    "txn": {
+        "hash": "22c123a7b6b02a1303bb6b79e7c41bf7ea52a82b72093175c62fc7f1b05bed79",
+        "version": "1.0",
+        "client_id": "31680e6a4fa9bb9466b7c46d1c853026a672cb913ebaae8e4af9539b15cbe5d8",
+        "to_client_id": "f203b553bad7e0ac78a4561d39acbe5021d855433a0b8a2094195b02b00216ce",
+        "chain_id": "0afc093ffb509f059c55478bc1a60351cef7b4e9c008a53a6cc8241ca8617dfe",
+        "transaction_data": "Cool send",
+        "transaction_value": 20000000000,
+        "signature": "e28cfbe76f08ba8e7bf9dab863db30b07b28101992a1dbfa5efa21ab1368a61a",
+        "creation_date": 1628840966,
+        "transaction_fee": 0,
+        "transaction_type": 0,
+        "txn_output_hash": "a7ffc6f8bf1ed76651c14756a061d662f580ff4de43b49fa82d80a4b80f8434a",
+        "transaction_status": 1
+    },
+    "creation_date": 1628840968,
+    "miner_id": "1aa6750e0cd545af2b573b066535959bd170bed99bfbfd5d32ab16e1c1ca2a13",
+    "round": 2991418,
+    "transaction_status": 1,
+    "round_random_seed": 2158382362249841243,
+    "merkle_tree_root": "164e4632f9db7ddb654cf135f4d86e1799dfc0de26b3a54328b46b49164bc227",
+    "merkle_tree_path": {
+        "nodes": [
+            "e5d8f3e9af7ceb5d9b702ce52169e9d137c1d2d3d6616f049ee8ee97de016295"
+        ],
+        "leaf_index": 0
+    },
+    "receipt_merkle_tree_root": "fdbc4b001f3bfc0da8f2efe56c6adc6ede7e45b30b28eeb87778255692affc41",
+    "receipt_merkle_tree_path": {
+        "nodes": [
+            "62eec4c651deaea058a70400389b133f892aef005196df9504e3423f6a9c993b"
+        ],
+        "leaf_index": 0
+    }
+}

@@ -48,7 +48,9 @@ miner_id = "99dfe67a348281ba40a979db7e5cffabdedea3c432bb41079d0fbc6e2d554143"
 # pprint(data)
 
 # pprint(network.list_network_dns())
-data = wallet.list_stake_pool_info()
+data = wallet.send_token(
+    "f203b553bad7e0ac78a4561d39acbe5021d855433a0b8a2094195b02b00216ce", 2, "Cool send"
+)
 pprint(data)
 # data = wallet.get_stake_pool_info()
 pprint(data)
