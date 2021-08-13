@@ -16,8 +16,10 @@ class AllocationTest(TestCase):
         self.allocation = Allocation(ALLOCATION_ID, build_wallet())
         return super().setUp()
 
-    def _setup_mock(self, filename):
-        res_obj = from_json(os.path.join(TEST_DIR, f"__mocks__/allocation/{filename}"))
+    def _setup_mock(self, response_data):
+        res_obj = from_json(
+            os.path.join(TEST_DIR, f"__mocks__/allocation/{response_data}")
+        )
         mock_response = MockResponse(200, res_obj)
         request_mock = MagicMock(return_value=mock_response)
         self.allocation._request = request_mock

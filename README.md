@@ -6,7 +6,7 @@ This is a Python SDK for 0Chain Blockchain network. Below is a mapping from curr
 
 | Go SDK             | Python SDK                     | Status           | Description                                               |
 | ------------------ | ------------------------------ | ---------------- | --------------------------------------------------------- |
-| add                |                                |                  | Adds free storage assigner                                |
+| add                |                                | AWAITING NETWORK | Adds free storage assigner                                |
 | add-collab         |                                |                  | add collaborator for a file                               |
 | addcurator         |                                |                  | Adds a curator to an allocation                           |
 | alloc-cancel       |                                |                  | Cancel an allocation                                      |
@@ -86,6 +86,8 @@ This is a Python SDK for 0Chain Blockchain network. Below is a mapping from curr
 | unlock             | Wallet.unlock_token                | Tested      | Unlock tokens                                                     |
 | verify             | Network.check_transaction_status / | Tested      | verify transaction                                                |
 |                    | Transaction.validate               |             |                                                                   |
+|                    |                                    |             |                                                                   |
+|                    | ------- AWAITING NETWORK --------- |             |                                                                   |
 | vp-add             | Wallet.create_vesting_pool         | Unconfirmed | Add a vesting pool                                                |
 | vp-config          | Wallet.get_vesting_pool_config     | Tested      | Check out vesting pool configurations.                            |
 | vp-delete          | Wallet.vesting_pool_delete         | No Tests    | Delete a vesting pool                                             |

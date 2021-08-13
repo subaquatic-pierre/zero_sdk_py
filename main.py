@@ -43,8 +43,7 @@ miner_id = "99dfe67a348281ba40a979db7e5cffabdedea3c432bb41079d0fbc6e2d554143"
 # data = wallet.vesting_pool_create(destinations=destinations)
 # pprint(data)
 
-data = wallet.list_vesting_pool_info()
-print("Vesting pool config: ")
+data = wallet.create_allocation()
 pprint(data)
 
 # pprint(network.list_network_dns())

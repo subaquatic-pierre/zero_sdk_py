@@ -54,6 +54,7 @@ class Transaction(ConnectionBase):
                 "version": "1.0",
             }
         )
+
         headers = {"Content-Type": "application/json", "Connection": "keep-alive"}
         self.response_data = self._consensus_from_workers(
             "miners",

@@ -51,8 +51,10 @@ class TestNetworkChainMethods(TestCase):
         )
         return super().setUp()
 
-    def _setup_mock(self, filename):
-        res_obj = from_json(os.path.join(TEST_DIR, f"__mocks__/network/{filename}"))
+    def _setup_mock(self, response_data):
+        res_obj = from_json(
+            os.path.join(TEST_DIR, f"__mocks__/network/{response_data}")
+        )
         request_mock = MagicMock(return_value=res_obj)
         self.network._consensus_from_workers = request_mock
 
@@ -122,11 +124,13 @@ class TestNetworkMethods(TestCase):
         )
         return super().setUp()
 
-    def _setup_mock(self, filename):
-        if type(filename) == dict:
-            res_obj = filename
+    def _setup_mock(self, response_data):
+        if type(response_data) == dict:
+            res_obj = response_data
         else:
-            res_obj = from_json(os.path.join(TEST_DIR, f"__mocks__/network/{filename}"))
+            res_obj = from_json(
+                os.path.join(TEST_DIR, f"__mocks__/network/{response_data}")
+            )
         request_mock = MagicMock(return_value=res_obj)
         self.network._consensus_from_workers = request_mock
 
@@ -171,12 +175,14 @@ class TestNetworkRequest(TestCase):
         )
         return super().setUp()
 
-    def _setup_mock(self, filename):
-        if type(filename) == dict:
-            res_obj = filename
+    def _setup_mock(self, response_data):
+        if type(response_data) == dict:
+            res_obj = response_data
             response = MockResponse(200, res_obj)
         else:
-            res_obj = from_json(os.path.join(TEST_DIR, f"__mocks__/network/{filename}"))
+            res_obj = from_json(
+                os.path.join(TEST_DIR, f"__mocks__/network/{response_data}")
+            )
             response = MockResponse(200, res_obj)
 
         request_mock = MagicMock(return_value=response)
