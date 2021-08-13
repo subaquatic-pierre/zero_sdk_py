@@ -86,9 +86,8 @@ This is a Python SDK for 0Chain Blockchain network. Below is a mapping from curr
 | unlock             | Wallet.unlock_token                | Tested      | Unlock tokens                                                     |
 | verify             | Network.check_transaction_status / | Tested      | verify transaction                                                |
 |                    | Transaction.validate               |             |                                                                   |
-| version            |                                    |             | Prints version information                                        |
 | vp-add             | Wallet.create_vesting_pool         | Unconfirmed | Add a vesting pool                                                |
-| vp-config          | Wallet.get_vesting_pool_config     | No Tests    | Check out vesting pool configurations.                            |
+| vp-config          | Wallet.get_vesting_pool_config     | Tested      | Check out vesting pool configurations.                            |
 | vp-delete          | Wallet.vesting_pool_delete         | No Tests    | Delete a vesting pool                                             |
 | vp-info            | Wallet.get_vesting_pool_info       | No Tests    | Check out vesting pool information.                               |
 | vp-list            | Wallet.list_vesting_pool_info      | No Tests    | Check out vesting pools list.                                     |

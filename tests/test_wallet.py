@@ -129,6 +129,40 @@ class TestWalletTokenLock(TestCase):
         data = self.wallet.send_token("somewalletid", 1, "Test send token")
         self.assertIn("hash", data)
 
+
+class TestWalletVestingPoolRequest(TestCase):
+    def setUp(self) -> None:
+        self.wallet = build_wallet()
+        return super().setUp()
+
+    def _setup_mock(self, filename):
+        if type(filename) == dict:
+            res_obj = filename
+        else:
+            res_obj = from_json(os.path.join(TEST_DIR, f"__mocks__/wallet/{filename}"))
+        request_mock = MagicMock(return_value=res_obj)
+        self.wallet._handle_transaction = request_mock
+
+
+class TestWalletVestingPoolRequest(TestCase):
+    def setUp(self) -> None:
+        self.wallet = build_wallet()
+        return super().setUp()
+
+    def _setup_mock(self, filename):
+        if type(filename) == dict:
+            res_obj = filename
+        else:
+            res_obj = from_json(os.path.join(TEST_DIR, f"__mocks__/wallet/{filename}"))
+        request_mock = MagicMock(return_value=res_obj)
+        self.wallet._consensus_from_workers = request_mock
+
+    def test_get_vp_config(self):
+        """Test get_vesting_pool_config"""
+        self._setup_mock("vp_config.json")
+        data = self.wallet.get_vesting_pool_config()
+        self.assertIn("min_lock", data)
+
     # def test_blobber_lock_tokens(self):
     #     """Test can lock tokens to blobber"""
     #     self._setup_mock("lock_token.json")

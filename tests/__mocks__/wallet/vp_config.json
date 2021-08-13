@@ -1,0 +1,7 @@
+{
+    "min_lock": 100000000,
+    "min_duration": 120000000000,
+    "max_duration": 7200000000000,
+    "max_destinations": 3,
+    "max_description_length": 20
+}
