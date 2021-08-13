@@ -1,0 +1,245 @@
+{
+    "simple_miner": {
+        "id": "99dfe67a348281ba40a979db7e5cffabdedea3c432bb41079d0fbc6e2d554143",
+        "n2n_host": "beta.0chain.net",
+        "host": "beta.0chain.net",
+        "port": 31201,
+        "path": "miner01",
+        "public_key": "6d2e639189f762a54e9911dd1cb24bdeea8c2d4b070bd5e812497e5f6fb8e114bfbdbb86f4c92888036715a8e19eef32afc6b4d226d4ec8e6057488c627d7500",
+        "short_name": "localhost.m01",
+        "build_tag": "587fe20464dcc92916d605765aaf5d610fb12d1b",
+        "total_stake": 3090000000000,
+        "delegate_wallet": "99dfe67a348281ba40a979db7e5cffabdedea3c432bb41079d0fbc6e2d554143",
+        "service_charge": 0.1,
+        "number_of_delegates": 10,
+        "min_stake": 0,
+        "max_stake": 1000000000000,
+        "stat": {
+            "generator_rewards": 1550048640000000
+        },
+        "node_type": "miner",
+        "last_health_check": 1628837074
+    },
+    "active": {
+        "24aded1d7ecf21f543d8a16f615c6c4094cd277de6386640a8901c4b9f2fc90b": {
+            "stats": {
+                "delegate_id": "05420e134088f1bb339fd28421298106269dccc65a4921f63cd4b2292442f6fb",
+                "high": 9914754,
+                "low": 11100,
+                "interest_paid": 64069200,
+                "reward_paid": 3642608402431,
+                "number_rounds": 0,
+                "status": "ACTIVE"
+            },
+            "pool": {
+                "pool": {
+                    "id": "24aded1d7ecf21f543d8a16f615c6c4094cd277de6386640a8901c4b9f2fc90b",
+                    "balance": 20000000000
+                },
+                "lock": {
+                    "delete_view_change_set": false,
+                    "delete_after_view_change": 0,
+                    "owner": "31cbfedaed7740086f99c7c83a1c1c0ce8201fc5f65e53437d017a79fc98dd32"
+                }
+            }
+        },
+        "2e2482bddcec2fe3a8ab00df341cea308a6f6d499cf13d09009faccd973eb9f1": {
+            "stats": {
+                "delegate_id": "94a9e8e11193db49066ee125a1718569290584a1085bf6ae0093c63ded52c7f4",
+                "high": 5006622,
+                "low": 5550,
+                "interest_paid": 42823800,
+                "reward_paid": 2644051257867,
+                "number_rounds": 0,
+                "status": "ACTIVE"
+            },
+            "pool": {
+                "pool": {
+                    "id": "2e2482bddcec2fe3a8ab00df341cea308a6f6d499cf13d09009faccd973eb9f1",
+                    "balance": 10000000000
+                },
+                "lock": {
+                    "delete_view_change_set": false,
+                    "delete_after_view_change": 0,
+                    "owner": "31cbfedaed7740086f99c7c83a1c1c0ce8201fc5f65e53437d017a79fc98dd32"
+                }
+            }
+        },
+        "32ed683fb0b3b2686a569437c7458b22c1146ce79bcbb2f821777c6ed245da47": {
+            "stats": {
+                "delegate_id": "31cbfedaed7740086f99c7c83a1c1c0ce8201fc5f65e53437d017a79fc98dd32",
+                "high": 1072340425,
+                "low": 555000,
+                "interest_paid": 6153840000,
+                "reward_paid": 474171978360514,
+                "number_rounds": 0,
+                "status": "ACTIVE"
+            },
+            "pool": {
+                "pool": {
+                    "id": "32ed683fb0b3b2686a569437c7458b22c1146ce79bcbb2f821777c6ed245da47",
+                    "balance": 1000000000000
+                },
+                "lock": {
+                    "delete_view_change_set": false,
+                    "delete_after_view_change": 0,
+                    "owner": "31cbfedaed7740086f99c7c83a1c1c0ce8201fc5f65e53437d017a79fc98dd32"
+                }
+            }
+        },
+        "578eb022a115b8a9c9872bb966ed3b9dd7a6d8bbdf63bf6f1835baf175590cbc": {
+            "stats": {
+                "delegate_id": "31cbfedaed7740086f99c7c83a1c1c0ce8201fc5f65e53437d017a79fc98dd32",
+                "high": 1475121951,
+                "low": 222000,
+                "interest_paid": 2467752000,
+                "reward_paid": 193079273049148,
+                "number_rounds": 0,
+                "status": "ACTIVE"
+            },
+            "pool": {
+                "pool": {
+                    "id": "578eb022a115b8a9c9872bb966ed3b9dd7a6d8bbdf63bf6f1835baf175590cbc",
+                    "balance": 400000000000
+                },
+                "lock": {
+                    "delete_view_change_set": false,
+                    "delete_after_view_change": 0,
+                    "owner": "31cbfedaed7740086f99c7c83a1c1c0ce8201fc5f65e53437d017a79fc98dd32"
+                }
+            }
+        },
+        "6d840f4bab78edf46a9cebcfc7889908699a53e11911717b7169e04edce7a8c6": {
+            "stats": {
+                "delegate_id": "37955ccb1d2e4c8bb250940afd1ab153d95f74bd861918f992f1aad715a47c6b",
+                "high": 19572815,
+                "low": 22200,
+                "interest_paid": 127228200,
+                "reward_paid": 7215655259455,
+                "number_rounds": 0,
+                "status": "ACTIVE"
+            },
+            "pool": {
+                "pool": {
+                    "id": "6d840f4bab78edf46a9cebcfc7889908699a53e11911717b7169e04edce7a8c6",
+                    "balance": 40000000000
+                },
+                "lock": {
+                    "delete_view_change_set": false,
+                    "delete_after_view_change": 0,
+                    "owner": "31cbfedaed7740086f99c7c83a1c1c0ce8201fc5f65e53437d017a79fc98dd32"
+                }
+            }
+        },
+        "7211ce0c48e8a845f7f4932eac98b4965b65ec7c1cb0784a7b7d728d4154c99c": {
+            "stats": {
+                "delegate_id": "31cbfedaed7740086f99c7c83a1c1c0ce8201fc5f65e53437d017a79fc98dd32",
+                "high": 452093023,
+                "low": 499500,
+                "interest_paid": 4995999000,
+                "reward_paid": 336727534580622,
+                "number_rounds": 0,
+                "status": "ACTIVE"
+            },
+            "pool": {
+                "pool": {
+                    "id": "7211ce0c48e8a845f7f4932eac98b4965b65ec7c1cb0784a7b7d728d4154c99c",
+                    "balance": 900000000000
+                },
+                "lock": {
+                    "delete_view_change_set": false,
+                    "delete_after_view_change": 0,
+                    "owner": "31cbfedaed7740086f99c7c83a1c1c0ce8201fc5f65e53437d017a79fc98dd32"
+                }
+            }
+        },
+        "a00a43d9ffc9219923441949fa3165a6f9e8b345cd73be5b5d2146b73a3d0213": {
+            "stats": {
+                "delegate_id": "c4a162ff9b5226174b85de223ea7b48c6dac88f358d02027a3947792bcfc1a64",
+                "high": 10647887,
+                "low": 5550,
+                "interest_paid": 57531300,
+                "reward_paid": 4064525496161,
+                "number_rounds": 0,
+                "status": "ACTIVE"
+            },
+            "pool": {
+                "pool": {
+                    "id": "a00a43d9ffc9219923441949fa3165a6f9e8b345cd73be5b5d2146b73a3d0213",
+                    "balance": 10000000000
+                },
+                "lock": {
+                    "delete_view_change_set": false,
+                    "delete_after_view_change": 0,
+                    "owner": "31cbfedaed7740086f99c7c83a1c1c0ce8201fc5f65e53437d017a79fc98dd32"
+                }
+            }
+        },
+        "db8a1e3be66e9886e01c7da1e6a070a596de104e5e83987cd583b0d38f1565a2": {
+            "stats": {
+                "delegate_id": "31cbfedaed7740086f99c7c83a1c1c0ce8201fc5f65e53437d017a79fc98dd32",
+                "high": 494445497,
+                "low": 382950,
+                "interest_paid": 3830648850,
+                "reward_paid": 258201781920292,
+                "number_rounds": 0,
+                "status": "ACTIVE"
+            },
+            "pool": {
+                "pool": {
+                    "id": "db8a1e3be66e9886e01c7da1e6a070a596de104e5e83987cd583b0d38f1565a2",
+                    "balance": 690000000000
+                },
+                "lock": {
+                    "delete_view_change_set": false,
+                    "delete_after_view_change": 0,
+                    "owner": "31cbfedaed7740086f99c7c83a1c1c0ce8201fc5f65e53437d017a79fc98dd32"
+                }
+            }
+        },
+        "e248d4a55e324e48e83871f0410e83d2fd2f0d299093880c6ce9777dd74293f3": {
+            "stats": {
+                "delegate_id": "5b0a3efef278321b45e86d30d88fd1e125019c89b5635add4141aee1ea64e74e",
+                "high": 4990099,
+                "low": 5550,
+                "interest_paid": 32889300,
+                "reward_paid": 1913830432545,
+                "number_rounds": 0,
+                "status": "ACTIVE"
+            },
+            "pool": {
+                "pool": {
+                    "id": "e248d4a55e324e48e83871f0410e83d2fd2f0d299093880c6ce9777dd74293f3",
+                    "balance": 10000000000
+                },
+                "lock": {
+                    "delete_view_change_set": false,
+                    "delete_after_view_change": 0,
+                    "owner": "31cbfedaed7740086f99c7c83a1c1c0ce8201fc5f65e53437d017a79fc98dd32"
+                }
+            }
+        },
+        "f994da5fb61165139f8958f0b32c40846a94345c5e22118f0f1f159e6e40c696": {
+            "stats": {
+                "delegate_id": "31cbfedaed7740086f99c7c83a1c1c0ce8201fc5f65e53437d017a79fc98dd32",
+                "high": 1512000000,
+                "low": 5550,
+                "interest_paid": 61716000,
+                "reward_paid": 5300237229141,
+                "number_rounds": 0,
+                "status": "ACTIVE"
+            },
+            "pool": {
+                "pool": {
+                    "id": "f994da5fb61165139f8958f0b32c40846a94345c5e22118f0f1f159e6e40c696",
+                    "balance": 10000000000
+                },
+                "lock": {
+                    "delete_view_change_set": false,
+                    "delete_after_view_change": 0,
+                    "owner": "31cbfedaed7740086f99c7c83a1c1c0ce8201fc5f65e53437d017a79fc98dd32"
+                }
+            }
+        }
+    }
+}

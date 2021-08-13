@@ -74,7 +74,7 @@ class TestWalletMethods(TestCase):
         self.assertIsInstance(data, dict)
 
     def test_get_stake_pool_info(self):
-        """Test list_stake_pool_info"""
+        """Test get_stake_pool_info"""
         self._setup_mock("worker_id.json")
         data = self.wallet.get_stake_pool_info("node_id", "blobber_id")
         self.assertIsInstance(data, dict)

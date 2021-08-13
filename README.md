@@ -73,11 +73,11 @@ This is a Python SDK for 0Chain Blockchain network. Below is a mapping from curr
 | lockconfig         | Wallet.get_lock_config             | Tested      | Get lock configuration                                            |
 | ls-miners          | Wallet.list_miners                 | Tested      | Get list of all active miners fro Miner SC                        |
 | ls-sharders        | Wallet.list_sharders               | Tested      | Get list of all active sharders fro Miner SC                      |
-| mn-config          | Network.get_miner_config           | No Tests    | Get miner SC global info.                                         |
-| mn-info            | Network.get_node_stats             | No Tests    | Get miner/sharder info from Miner SC.                             |
-| mn-lock            | Wallet.miner_lock_token            | No Tests    | Add miner/sharder stake.                                          |
+| mn-config          | Network.get_miner_config           | Tested      | Get miner SC global info.                                         |
+| mn-info            | Network.get_node_stats             | Tested      | Get miner/sharder info from Miner SC.                             |
+| mn-lock            | Wallet.miner_lock_token            | Unconfirmed | Add miner/sharder stake.                                          |
 | mn-pool-info       | Wallet.get_stake_pool_info         | Tested      | Get miner/sharder pool info from Miner SC.                        |
-| mn-unlock          | Wallet.miner_unlock_token          | No Tests    | Unlock miner/sharder stake.                                       |
+| mn-unlock          | Wallet.miner_unlock_token          | Unconfirmed | Unlock miner/sharder stake.                                       |
 | mn-update-settings | Wallet.update_miner_settings       | Unconfirmed | Change miner/sharder settings in Miner SC.                        |
 | mn-user-info       | Wallet.list_stake_pool_info        | Tested      | Get miner/sharder user pools info from Miner SC.                  |
 | recoverwallet      | Network.recover_wallet             | Tested      | Recover wallet                                                    |

@@ -47,7 +47,10 @@ miner_id = "99dfe67a348281ba40a979db7e5cffabdedea3c432bb41079d0fbc6e2d554143"
 # print("Vesting pool config: ")
 # pprint(data)
 
-data = network.get_chain_stats()
+# pprint(network.list_network_dns())
+data = wallet.list_stake_pool_info()
+pprint(data)
+# data = wallet.get_stake_pool_info()
 pprint(data)
 
 # new_aloc = wallet.create_allocation(lock_tokens=2)

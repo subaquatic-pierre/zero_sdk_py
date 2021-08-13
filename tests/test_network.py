@@ -147,6 +147,18 @@ class TestNetworkMethods(TestCase):
         data = self.network.list_sharders()
         self.assertIn("version", data)
 
+    def test_get_miner_config(self):
+        """Test get miner config"""
+        self._setup_mock("miner_config.json")
+        data = self.network.get_miner_config()
+        self.assertIn("view_change", data)
+
+    def test_get_node_stats(self):
+        """Test node stats"""
+        self._setup_mock("node_stats.json")
+        data = self.network.get_node_stats(node_id="someid")
+        self.assertIn("simple_miner", data)
+
 
 class TestNetworkRequest(TestCase):
     def setUp(self) -> None:
@@ -166,6 +178,7 @@ class TestNetworkRequest(TestCase):
         else:
             res_obj = from_json(os.path.join(TEST_DIR, f"fixtures/network/{filename}"))
             response = MockResponse(200, res_obj)
+
         request_mock = MagicMock(return_value=response)
         self.network._request = request_mock
 

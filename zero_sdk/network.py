@@ -22,7 +22,7 @@ class Network(ConnectionBase):
         self.min_confirmation: int = min_confirmation
 
     def list_network_dns(self):
-        return request_dns_workers()
+        return request_dns_workers(url=self.hostname)
 
     def list_miners(self):
         endpoint = Endpoints.SC_MINERS_STATS
@@ -205,11 +205,14 @@ class Network(ConnectionBase):
         return f"Network()"
 
 
-def request_dns_workers(url, worker):
+def request_dns_workers(url, worker=None):
     res = requests.get(f"{url}/{Endpoints.NETWORK_DNS}")
 
     if res.status_code != 200:
         raise ConnectionError(f"An error occured requesting workers - {res.text}")
+
+    if not worker:
+        return res.json()
 
     workers = res.json().get(worker)
     if not workers:
