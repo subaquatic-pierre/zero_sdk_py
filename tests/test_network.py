@@ -15,7 +15,7 @@ ROUND_NUMBER = "832629"
 
 
 default_network_config = from_yaml(
-    os.path.join(TEST_DIR, "fixtures/network/default_network.yaml")
+    os.path.join(TEST_DIR, "__mocks__/network/default_network.yaml")
 )
 
 
@@ -52,7 +52,7 @@ class TestNetworkChainMethods(TestCase):
         return super().setUp()
 
     def _setup_mock(self, filename):
-        res_obj = from_json(os.path.join(TEST_DIR, f"fixtures/network/{filename}"))
+        res_obj = from_json(os.path.join(TEST_DIR, f"__mocks__/network/{filename}"))
         request_mock = MagicMock(return_value=res_obj)
         self.network._consensus_from_workers = request_mock
 
@@ -126,7 +126,7 @@ class TestNetworkMethods(TestCase):
         if type(filename) == dict:
             res_obj = filename
         else:
-            res_obj = from_json(os.path.join(TEST_DIR, f"fixtures/network/{filename}"))
+            res_obj = from_json(os.path.join(TEST_DIR, f"__mocks__/network/{filename}"))
         request_mock = MagicMock(return_value=res_obj)
         self.network._consensus_from_workers = request_mock
 
@@ -176,7 +176,7 @@ class TestNetworkRequest(TestCase):
             res_obj = filename
             response = MockResponse(200, res_obj)
         else:
-            res_obj = from_json(os.path.join(TEST_DIR, f"fixtures/network/{filename}"))
+            res_obj = from_json(os.path.join(TEST_DIR, f"__mocks__/network/{filename}"))
             response = MockResponse(200, res_obj)
 
         request_mock = MagicMock(return_value=response)

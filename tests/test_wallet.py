@@ -12,7 +12,7 @@ from tests.utils import TEST_DIR, build_network, build_wallet
 from tests.mock_response import MockResponse
 
 default_wallet_config = from_json(
-    os.path.join(TEST_DIR, "fixtures/wallet/default_wallet.json")
+    os.path.join(TEST_DIR, "__mocks__/wallet/default_wallet.json")
 )
 
 
@@ -25,7 +25,7 @@ class TestWalletNetwork(TestCase):
         if type(filename) == dict:
             res_obj = filename
         else:
-            res_obj = from_json(os.path.join(TEST_DIR, f"fixtures/wallet/{filename}"))
+            res_obj = from_json(os.path.join(TEST_DIR, f"__mocks__/wallet/{filename}"))
         request_mock = MagicMock(return_value=res_obj)
         self.wallet.network._consensus_from_workers = request_mock
 
@@ -39,7 +39,7 @@ class TestWalletMethods(TestCase):
         if type(filename) == dict:
             res_obj = filename
         else:
-            res_obj = from_json(os.path.join(TEST_DIR, f"fixtures/wallet/{filename}"))
+            res_obj = from_json(os.path.join(TEST_DIR, f"__mocks__/wallet/{filename}"))
         request_mock = MagicMock(return_value=res_obj)
         self.wallet._consensus_from_workers = request_mock
 
@@ -101,7 +101,7 @@ class TestWalletTokenLock(TestCase):
         if type(filename) == dict:
             res_obj = filename
         else:
-            res_obj = from_json(os.path.join(TEST_DIR, f"fixtures/wallet/{filename}"))
+            res_obj = from_json(os.path.join(TEST_DIR, f"__mocks__/wallet/{filename}"))
         request_mock = MagicMock(return_value=res_obj)
         self.wallet._handle_transaction = request_mock
 
@@ -109,6 +109,12 @@ class TestWalletTokenLock(TestCase):
         """Test get_lock_config"""
         self._setup_mock("smart_contract_confirmation.json")
         data = self.wallet.lock_token(3, 3)
+        self.assertIn("hash", data)
+
+    def test_unlock_token(self):
+        """Test unlock_token"""
+        self._setup_mock("smart_contract_confirmation.json")
+        data = self.wallet.lock_token("pool_id")
         self.assertIn("hash", data)
 
     def test_create_read_pool(self):
@@ -142,7 +148,7 @@ class TestWalletTokenLock(TestCase):
 #         return super().setUp()
 
 #     def _setup_mock(self, filename):
-#         res_obj = from_json(os.path.join(TEST_DIR, f"fixtures/wallet/{filename}"))
+#         res_obj = from_json(os.path.join(TEST_DIR, f"__mocks__/wallet/{filename}"))
 #         mock_response = MockResponse(200, res_obj)
 #         request_mock = MagicMock(return_value=mock_response)
 #         self.wallet._request = request_mock

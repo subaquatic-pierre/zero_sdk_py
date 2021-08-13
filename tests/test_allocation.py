@@ -17,7 +17,7 @@ class AllocationTest(TestCase):
         return super().setUp()
 
     def _setup_mock(self, filename):
-        res_obj = from_json(os.path.join(TEST_DIR, f"fixtures/allocation/{filename}"))
+        res_obj = from_json(os.path.join(TEST_DIR, f"__mocks__/allocation/{filename}"))
         mock_response = MockResponse(200, res_obj)
         request_mock = MagicMock(return_value=mock_response)
         self.allocation._request = request_mock

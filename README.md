@@ -83,7 +83,7 @@ This is a Python SDK for 0Chain Blockchain network. Below is a mapping from curr
 | recoverwallet      | Network.recover_wallet             | Tested      | Recover wallet                                                    |
 | register           | Network.create_wallet              | Tested      | Registers the wallet with the blockchain                          |
 | send               | Wallet.send_token                  | Tested      | Send ZCN tokens to another wallet                                 |
-| unlock             | Wallet.unlock_token                | No Tests    | Unlock tokens                                                     |
+| unlock             | Wallet.unlock_token                | Tested      | Unlock tokens                                                     |
 | verify             | Network.check_transaction_status / | Tested      | verify transaction                                                |
 |                    | Transaction.validate               |             |                                                                   |
 | version            |                                    |             | Prints version information                                        |
