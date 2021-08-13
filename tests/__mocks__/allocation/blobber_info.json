@@ -1,0 +1,25 @@
+{
+    "id": "144a94640cb78130434a79a7a12d0b2c85f819e3ea8856db31c7fde30c30a820",
+    "url": "http://beta.0chain.net:31301",
+    "geolocation": {
+        "latitude": 0,
+        "longitude": 0
+    },
+    "terms": {
+        "read_price": 188608072,
+        "write_price": 188608072,
+        "min_lock_demand": 0.1,
+        "max_offer_duration": 2678400000000000,
+        "challenge_completion_time": 120000000000
+    },
+    "capacity": 1073741824000,
+    "used": 140010813915,
+    "last_health_check": 1628851800,
+    "stake_pool_settings": {
+        "delegate_wallet": "dad8cbae61dd312296d830c9400f308518da6ac5fb4c2ae643219e6ef27ea493",
+        "min_stake": 10000000000,
+        "max_stake": 1000000000000,
+        "num_delegates": 50,
+        "service_charge": 0.3
+    }
+}

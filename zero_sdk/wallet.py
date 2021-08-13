@@ -3,6 +3,7 @@ import os
 from pathlib import Path
 from time import time
 import json
+from zero_sdk.allocation import Allocation
 
 from zero_sdk.transaction import Transaction
 from zero_sdk.network import Network
@@ -130,7 +131,7 @@ class Wallet(ConnectionBase):
         res = self._consensus_from_workers("sharders", url)
 
         if allocation_id:
-            return self._filter_by_allocation(res, allocation_id)
+            return self._filter_by_allocation_id(res, allocation_id)
         return res
 
     def list_write_pool_info(self, allocation_id=None):
@@ -138,7 +139,7 @@ class Wallet(ConnectionBase):
         res = self._consensus_from_workers("sharders", url)
 
         if allocation_id:
-            return self._filter_by_allocation(res, allocation_id)
+            return self._filter_by_allocation_id(res, allocation_id)
 
         return res
 
@@ -149,7 +150,13 @@ class Wallet(ConnectionBase):
 
     def get_allocation_info(self, allocation_id):
         alocs = self.list_allocations()
-        return self._filter_by_allocation(alocs, allocation_id, "list")
+        return self._filter_by_allocation_id(alocs, allocation_id, "list")
+
+    def get_allocation(self, allocation_id) -> Allocation:
+        """Returns an instance of an allocation"""
+        alocs = self.list_allocations()
+        aloc = self._filter_by_allocation_id(alocs, allocation_id, "list")
+        return Allocation(aloc["id"], self)
 
     # --------------
     # Smart Contract Methods
@@ -257,6 +264,10 @@ class Wallet(ConnectionBase):
             value=amount,
             sc_address=to_client_id,
         )
+
+    # --------------------
+    # Vesting Pool methods
+    # --------------------
 
     def vesting_pool_create(
         self,
@@ -390,7 +401,7 @@ class Wallet(ConnectionBase):
 
         return data
 
-    def _filter_by_allocation(self, res, allocation_id, format="dict"):
+    def _filter_by_allocation_id(self, res, allocation_id, format="dict"):
         pool_info = []
         if format == "list":
             for aloc in res:

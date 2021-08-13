@@ -23,37 +23,32 @@ class Allocation(ConnectionBase):
         res = self._consensus_from_workers("sharders", url)
         return res
 
-    def list_blobbers(self):
-        return self.get_blobber_stats()
+    def get_blobber_info(self, blobber_id):
+        """Get info for given blobber ID"""
+        blobbers = self.list_blobbers()
+        for blobber in blobbers:
+            if blobber["id"] == blobber_id:
+                found_blobber = blobber
+        if not found_blobber:
+            return {"error": "Blobber with that ID not found"}
+        return found_blobber
 
-    def get_blobber_stats(self, blobber_url=None, blobber_id=None):
+    def get_blobber_stats(self, blobber_url):
+        """Get stats for given blobber url"""
+        endpoint = f"{blobber_url}/getstats"
+        res = self._request(endpoint)
+        res = self._check_status_code(res)
+        return res
+
+    def list_blobbers(self):
         """Get stats of each blobber used by the allocation, detailed
         information of allocation size and write markers per blobber"""
-        if not blobber_url and not blobber_id:
-            endpoint = Endpoints.SC_BLOBBER_STATS
-            res = self._consensus_from_workers("sharders", endpoint)
-            try:
-                nodes = res.get("Nodes")
-                return nodes
-            except:
-                return res
-
-        elif blobber_id:
-            endpoint = Endpoints.SC_BLOBBER_STATS
-            res = self._consensus_from_workers("sharders", endpoint)
-            blobbers = res.get("Nodes", [])
-            found_blobber = None
-            for blobber in blobbers:
-                if blobber["id"] == blobber_id:
-                    found_blobber = blobber
-            if not found_blobber:
-                return {"error": "Blobber with that ID not found"}
-            return found_blobber
-
-        else:
-            endpoint = f"{blobber_url}/getstats"
-            res = self._request(endpoint)
-            res = self._check_status_code(res)
+        endpoint = Endpoints.SC_BLOBBER_STATS
+        res = self._consensus_from_workers("sharders", endpoint)
+        try:
+            nodes = res.get("Nodes")
+            return nodes
+        except:
             return res
 
     def lock_read_tokens(self):

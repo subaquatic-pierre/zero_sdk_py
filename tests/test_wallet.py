@@ -203,19 +203,39 @@ class TestWalletAllocationTransaction(TestCase):
     #     self.assertIsInstance(res, dict)
 
 
-# class TestWalletAllocationConsensus(TestCase):
-#     def setUp(self) -> None:
-#         self.wallet = build_wallet()
-#         return super().setUp()
+class TestWalletAllocationConsensus(TestCase):
+    def setUp(self) -> None:
+        self.wallet = build_wallet()
+        return super().setUp()
 
-#     def _setup_mock(self, response_data):
-#         res_obj = from_json(os.path.join(TEST_DIR, f"__mocks__/wallet/{response_data}"))
-#         mock_response = MockResponse(200, res_obj)
-#         request_mock = MagicMock(return_value=mock_response)
-#         self.wallet._consensus_from_workers = request_mock
+    def _setup_mock(self, response_data):
+        if type(response_data) == dict:
+            res_obj = response_data
+        else:
+            res_obj = from_json(
+                os.path.join(TEST_DIR, f"__mocks__/wallet/{response_data}")
+            )
+        request_mock = MagicMock(return_value=res_obj)
+        self.wallet._consensus_from_workers = request_mock
 
-#     def test_list_allocations(self):
-#         """Test can list all allocations assigned to wallet"""
-#         self._setup_mock("list_allocations.json")
-#         allocations = self.wallet.list_allocations()
-#         self.assertIsInstance(allocations, list)
+    def test_get_allocation(self):
+        """Get allocation returns new instance of alloction"""
+        self._setup_mock("list_allocations.json")
+        data = self.wallet.get_allocation(
+            "296896621095a9d8a51e6e4dba2bdb5661ea94ffd8fdb0a084301bffd81fe7e6"
+        )
+        self.assertIsInstance(data, Allocation)
+
+    def test_list_allocations(self):
+        """Test can list all allocations assigned to wallet"""
+        self._setup_mock("list_allocations.json")
+        data = self.wallet.list_allocations()
+        self.assertIsInstance(data, list)
+
+    def test_get_allocation_info(self):
+        """Test can get allocation info by id"""
+        self._setup_mock("list_allocations.json")
+        data = self.wallet.get_allocation_info(
+            "296896621095a9d8a51e6e4dba2bdb5661ea94ffd8fdb0a084301bffd81fe7e6"
+        )
+        self.assertIn("blobbers", data)
