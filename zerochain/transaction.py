@@ -36,50 +36,6 @@ class Transaction(ConnectionBase):
         self.raise_exception = raise_exception
         self.fee = fee * 10000000000
 
-    def _submit_transaction(self, payload):
-        hash_payload = hash_string(payload)
-        ts = int(time())
-
-        hashdata = f"{ts}:{self.wallet.client_id}:{self.sc_address}:{self.value}:{hash_payload}"
-
-        self.hash = hash_string(hashdata)
-        signature = self.wallet.sign(self.hash)
-
-        data = {
-            "client_id": self.wallet.client_id,
-            "public_key": self.wallet.public_key,
-            "transaction_value": self.value,
-            "transaction_data": payload,
-            "transaction_type": self.type,
-            "creation_date": ts,
-            "to_client_id": self.sc_address,
-            "hash": self.hash,
-            "transaction_fee": self.fee,
-            "signature": signature,
-            "version": "1.0",
-        }
-
-        # Manipulate data here if needed
-
-        headers = {"Content-Type": "application/json", "Connection": "keep-alive"}
-        self.response_data = self._consensus_from_workers(
-            "miners",
-            endpoint=Endpoints.PUT_TRANSACTION,
-            method="POST",
-            data=json.dumps(data),
-            headers=headers,
-        )
-        try:
-            response_hash = self.response_data.get("entity").get("hash")
-        except:
-            return {"error": (self.response_data)}
-            # raise TransactionError("Response doesnt contain hash")
-
-        if response_hash != self.hash:
-            raise TransactionError("Request hash and response hash do not match")
-
-        return self.response_data
-
     def execute(self):
         if not self.name:
             payload = self.input
@@ -113,3 +69,51 @@ class Transaction(ConnectionBase):
             raise TransactionError("Transaction could to be confirmed")
         else:
             return self.response_data
+
+    def _submit_transaction(self, payload):
+        transaction_data = self._build_transaction_data(payload)
+
+        # Manipulate data here if needed
+
+        headers = {"Content-Type": "application/json", "Connection": "keep-alive"}
+        self.response_data = self._consensus_from_workers(
+            "miners",
+            endpoint=Endpoints.PUT_TRANSACTION,
+            method="POST",
+            data=json.dumps(transaction_data),
+            headers=headers,
+        )
+        try:
+            response_hash = self.response_data.get("entity").get("hash")
+        except:
+            return {"error": (self.response_data)}
+
+        if response_hash != self.hash:
+            raise TransactionError("Request hash and response hash do not match")
+
+        return self.response_data
+
+    def _build_transaction_data(self, payload):
+        hash_payload = hash_string(payload)
+        ts = int(time())
+
+        hashdata = f"{ts}:{self.wallet.client_id}:{self.sc_address}:{self.value}:{hash_payload}"
+
+        self.hash = hash_string(hashdata)
+        signature = self.wallet.sign(self.hash)
+
+        data = {
+            "client_id": self.wallet.client_id,
+            "public_key": self.wallet.public_key,
+            "transaction_value": self.value,
+            "transaction_data": payload,
+            "transaction_type": self.type,
+            "creation_date": ts,
+            "to_client_id": self.sc_address,
+            "hash": self.hash,
+            "transaction_fee": self.fee,
+            "signature": signature,
+            "version": "1.0",
+        }
+
+        return data
