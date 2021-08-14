@@ -95,6 +95,12 @@ class TestWalletMethods(TestCase):
         data = self.wallet.list_lock_token()
         self.assertIn("stats", data)
 
+    def test_storage_contract_config(self):
+        """Test get_sc_config"""
+        self._setup_mock("sc_config.json")
+        data = self.wallet.get_sc_config()
+        self.assertIn("time_unit", data)
+
 
 class TestWalletTokenLock(TestCase):
     def setUp(self) -> None:

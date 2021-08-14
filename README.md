@@ -35,12 +35,12 @@ This is a Python SDK for 0Chain Blockchain network. Below is a mapping from curr
 | newallocation      | Wallet.create_allocation        | Tested           | Creates a new allocation                                  |
 | register           | Network.create_wallet           | Tested           | Registers the wallet with the blockchain                  |
 | rename             |                                 |                  | rename an object(file/folder) on blobbers                 |
-| rp-create          | Wallet.create_read_pool         | No Tests         | Create read pool if missing                               |
+| rp-create          | Wallet.create_read_pool         | Unconfirmed      | Create read pool if missing                               |
 | rp-info            | Wallet.list_read_pool_info      | Tested           | Read pool information.                                    |
 |                    | Allocation.get_read_pool_info   | Tested           |                                                           |
-| rp-lock            |                                 |                  | Lock some tokens in read pool.                            |
-| rp-unlock          |                                 |                  | Unlock some expired tokens in a read pool.                |
-| sc-config          |                                 |                  | Show storage SC configuration.                            |
+| rp-lock            | Wallet.read_pool_lock           | Tested           | Lock some tokens in read pool.                            |
+| rp-unlock          | Wallet.read_pool_unlock         | Tested           | Unlock some expired tokens in a read pool.                |
+| sc-config          | Wallet.get_sc_config            | Tested           | Show storage SC configuration.                            |
 | share              |                                 |                  | share files from blobbers                                 |
 | sign-data          |                                 |                  | Sign given data                                           |
 | sp-info            | NA                              | Awaiting Network | Stake pool information.                                   |

@@ -281,6 +281,11 @@ class Wallet(ConnectionBase):
     # Allocation methods
     # --------------------
 
+    def get_sc_config(self):
+        """Get storage contract config"""
+        res = self._consensus_from_workers("sharders", Endpoints.SC_GET_CONFIG)
+        return res
+
     def read_pool_lock(
         self, amount, allocation_id, days=0, hours=0, minutes=0, sec=0, blobber_id=None
     ):

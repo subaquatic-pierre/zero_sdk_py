@@ -93,6 +93,7 @@ class Endpoints:
     SC_REST = "v1/screst/"
     SC_REST_ALLOCATION = "v1/screst/" + STORAGE_SMART_CONTRACT_ADDRESS + "/allocation"
     SC_REST_ALLOCATIONS = "v1/screst/" + STORAGE_SMART_CONTRACT_ADDRESS + "/allocations"
+    SC_GET_CONFIG = "v1/screst/" + STORAGE_SMART_CONTRACT_ADDRESS + "/getConfig"
     SC_REST_READPOOL_STATS = (
         "v1/screst/" + STORAGE_SMART_CONTRACT_ADDRESS + "/getReadPoolStat"
     )
