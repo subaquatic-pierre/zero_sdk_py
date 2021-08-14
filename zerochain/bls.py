@@ -1,5 +1,5 @@
 import subprocess
-from zerochain.utils import get_project_root, hash_string
+from zerochain.utils import get_project_root
 
 root_dir = get_project_root()
 

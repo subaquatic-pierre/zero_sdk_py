@@ -6,8 +6,7 @@ import yaml
 import secrets
 from pathlib import Path
 from hashlib import sha3_256
-
-from zerochain.lib.bip39 import encode_bytes
+from bip39 import encode_bytes
 
 
 def generate_random_letters(num_letters=5):

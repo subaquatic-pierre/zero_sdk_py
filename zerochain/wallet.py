@@ -197,11 +197,12 @@ class Wallet(ConnectionBase):
             "preferred_blobbers": preferred_blobbers,
         }
 
-        return self._handle_transaction(
+        data = self._handle_transaction(
             transaction_name=TransactionName.NEW_ALLOCATION_REQUEST,
             input=input,
             value=lock_tokens,
         )
+        return Allocation(data["hash"], self)
 
     def lock_token(self, amount, hours=0, minutes=0):
         if hours < 0 or minutes < 0:

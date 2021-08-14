@@ -188,7 +188,7 @@ class TestWalletAllocationTransaction(TestCase):
         """Can create storage allocation"""
         self._setup_mock("smart_contract_confirmation.json")
         data = self.wallet.create_allocation()
-        self.assertIn("txn", data)
+        self.assertIsInstance(data, Allocation)
 
     # def test_blobber_lock_tokens(self):
     #     """Test can lock tokens to blobber"""

@@ -27,20 +27,8 @@ network = Network.from_object(default_network_config_obj)
 wallet = Wallet.from_object(default_wallet_config_obj, network)
 aloc = Allocation(aloc_id, wallet)
 
-data = aloc.get_allocation_info()
-
-data = aloc.list_blobbers()
-pprint(data)
-
-print("ALOC BY ID:")
-data = aloc.get_blobber_info(
-    blobber_id="144a94640cb78130434a79a7a12d0b2c85f819e3ea8856db31c7fde30c30a820"
-)
-pprint(data)
-
-print("BY URL:")
-data = aloc.get_blobber_stats(blobber_url="http://beta.0chain.net:31301")
-pprint(data)
+new_aloc = wallet.create_allocation()
+print(new_aloc)
 
 # from reedsolo import RSCodec
 
