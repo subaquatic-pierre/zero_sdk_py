@@ -4,6 +4,7 @@ from unittest.mock import MagicMock
 
 from tests.utils import TEST_DIR, build_wallet
 from tests.mock_response import MockResponse
+from tests.mock_wallet import MockWallet
 
 from zerochain.allocation import Allocation
 from zerochain.utils import from_json
@@ -11,26 +12,38 @@ from zerochain.utils import from_json
 ALLOCATION_ID = "296896621095a9d8a51e6e4dba2bdb5661ea94ffd8fdb0a084301bffd81fe7e6"
 
 
-class AllocationTestConsensus(TestCase):
+class TestAllocationWalletMethods(TestCase):
     def setUp(self) -> None:
         self.allocation = Allocation(ALLOCATION_ID, build_wallet())
         return super().setUp()
 
-    def _setup_mock(self, response_data):
-        if type(response_data) == dict:
+    def _setup_mock(self, response_data, method_name=None):
+        if type(response_data) == dict or type(response_data) == list:
             res_obj = response_data
         else:
             res_obj = from_json(
                 os.path.join(TEST_DIR, f"__mocks__/allocation/{response_data}")
             )
         request_mock = MagicMock(return_value=res_obj)
-        self.allocation._consensus_from_workers = request_mock
+        if method_name:
+            mock_return = getattr(MockWallet, "mock_return")
+            mock_wallet = MockWallet
+            setattr(mock_wallet, method_name, mock_return(response_data))
+            self.allocation.wallet = mock_wallet
+        else:
+            self.allocation._consensus_from_workers = request_mock
 
-    def test_get_allocation_info(self):
-        """Test can get allocation info"""
-        self._setup_mock("allocation_info.json")
-        data = self.allocation.get_allocation_info()
-        self.assertIn("id", data)
+    def test_get_read_pool_info(self):
+        """Test can get read pool info"""
+        self._setup_mock([], method_name="list_read_pool_info")
+        data = self.allocation.get_read_pool_info()
+        self.assertIsInstance(data, list)
+
+    def test_get_write_pool_info(self):
+        """Test can get write pool info"""
+        self._setup_mock([], method_name="list_write_pool_info")
+        data = self.allocation.get_write_pool_info()
+        self.assertIsInstance(data, list)
 
     def test_wallet_info(self):
         """Test can get wallet info"""
@@ -44,7 +57,7 @@ class AllocationTestConsensus(TestCase):
         self.assertIn("client_id", data)
 
 
-class AllocationTestBlobberInfo(TestCase):
+class TestAllocationBlobberInfo(TestCase):
     def setUp(self) -> None:
         self.allocation = Allocation(ALLOCATION_ID, build_wallet())
         return super().setUp()

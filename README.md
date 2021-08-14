@@ -36,8 +36,8 @@ This is a Python SDK for 0Chain Blockchain network. Below is a mapping from curr
 | register           | Network.create_wallet           | Tested           | Registers the wallet with the blockchain                  |
 | rename             |                                 |                  | rename an object(file/folder) on blobbers                 |
 | rp-create          | Wallet.create_read_pool         | No Tests         | Create read pool if missing                               |
-| rp-info            | Wallet.list_read_pool_info      | No Tests         | Read pool information.                                    |
-|                    | Allocation.get_read_pool_info   | No Tests         |                                                           |
+| rp-info            | Wallet.list_read_pool_info      | Tested           | Read pool information.                                    |
+|                    | Allocation.get_read_pool_info   | Tested           |                                                           |
 | rp-lock            |                                 |                  | Lock some tokens in read pool.                            |
 | rp-unlock          |                                 |                  | Unlock some expired tokens in a read pool.                |
 | sc-config          |                                 |                  | Show storage SC configuration.                            |
@@ -56,8 +56,8 @@ This is a Python SDK for 0Chain Blockchain network. Below is a mapping from curr
 | update-attributes  |                                 |                  | update object attributes on blobbers                      |
 | updateallocation   | Wallet.update_allocation        | Unconfirmed      | Updates allocation's expiry and size                      |
 | upload             |                                 |                  | upload file to blobbers                                   |
-| version            |                                 |                  | Prints version information                                |
 | wp-info            | Wallet.list_write_pool_info     | Tested           | Write pool information.                                   |
+|                    | Allocation.get_write_pool_info  | Tested           |                                                           |
 | wp-lock            | Allocation.lock_write_tokens    | Unimplemented    | Lock some tokens in write pool.                           |
 | wp-unlock          |                                 |                  | Unlock some expired tokens in a write pool.               |
 

@@ -1,14 +1,16 @@
 import json
-from pathlib import Path
-from time import time
-from zerochain.data_display import DataDisplay
-import requests
-import os
-from zerochain.network import ConnectionBase
-from zerochain.utils import hash_string, generate_random_letters
-from zerochain.const import Endpoints, STORAGE_SMART_CONTRACT_ADDRESS
 from random import randint
+from pathlib import Path
 from reedsolo import RSCodec
+from time import time
+from datetime import timedelta
+import os
+
+from zerochain.transaction import Transaction
+from zerochain.network import ConnectionBase
+from zerochain.const import TransactionName, TransactionType
+from zerochain.utils import generate_random_letters
+from zerochain.const import Endpoints, STORAGE_SMART_CONTRACT_ADDRESS
 
 
 class Allocation(ConnectionBase):
@@ -58,19 +60,10 @@ class Allocation(ConnectionBase):
         pass
 
     def get_read_pool_info(self):
-        data = self.wallet.get_read_pool_info(self.id)
-        return data
-        # data_display = DataDisplay.from_list(
-        #     data, fields=["id", "balance", "allocation_id"], heading="Read Pool Info"
-        # )
-        # return data_display.build_list_display()
+        return self.wallet.list_read_pool_info(self.id)
 
     def get_write_pool_info(self):
-        data = self.wallet.get_write_pool_info(self.id)
-        data_display = DataDisplay.from_list(
-            data, fields=["id", "balance", "allocation_id"], heading="Write Pool Info"
-        )
-        return data_display.build_list_display()
+        return self.wallet.list_write_pool_info(self.id)
 
     def save(self, allocation_name=None):
         if not allocation_name:
@@ -91,6 +84,56 @@ class Allocation(ConnectionBase):
             "client_id": self.wallet.client_id,
             "public_key": self.wallet.public_key,
         }
+
+    # --------------
+    # Smart Contract Methods
+    # --------------
+
+    def update_allocation(
+        self,
+        extend_expiration_hours=10,
+        size=1147483652,
+    ):
+        future = int(time() + timedelta(hours=extend_expiration_hours).total_seconds())
+
+        input = {
+            "id": self.id,
+            "size": size,
+            "expiration_date": future,
+        }
+
+        return self._handle_transaction(
+            sc_address=STORAGE_SMART_CONTRACT_ADDRESS,
+            transaction_name=TransactionName.STORAGESC_UPDATE_ALLOCATION,
+            input=input,
+            value=1,
+        )
+
+    # --------------
+    # Private Methods
+    # --------------
+
+    def _handle_transaction(
+        self,
+        input,
+        transaction_name=None,
+        transaction_type=TransactionType.SMART_CONTRACT,
+        value=0,
+        sc_address=STORAGE_SMART_CONTRACT_ADDRESS,
+        raise_exception=True,
+    ):
+        transaction = Transaction.create_transaction(
+            transaction_name=transaction_name,
+            transaction_type=transaction_type,
+            input=input,
+            wallet=self.wallet,
+            value=value,
+            sc_address=sc_address,
+        )
+        transaction.execute()
+        data = transaction.validate(raise_exception)
+
+        return data
 
     # def get_file_path(self, blobber, remote_path, headers):
     #     url = (

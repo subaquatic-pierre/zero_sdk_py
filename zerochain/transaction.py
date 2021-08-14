@@ -17,6 +17,7 @@ class Transaction(ConnectionBase):
         input,
         value,
         wallet,
+        timeout=5,
     ) -> None:
         self.sc_address = sc_address
         self.input = input
@@ -29,6 +30,7 @@ class Transaction(ConnectionBase):
         self.hash = None
         self.response_data = None
         self.confirmation_data = None
+        self.timeout = timeout
 
     def _submit_transaction(self, payload):
         hash_payload = hash_string(payload)
@@ -88,6 +90,8 @@ class Transaction(ConnectionBase):
         if not hash:
             hash = self.hash
         for i in range(10):
+            if i == self.timeout:
+                break
             sleep(1)
             try:
                 self.confirmation_data = self.network.check_transaction_status(hash)

@@ -63,13 +63,13 @@ class TestWalletMethods(TestCase):
         """Test can get read pool info"""
         self._setup_mock("pool_info.json")
         pool = self.wallet.list_read_pool_info()
-        self.assertIn("pools", pool)
+        self.assertIsInstance(pool, list)
 
     def test_list_write_pool_info(self):
         """Test get write pool info"""
         self._setup_mock("pool_info.json")
         pool = self.wallet.list_write_pool_info()
-        self.assertIn("pools", pool)
+        self.assertIsInstance(pool, list)
 
     def test_list_stake_pool_info(self):
         """Test list_stake_pool_info"""

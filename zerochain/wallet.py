@@ -108,31 +108,14 @@ class Wallet(ConnectionBase):
         except:
             return res
 
-    def get_vesting_pool_config(self):
-        endpoint = Endpoints.GET_VESTING_CONFIG
-        res = self._consensus_from_workers("sharders", endpoint)
-        return res
-
-    def get_vesting_pool_info(self, pool_id):
-        endpoint = f"{Endpoints.GET_VESTING_POOL_INFO}?pool_id={pool_id}"
-        res = self._consensus_from_workers("sharders", endpoint)
-        return res
-
-    def list_vesting_pool_info(self):
-        endpoint = f"{Endpoints.GET_VESTING_CLIENT_POOLS}?client_id={self.client_id}"
-        res = self._consensus_from_workers("sharders", endpoint)
-        try:
-            return res.get("pools")
-        except:
-            return res
-
     def list_read_pool_info(self, allocation_id=None):
         url = f"{Endpoints.SC_REST_READPOOL_STATS}?client_id={self.client_id}"
         res = self._consensus_from_workers("sharders", url)
 
         if allocation_id:
             return self._filter_by_allocation_id(res, allocation_id)
-        return res
+
+        return self._return_pools(res)
 
     def list_write_pool_info(self, allocation_id=None):
         url = f"{Endpoints.SC_REST_WRITEPOOL_STATS}?client_id={self.client_id}"
@@ -141,22 +124,7 @@ class Wallet(ConnectionBase):
         if allocation_id:
             return self._filter_by_allocation_id(res, allocation_id)
 
-        return res
-
-    def list_allocations(self):
-        url = f"{Endpoints.SC_REST_ALLOCATIONS}?client={self.client_id}"
-        res = self._consensus_from_workers("sharders", url)
-        return res
-
-    def get_allocation_info(self, allocation_id):
-        alocs = self.list_allocations()
-        return self._filter_by_allocation_id(alocs, allocation_id, "list")
-
-    def get_allocation(self, allocation_id) -> Allocation:
-        """Returns an instance of an allocation"""
-        alocs = self.list_allocations()
-        aloc = self._filter_by_allocation_id(alocs, allocation_id, "list")
-        return Allocation(aloc["id"], self)
+        return self._return_pools(res)
 
     # --------------
     # Smart Contract Methods
@@ -170,39 +138,6 @@ class Wallet(ConnectionBase):
             input=input,
             value=1,
         )
-
-    def create_allocation(
-        self,
-        data_shards=AllocationConfig.DATA_SHARDS,
-        parity_shards=AllocationConfig.PARITY_SHARDS,
-        size=AllocationConfig.SIZE,
-        lock_tokens=AllocationConfig.TOKEN_LOCK,
-        preferred_blobbers=AllocationConfig.PREFERRED_BLOBBERS,
-        write_price=AllocationConfig.WRITE_PRICE,
-        read_price=AllocationConfig.READ_PRICE,
-        max_challenge_completion_time=AllocationConfig.MAX_CHALLENGE_COMPLETION_TIME,
-        expiration_date=time(),
-    ):
-        future_date = int(expiration_date + timedelta(days=30).total_seconds())
-        input = {
-            "data_shards": data_shards,
-            "parity_shards": parity_shards,
-            "owner_id": self.client_id,
-            "owner_public_key": self.public_key,
-            "size": size,
-            "expiration_date": future_date,
-            "read_price_range": read_price,
-            "write_price_range": write_price,
-            "max_challenge_completion_time": max_challenge_completion_time,
-            "preferred_blobbers": preferred_blobbers,
-        }
-
-        data = self._handle_transaction(
-            transaction_name=TransactionName.NEW_ALLOCATION_REQUEST,
-            input=input,
-            value=lock_tokens,
-        )
-        return Allocation(data["hash"], self)
 
     def lock_token(self, amount, hours=0, minutes=0):
         if hours < 0 or minutes < 0:
@@ -270,6 +205,24 @@ class Wallet(ConnectionBase):
     # Vesting Pool methods
     # --------------------
 
+    def get_vesting_pool_config(self):
+        endpoint = Endpoints.GET_VESTING_CONFIG
+        res = self._consensus_from_workers("sharders", endpoint)
+        return res
+
+    def get_vesting_pool_info(self, pool_id):
+        endpoint = f"{Endpoints.GET_VESTING_POOL_INFO}?pool_id={pool_id}"
+        res = self._consensus_from_workers("sharders", endpoint)
+        return res
+
+    def list_vesting_pool_info(self):
+        endpoint = f"{Endpoints.GET_VESTING_CLIENT_POOLS}?client_id={self.client_id}"
+        res = self._consensus_from_workers("sharders", endpoint)
+        try:
+            return res.get("pools")
+        except:
+            return res
+
     def vesting_pool_create(
         self,
         destinations,
@@ -328,6 +281,58 @@ class Wallet(ConnectionBase):
         )
 
     # --------------------
+    # Allocation methods
+    # --------------------
+
+    def list_allocations(self):
+        url = f"{Endpoints.SC_REST_ALLOCATIONS}?client={self.client_id}"
+        res = self._consensus_from_workers("sharders", url)
+        return res
+
+    def get_allocation_info(self, allocation_id):
+        alocs = self.list_allocations()
+        return self._filter_by_allocation_id(alocs, allocation_id, "list")
+
+    def get_allocation(self, allocation_id) -> Allocation:
+        """Returns an instance of an allocation"""
+        alocs = self.list_allocations()
+        aloc = self._filter_by_allocation_id(alocs, allocation_id, "list")
+        return Allocation(aloc["id"], self)
+
+    def create_allocation(
+        self,
+        data_shards=AllocationConfig.DATA_SHARDS,
+        parity_shards=AllocationConfig.PARITY_SHARDS,
+        size=AllocationConfig.SIZE,
+        lock_tokens=AllocationConfig.TOKEN_LOCK,
+        preferred_blobbers=AllocationConfig.PREFERRED_BLOBBERS,
+        write_price=AllocationConfig.WRITE_PRICE,
+        read_price=AllocationConfig.READ_PRICE,
+        max_challenge_completion_time=AllocationConfig.MAX_CHALLENGE_COMPLETION_TIME,
+        expiration_date=time(),
+    ):
+        future_date = int(expiration_date + timedelta(days=30).total_seconds())
+        input = {
+            "data_shards": data_shards,
+            "parity_shards": parity_shards,
+            "owner_id": self.client_id,
+            "owner_public_key": self.public_key,
+            "size": size,
+            "expiration_date": future_date,
+            "read_price_range": read_price,
+            "write_price_range": write_price,
+            "max_challenge_completion_time": max_challenge_completion_time,
+            "preferred_blobbers": preferred_blobbers,
+        }
+
+        data = self._handle_transaction(
+            transaction_name=TransactionName.NEW_ALLOCATION_REQUEST,
+            input=input,
+            value=lock_tokens,
+        )
+        return Allocation(data["hash"], self)
+
+    # --------------------
     # Utility methods
     # --------------------
 
@@ -356,6 +361,12 @@ class Wallet(ConnectionBase):
     # --------------
     # Private Methods
     # --------------
+
+    def _return_pools(self, res):
+        try:
+            return res.get("pools")
+        except:
+            return res
 
     def _init_wallet(self):
         # Implement wallet init
@@ -558,28 +569,4 @@ class Wallet(ConnectionBase):
         res = self._consensus_from_workers(
             "sharders", endpoint=Endpoints.SC_REST_ALLOCATION_MIN_LOCK, data=payload
         )
-        return res
-
-    def update_allocation(
-        self,
-        allocation_id,
-        tokens=1,
-        extend_expiration_hours=720,
-        size=2147483652,
-    ):
-        future = int(time() + timedelta(hours=extend_expiration_hours).total_seconds())
-
-        payload = json.dumps(
-            {
-                "name": "update_allocation_request",
-                "input": {
-                    "owner_id": self.client_id,
-                    "id": allocation_id,
-                    "size": size,
-                    "expiration_date": future,
-                },
-            }
-        )
-        res = self._execute_smart_contract(payload, transaction_value=tokens)
-
         return res
