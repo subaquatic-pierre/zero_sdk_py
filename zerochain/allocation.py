@@ -86,6 +86,12 @@ class Allocation(ConnectionBase):
         ) as f:
             f.write(json.dumps(data, indent=4))
 
+    def get_wallet_info(self):
+        return {
+            "client_id": self.wallet.client_id,
+            "public_key": self.wallet.public_key,
+        }
+
     # def get_file_path(self, blobber, remote_path, headers):
     #     url = (
     #         f'{blobber["url"]}/v1/file/referencepath/{self.id}?paths=["{remote_path}"]'

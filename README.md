@@ -25,7 +25,7 @@ This is a Python SDK for 0Chain Blockchain network. Below is a mapping from curr
 | get-diff           |                                 |                  | Get difference of local and allocation root               |
 | get-download-cost  |                                 |                  | Get downloading cost                                      |
 | get-upload-cost    |                                 |                  | Get uploading cost                                        |
-| getwallet          |                                 |                  | Get wallet information                                    |
+| getwallet          | Allocation.get_wallet_info      | Tested           | Get wallet information                                    |
 | list               |                                 |                  | list files from blobbers                                  |
 | list-all           |                                 |                  | list all files from blobbers                              |
 | listallocations    | Wallet.list_allocations         | Tested           | List allocations for the client                           |

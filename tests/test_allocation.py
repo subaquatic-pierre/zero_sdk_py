@@ -32,6 +32,17 @@ class AllocationTestConsensus(TestCase):
         data = self.allocation.get_allocation_info()
         self.assertIn("id", data)
 
+    def test_wallet_info(self):
+        """Test can get wallet info"""
+        self._setup_mock(
+            {
+                "client_id": "some_id",
+                "public_key": "public_key",
+            }
+        )
+        data = self.allocation.get_wallet_info()
+        self.assertIn("client_id", data)
+
 
 class AllocationTestBlobberInfo(TestCase):
     def setUp(self) -> None:

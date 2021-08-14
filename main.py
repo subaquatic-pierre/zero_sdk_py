@@ -27,8 +27,8 @@ network = Network.from_object(default_network_config_obj)
 wallet = Wallet.from_object(default_wallet_config_obj, network)
 aloc = Allocation(aloc_id, wallet)
 
-new_aloc = wallet.create_allocation()
-print(new_aloc)
+data = aloc.get_wallet()
+pprint(data)
 
 # from reedsolo import RSCodec
 
