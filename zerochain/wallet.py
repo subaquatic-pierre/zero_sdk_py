@@ -281,9 +281,7 @@ class Wallet(ConnectionBase):
     # Allocation methods
     # --------------------
 
-    def read_pool_lock(
-        self, pool_id, amount=1, duration=720, allocation_id=None, blobber_id=None
-    ):
+    def read_pool_lock(self, amount, duration, allocation_id, blobber_id=None):
         duration = int(timedelta(hours=duration).total_seconds())
         input = {"duration": duration, "allocation_id": allocation_id}
         if blobber_id:

@@ -190,6 +190,12 @@ class TestWalletAllocationTransaction(TestCase):
         data = self.wallet.create_allocation()
         self.assertIsInstance(data, Allocation)
 
+    def test_unlock_read_pooL(self):
+        """Can unlock read pool tockens"""
+        self._setup_mock("smart_contract_confirmation.json")
+        data = self.wallet.read_pool_unlock("pool_id")
+        self.assertIn("hash", data)
+
     # def test_blobber_lock_tokens(self):
     #     """Test can lock tokens to blobber"""
     #     self._setup_mock("lock_token.json")
