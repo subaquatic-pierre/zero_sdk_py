@@ -17,6 +17,7 @@ class Transaction(ConnectionBase):
         input,
         value,
         wallet,
+        raise_exception,
         timeout=5,
     ) -> None:
         self.sc_address = sc_address
@@ -31,6 +32,7 @@ class Transaction(ConnectionBase):
         self.response_data = None
         self.confirmation_data = None
         self.timeout = timeout
+        self.raise_exception = raise_exception
 
     def _submit_transaction(self, payload):
         hash_payload = hash_string(payload)
@@ -86,7 +88,7 @@ class Transaction(ConnectionBase):
             payload,
         )
 
-    def validate(self, raise_exception=False, hash=None):
+    def validate(self, hash=None):
         if not hash:
             hash = self.hash
         for i in range(10):
@@ -105,25 +107,7 @@ class Transaction(ConnectionBase):
         if self.status == 1:
             return self.confirmation_data
 
-        if raise_exception:
+        if self.raise_exception:
             raise TransactionError("Transaction could to be confirmed")
         else:
             return self.response_data
-
-    @staticmethod
-    def create_transaction(
-        transaction_name,
-        transaction_type,
-        input,
-        wallet,
-        value,
-        sc_address,
-    ):
-        return Transaction(
-            sc_address,
-            transaction_name,
-            transaction_type,
-            input,
-            value,
-            wallet,
-        )

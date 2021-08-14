@@ -164,7 +164,6 @@ class Wallet(ConnectionBase):
         return self._handle_transaction(
             transaction_name=TransactionName.STORAGESC_CREATE_READ_POOL,
             input=input,
-            raise_exception=True,
         )
 
     def miner_lock_token(
@@ -179,7 +178,6 @@ class Wallet(ConnectionBase):
             input=input,
             value=amount,
             sc_address=MINER_SMART_CONTRACT_ADDRESS,
-            raise_exception=True,
         )
 
     def miner_unlock_token(self, node_id, pool_id):
@@ -188,7 +186,6 @@ class Wallet(ConnectionBase):
             transaction_name=TransactionName.MINERSC_UNLOCK,
             input=input,
             sc_address=MINER_SMART_CONTRACT_ADDRESS,
-            raise_exception=True,
         )
 
     def send_token(self, to_client_id, amount, description=""):
@@ -283,6 +280,27 @@ class Wallet(ConnectionBase):
     # --------------------
     # Allocation methods
     # --------------------
+
+    def read_pool_lock(
+        self, pool_id, amount=1, duration=720, allocation_id=None, blobber_id=None
+    ):
+        duration = int(timedelta(hours=duration).total_seconds())
+        input = {"duration": duration, "allocation_id": allocation_id}
+        if blobber_id:
+            input["blobber_id"] = blobber_id
+
+        return self._handle_transaction(
+            input=input,
+            transaction_name=TransactionName.STORAGESC_READ_POOL_LOCK,
+            value=amount,
+        )
+
+    def read_pool_unlock(self, pool_id):
+        input = {"pool_id": pool_id}
+        return self._handle_transaction(
+            input=input,
+            transaction_name=TransactionName.STORAGESC_READ_POOL_UNLOCK,
+        )
 
     def list_allocations(self):
         url = f"{Endpoints.SC_REST_ALLOCATIONS}?client={self.client_id}"
@@ -398,18 +416,19 @@ class Wallet(ConnectionBase):
         transaction_type=TransactionType.SMART_CONTRACT,
         value=0,
         sc_address=STORAGE_SMART_CONTRACT_ADDRESS,
-        raise_exception=False,
+        raise_exception=True,
     ):
-        transaction = Transaction.create_transaction(
+        transaction = Transaction(
             transaction_name=transaction_name,
             transaction_type=transaction_type,
             input=input,
             wallet=self,
             value=value,
             sc_address=sc_address,
+            raise_exception=raise_exception,
         )
         transaction.execute()
-        data = transaction.validate(raise_exception)
+        data = transaction.validate()
 
         return data
 

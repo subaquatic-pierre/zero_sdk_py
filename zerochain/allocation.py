@@ -122,16 +122,17 @@ class Allocation(ConnectionBase):
         sc_address=STORAGE_SMART_CONTRACT_ADDRESS,
         raise_exception=True,
     ):
-        transaction = Transaction.create_transaction(
+        transaction = Transaction(
             transaction_name=transaction_name,
             transaction_type=transaction_type,
             input=input,
             wallet=self.wallet,
             value=value,
             sc_address=sc_address,
+            raise_exception=raise_exception,
         )
         transaction.execute()
-        data = transaction.validate(raise_exception)
+        data = transaction.validate()
 
         return data
 
