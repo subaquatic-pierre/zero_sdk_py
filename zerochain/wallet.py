@@ -7,7 +7,7 @@ from zerochain.allocation import Allocation
 
 from zerochain.transaction import Transaction
 from zerochain.network import Network
-from zerochain.utils import generate_random_letters
+from zerochain.utils import generate_random_letters, get_duration_nanoseconds
 from zerochain.bls import sign_payload
 from zerochain.connection import ConnectionBase
 from zerochain.miner_settings import miner_delegate_pool
@@ -281,8 +281,10 @@ class Wallet(ConnectionBase):
     # Allocation methods
     # --------------------
 
-    def read_pool_lock(self, amount, duration, allocation_id, blobber_id=None):
-        duration = int(timedelta(hours=duration).total_seconds())
+    def read_pool_lock(
+        self, amount, allocation_id, days=0, hours=0, minutes=0, sec=0, blobber_id=None
+    ):
+        duration = get_duration_nanoseconds
         input = {"duration": duration, "allocation_id": allocation_id}
         if blobber_id:
             input["blobber_id"] = blobber_id
@@ -414,7 +416,7 @@ class Wallet(ConnectionBase):
         transaction_type=TransactionType.SMART_CONTRACT,
         value=0,
         sc_address=STORAGE_SMART_CONTRACT_ADDRESS,
-        raise_exception=True,
+        raise_exception=False,
     ):
         transaction = Transaction(
             transaction_name=transaction_name,
