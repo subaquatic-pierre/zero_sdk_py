@@ -1,11 +1,11 @@
 from unittest.case import TestCase
 from unittest.mock import MagicMock
 import os
-from zero_sdk.wallet import Wallet
+from zerochain.wallet import Wallet
 
-from zero_sdk.workers import Blobber, Miner, Sharder
-from zero_sdk.network import Network
-from zero_sdk.utils import from_yaml, from_json
+from zerochain.workers import Blobber, Miner, Sharder
+from zerochain.network import Network
+from zerochain.utils import from_yaml, from_json
 
 from tests.utils import TEST_DIR
 from tests.mock_response import MockResponse

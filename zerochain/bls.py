@@ -1,5 +1,5 @@
 import subprocess
-from zero_sdk.utils import get_project_root, hash_string
+from zerochain.utils import get_project_root, hash_string
 
 root_dir = get_project_root()
 
@@ -7,7 +7,7 @@ PASSPHRASE = "0chain-client-split-key"
 
 
 def sign_payload(private_key, hash_payload):
-    file_path = f"{root_dir}/zero_sdk/lib/bn254_js/sign.js"
+    file_path = f"{root_dir}/zerochain/lib/bn254_js/sign.js"
 
     command = subprocess.Popen(
         ["node", file_path, private_key, hash_payload],
@@ -26,7 +26,7 @@ def sign_payload(private_key, hash_payload):
 
 
 def generate_keys(mnemonic):
-    file_path = f"{root_dir}/zero_sdk/lib/bn254_js/generate_keys.js"
+    file_path = f"{root_dir}/zerochain/lib/bn254_js/generate_keys.js"
 
     command = subprocess.Popen(
         ["node", file_path, mnemonic],

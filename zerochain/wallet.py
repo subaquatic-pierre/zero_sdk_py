@@ -3,15 +3,15 @@ import os
 from pathlib import Path
 from time import time
 import json
-from zero_sdk.allocation import Allocation
+from zerochain.allocation import Allocation
 
-from zero_sdk.transaction import Transaction
-from zero_sdk.network import Network
-from zero_sdk.utils import generate_random_letters
-from zero_sdk.bls import sign_payload
-from zero_sdk.connection import ConnectionBase
-from zero_sdk.miner_settings import miner_delegate_pool
-from zero_sdk.const import (
+from zerochain.transaction import Transaction
+from zerochain.network import Network
+from zerochain.utils import generate_random_letters
+from zerochain.bls import sign_payload
+from zerochain.connection import ConnectionBase
+from zerochain.miner_settings import miner_delegate_pool
+from zerochain.const import (
     INTEREST_POOL_SMART_CONTRACT_ADDRESS,
     STORAGE_SMART_CONTRACT_ADDRESS,
     FAUCET_SMART_CONTRACT_ADDRESS,

@@ -5,9 +5,9 @@ from requests.models import Response
 import requests
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
-from zero_sdk.const import Endpoints
-from zero_sdk.utils import hash_string
-from zero_sdk.exceptions import ConsensusError
+from zerochain.const import Endpoints
+from zerochain.utils import hash_string
+from zerochain.exceptions import ConsensusError
 
 
 class ConnectionBase(ABC):

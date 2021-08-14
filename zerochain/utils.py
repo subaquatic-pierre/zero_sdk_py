@@ -7,7 +7,7 @@ import secrets
 from pathlib import Path
 from hashlib import sha3_256
 
-from zero_sdk.lib.bip39 import encode_bytes
+from zerochain.lib.bip39 import encode_bytes
 
 
 def generate_random_letters(num_letters=5):
@@ -84,12 +84,12 @@ def timer(f):
 
 
 def create_wallet(data, network):
-    from zero_sdk.wallet import Wallet
+    from zerochain.wallet import Wallet
 
     return Wallet.from_object(data, network)
 
 
 def create_allocation(allocation_id, wallet):
-    from zero_sdk.allocation import Allocation
+    from zerochain.allocation import Allocation
 
     return Allocation(allocation_id, wallet)

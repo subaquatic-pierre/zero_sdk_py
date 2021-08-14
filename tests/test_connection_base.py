@@ -7,9 +7,9 @@ from unittest.case import TestCase
 from tests.utils import TEST_DIR, build_network
 from tests.mock_response import MockResponse
 
-from zero_sdk.const import Endpoints
-from zero_sdk.utils import from_json
-from zero_sdk.connection import ConnectionBase
+from zerochain.const import Endpoints
+from zerochain.utils import from_json
+from zerochain.connection import ConnectionBase
 
 
 class Connection(ConnectionBase):

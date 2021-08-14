@@ -5,8 +5,8 @@ from unittest.mock import MagicMock
 from tests.utils import TEST_DIR, build_wallet
 from tests.mock_response import MockResponse
 
-from zero_sdk.allocation import Allocation
-from zero_sdk.utils import from_json
+from zerochain.allocation import Allocation
+from zerochain.utils import from_json
 
 ALLOCATION_ID = "296896621095a9d8a51e6e4dba2bdb5661ea94ffd8fdb0a084301bffd81fe7e6"
 

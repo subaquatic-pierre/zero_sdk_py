@@ -2,11 +2,11 @@ import os
 from unittest.case import TestCase
 from unittest.mock import MagicMock
 
-from zero_sdk.wallet import Wallet
-from zero_sdk.wallet import Wallet
-from zero_sdk.utils import from_json
-from zero_sdk.exceptions import ConsensusError
-from zero_sdk.allocation import Allocation
+from zerochain.wallet import Wallet
+from zerochain.wallet import Wallet
+from zerochain.utils import from_json
+from zerochain.exceptions import ConsensusError
+from zerochain.allocation import Allocation
 
 from tests.utils import TEST_DIR, build_network, build_wallet
 from tests.mock_response import MockResponse

@@ -1,11 +1,11 @@
 import json
 from time import time, sleep
 
-from zero_sdk.const import Endpoints
-from zero_sdk.utils import hash_string
-from zero_sdk.connection import ConnectionBase
-from zero_sdk.exceptions import TransactionError
-from zero_sdk.const import STORAGE_SMART_CONTRACT_ADDRESS
+from zerochain.const import Endpoints
+from zerochain.utils import hash_string
+from zerochain.connection import ConnectionBase
+from zerochain.exceptions import TransactionError
+from zerochain.const import STORAGE_SMART_CONTRACT_ADDRESS
 
 
 class Transaction(ConnectionBase):

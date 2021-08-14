@@ -1,6 +1,6 @@
 import os
 from pathlib import Path
-from zero_sdk.utils import from_json, from_yaml, get_home_path
+from zerochain.utils import from_json, from_yaml, get_home_path
 
 PROJECT_ROOT = Path(__file__).resolve().parent.resolve().parent.resolve()
 HOME_PATH = get_home_path()

@@ -1,7 +1,7 @@
 from pathlib import Path
 from unittest.case import TestCase
 
-from zero_sdk.utils import (
+from zerochain.utils import (
     from_yaml,
     from_json,
     get_home_path,

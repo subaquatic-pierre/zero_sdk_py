@@ -1,14 +1,14 @@
 import os
 import json
-from zero_sdk.config import PROJECT_ROOT
+from zerochain.config import PROJECT_ROOT
 import requests
 
-from zero_sdk.connection import ConnectionBase
-from zero_sdk.const import Endpoints, STORAGE_SMART_CONTRACT_ADDRESS
-from zero_sdk.workers import Blobber, Miner, Sharder
-from zero_sdk.utils import hostname_from_config_obj
-from zero_sdk.utils import generate_mnemonic, create_wallet
-from zero_sdk.bls import generate_keys
+from zerochain.connection import ConnectionBase
+from zerochain.const import Endpoints, STORAGE_SMART_CONTRACT_ADDRESS
+from zerochain.workers import Blobber, Miner, Sharder
+from zerochain.utils import hostname_from_config_obj
+from zerochain.utils import generate_mnemonic, create_wallet
+from zerochain.bls import generate_keys
 
 
 class Network(ConnectionBase):

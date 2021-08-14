@@ -1,9 +1,9 @@
 import os
-from zero_sdk.utils import get_project_root
+from zerochain.utils import get_project_root
 
-from zero_sdk.network import Network
-from zero_sdk.wallet import Wallet
-from zero_sdk.workers import Miner, Sharder, Blobber
+from zerochain.network import Network
+from zerochain.wallet import Wallet
+from zerochain.workers import Miner, Sharder, Blobber
 
 TEST_DIR = os.path.join(get_project_root(), "tests")
 

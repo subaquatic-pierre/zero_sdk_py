@@ -1,12 +1,12 @@
 import json
 from pathlib import Path
 from time import time
-from zero_sdk.data_display import DataDisplay
+from zerochain.data_display import DataDisplay
 import requests
 import os
-from zero_sdk.network import ConnectionBase
-from zero_sdk.utils import hash_string, generate_random_letters
-from zero_sdk.const import Endpoints, STORAGE_SMART_CONTRACT_ADDRESS
+from zerochain.network import ConnectionBase
+from zerochain.utils import hash_string, generate_random_letters
+from zerochain.const import Endpoints, STORAGE_SMART_CONTRACT_ADDRESS
 from random import randint
 from reedsolo import RSCodec
 
