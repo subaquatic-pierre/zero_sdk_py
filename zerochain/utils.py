@@ -83,16 +83,16 @@ def timer(f):
     return wrapper
 
 
-def create_wallet(data, network):
-    from zerochain.wallet import Wallet
+def create_client(data, network):
+    from zerochain.client import Client
 
-    return Wallet.from_object(data, network)
+    return Client.from_object(data, network)
 
 
-def create_allocation(allocation_id, wallet):
+def create_allocation(allocation_id, client):
     from zerochain.allocation import Allocation
 
-    return Allocation(allocation_id, wallet)
+    return Allocation(allocation_id, client)
 
 
 def get_duration_nanoseconds(days=0, hours=0, minutes=0, seconds=0):

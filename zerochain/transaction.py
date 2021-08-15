@@ -16,7 +16,7 @@ class Transaction(ConnectionBase):
         transaction_type,
         input,
         value,
-        wallet,
+        client,
         raise_exception,
         timeout=5,
         fee=0,
@@ -26,8 +26,8 @@ class Transaction(ConnectionBase):
         self.name = transaction_name
         self.type = transaction_type
         self.value = value * 10000000000
-        self.network = wallet.network
-        self.wallet = wallet
+        self.network = client.network
+        self.client = client
         self.status = 0
         self.hash = None
         self.response_data = None
@@ -97,14 +97,16 @@ class Transaction(ConnectionBase):
         hash_payload = hash_string(payload)
         ts = int(time())
 
-        hashdata = f"{ts}:{self.wallet.client_id}:{self.sc_address}:{self.value}:{hash_payload}"
+        hashdata = (
+            f"{ts}:{self.client.id}:{self.sc_address}:{self.value}:{hash_payload}"
+        )
 
         self.hash = hash_string(hashdata)
-        signature = self.wallet.sign(self.hash)
+        signature = self.client.sign(self.hash)
 
         data = {
-            "client_id": self.wallet.client_id,
-            "public_key": self.wallet.public_key,
+            "client_id": self.client.id,
+            "public_key": self.client.public_key,
             "transaction_value": self.value,
             "transaction_data": payload,
             "transaction_type": self.type,

@@ -2,15 +2,15 @@ import os
 from zerochain.utils import get_project_root
 
 from zerochain.network import Network
-from zerochain.wallet import Wallet
+from zerochain.client import Client
 from zerochain.workers import Miner, Sharder, Blobber
 
 TEST_DIR = os.path.join(get_project_root(), "tests")
 
 
-def build_wallet():
+def build_client():
     network = build_network(50)
-    wallet = Wallet(
+    client = Client(
         client_id="31680e6a4fa9bb9466b7c46d1c853026a672cb913ebaae8e4af9539b15cbe5d8",
         client_key="d2a87be4da594dd01fb1be18fad4dd2d2341be4ae5b5584229121cbe91b1e411",
         public_key="812c1c446a6820f84d097ffeef684054606b7c9ae401a85bf0a71de96126e222777f7c69b282d46bfbbc735ca736502beac080446f27d4a5b2b22bf04459b500",
@@ -20,7 +20,7 @@ def build_wallet():
         date_created="date_created",
         network=network,
     )
-    return wallet
+    return client
 
 
 def build_network(min_confirmations):

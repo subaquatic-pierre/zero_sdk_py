@@ -7,7 +7,7 @@ from zerochain.connection import ConnectionBase
 from zerochain.const import Endpoints, STORAGE_SMART_CONTRACT_ADDRESS
 from zerochain.workers import Blobber, Miner, Sharder
 from zerochain.utils import hostname_from_config_obj
-from zerochain.utils import generate_mnemonic, create_wallet
+from zerochain.utils import generate_mnemonic, create_client
 from zerochain.bls import generate_keys
 
 
@@ -125,10 +125,10 @@ class Network(ConnectionBase):
         )
         return res
 
-    def create_wallet(self):
+    def create_client(self):
         mnemonic = generate_mnemonic()
         keys = self._create_keys(mnemonic)
-        res = self._register_wallet(keys)
+        res = self._register_client(keys)
         data = {
             "client_id": res["id"],
             "client_key": keys["public_key"],
@@ -143,19 +143,19 @@ class Network(ConnectionBase):
             "date_created": res["creation_date"],
         }
 
-        wallet = create_wallet(data, self)
-        return wallet
+        client = create_client(data, self)
+        return client
 
-    def restore_wallet(self, mnemonic):
+    def restore_client(self, mnemonic):
         keys = self._create_keys(mnemonic)
-        res = self._register_wallet(keys)
+        res = self._register_client(keys)
         return res
 
     def _create_keys(self, mnemonic):
         keys = generate_keys(mnemonic)
         return keys
 
-    def _register_wallet(self, keys):
+    def _register_client(self, keys):
         payload = json.dumps(
             {
                 "id": keys["client_id"],

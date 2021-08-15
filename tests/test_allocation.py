@@ -2,9 +2,9 @@ import os
 from unittest import TestCase
 from unittest.mock import MagicMock
 
-from tests.utils import TEST_DIR, build_wallet
+from tests.utils import TEST_DIR, build_client
 from tests.mock_response import MockResponse
-from tests.mock_wallet import MockWallet
+from tests.mock_client import MockClient
 
 from zerochain.allocation import Allocation
 from zerochain.utils import from_json
@@ -13,9 +13,9 @@ ALLOCATION_ID = "296896621095a9d8a51e6e4dba2bdb5661ea94ffd8fdb0a084301bffd81fe7e
 BLOBBER_ID = "144a94640cb78130434a79a7a12d0b2c85f819e3ea8856db31c7fde30c30a820"
 
 
-class TestAllocationWalletMethods(TestCase):
+class TestAllocationClientMethods(TestCase):
     def setUp(self) -> None:
-        self.allocation = Allocation(ALLOCATION_ID, build_wallet())
+        self.allocation = Allocation(ALLOCATION_ID, build_client())
         return super().setUp()
 
     def _setup_mock(self, response_data, method_name=None):
@@ -26,10 +26,10 @@ class TestAllocationWalletMethods(TestCase):
                 os.path.join(TEST_DIR, f"__mocks__/allocation/{response_data}")
             )
         if method_name:
-            mock_return = getattr(MockWallet, "mock_return")
-            mock_wallet = MockWallet
-            setattr(mock_wallet, method_name, mock_return(res_obj))
-            self.allocation.wallet = mock_wallet
+            mock_return = getattr(MockClient, "mock_return")
+            mock_client = MockClient
+            setattr(mock_client, method_name, mock_return(res_obj))
+            self.allocation.client = mock_client
         else:
             self.allocation._consensus_from_workers = res_obj
 
@@ -45,15 +45,15 @@ class TestAllocationWalletMethods(TestCase):
         data = self.allocation.get_write_pool_info()
         self.assertIsInstance(data, list)
 
-    def test_wallet_info(self):
-        """Test can get wallet info"""
+    def test_client_info(self):
+        """Test can get client info"""
         self._setup_mock(
             {
                 "client_id": "some_id",
                 "public_key": "public_key",
             }
         )
-        data = self.allocation.get_wallet_info()
+        data = self.allocation.get_client_info()
         self.assertIn("client_id", data)
 
     def test_get_allocation_info(self):
@@ -91,7 +91,7 @@ class TestAllocationWalletMethods(TestCase):
 
 class TestAllocationBlobberInfo(TestCase):
     def setUp(self) -> None:
-        self.allocation = Allocation(ALLOCATION_ID, build_wallet())
+        self.allocation = Allocation(ALLOCATION_ID, build_client())
         return super().setUp()
 
     def _setup_mock(self, response_data, is_mock_request=False):

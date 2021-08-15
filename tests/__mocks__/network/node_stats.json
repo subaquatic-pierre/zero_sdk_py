@@ -9,7 +9,7 @@
         "short_name": "localhost.m01",
         "build_tag": "587fe20464dcc92916d605765aaf5d610fb12d1b",
         "total_stake": 3090000000000,
-        "delegate_wallet": "99dfe67a348281ba40a979db7e5cffabdedea3c432bb41079d0fbc6e2d554143",
+        "delegate_client": "99dfe67a348281ba40a979db7e5cffabdedea3c432bb41079d0fbc6e2d554143",
         "service_charge": 0.1,
         "number_of_delegates": 10,
         "min_stake": 0,

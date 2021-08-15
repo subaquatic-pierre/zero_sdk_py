@@ -24,7 +24,7 @@ from zerochain.const import (
 )
 
 
-class Wallet(ConnectionBase):
+class client(ConnectionBase):
     def __init__(
         self,
         client_id,
@@ -46,7 +46,7 @@ class Wallet(ConnectionBase):
         self.network = network
 
     def get_balance(self, format="default") -> int:
-        """Get Wallet balance
+        """Get client balance
         Return float value of tokens
         """
         endpoint = f"{Endpoints.GET_BALANCE}?client_id={self.client_id}"
@@ -419,9 +419,9 @@ class Wallet(ConnectionBase):
     def sign(self, payload):
         return sign_payload(self.private_key, payload)
 
-    def save(self, wallet_name=None):
-        if not wallet_name:
-            wallet_name = generate_random_letters()
+    def save(self, client_name=None):
+        if not client_name:
+            client_name = generate_random_letters()
 
         data = {
             "client_id": self.client_id,
@@ -433,7 +433,7 @@ class Wallet(ConnectionBase):
         }
 
         with open(
-            os.path.join(Path.home(), f".zcn/test_wallets/wallet_{wallet_name}.json"),
+            os.path.join(Path.home(), f".zcn/test_clients/client_{client_name}.json"),
             "w",
         ) as f:
             f.write(json.dumps(data, indent=4))
@@ -448,14 +448,14 @@ class Wallet(ConnectionBase):
         except:
             return res
 
-    def _init_wallet(self):
-        # Implement wallet init
+    def _init_client(self):
+        # Implement client init
         pass
 
-    def _validate_wallet(method):
-        """Initialize wallet
-        Check the wallet is initialized before every API request
-        If wallet is not initialized, create a new wallet.
+    def _validate_client(method):
+        """Initialize client
+        Check the client is initialized before every API request
+        If client is not initialized, create a new client.
         """
 
         def wrapper(self, *args, **kwargs):
@@ -464,9 +464,9 @@ class Wallet(ConnectionBase):
             if self.client_id is not None:
                 return method(self, *args, **kwargs)
             else:
-                self._init_wallet()
+                self._init_client()
                 raise Exception(
-                    "Wallet is not initialized, call 'create_wallet, init_wallet or recover_wallet' methods to configure wallet"
+                    "client is not initialized, call 'create_client, init_client or recover_client' methods to configure client"
                 )
 
         return wrapper
@@ -484,7 +484,7 @@ class Wallet(ConnectionBase):
             transaction_name=transaction_name,
             transaction_type=transaction_type,
             input=input,
-            wallet=self,
+            client=self,
             value=value,
             sc_address=sc_address,
             raise_exception=raise_exception,
@@ -514,11 +514,11 @@ class Wallet(ConnectionBase):
 
     @staticmethod
     def from_object(config: dict, network: Network):
-        """Returns fully configured instance of wallet
-        :param config: Wallet config object from json.loads function
+        """Returns fully configured instance of client
+        :param config: client config object from json.loads function
         :param network: Instance of configured network
         """
-        return Wallet(
+        return client(
             config.get("client_id"),
             config.get("client_key"),
             config.get("keys")[0]["public_key"],
@@ -530,7 +530,7 @@ class Wallet(ConnectionBase):
         )
 
     def __repr__(self):
-        return f"Wallet(config, network)"
+        return f"client(config, network)"
 
     def __str__(self):
         return f"client_id: {self.client_id} \nnetwork_url: {self.network.hostname}"
@@ -544,7 +544,7 @@ class Wallet(ConnectionBase):
         self,
         miner_id="",
         miner_url="",
-        delegate_wallet="",
+        delegate_client="",
         service_charge=0,
         num_delegates=0,
         min_stake=0,
@@ -570,7 +570,7 @@ class Wallet(ConnectionBase):
         simple_miner_info = {
             "id": miner_id,
             "url": miner_url,
-            "delegate_wallet": delegate_wallet,
+            "delegate_client": delegate_client,
             "service_charge": service_charge,
             "number_of_delegates": num_delegates,
             "min_stake": min_stake,

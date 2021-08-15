@@ -14,35 +14,35 @@ from zerochain.const import Endpoints, STORAGE_SMART_CONTRACT_ADDRESS
 
 
 class Allocation(ConnectionBase):
-    def __init__(self, id, wallet) -> None:
+    def __init__(self, id, client) -> None:
         self.id = id
-        self.wallet = wallet
+        self.client = client
 
     def get_allocation_info(self):
         """Get full details of allocation, including overview of
         stats and details of each blobber, including blobber ID"""
-        return self.wallet.get_allocation_info(self.id)
+        return self.client.get_allocation_info(self.id)
 
     def get_blobber_info(self, blobber_id):
         """Get info for given blobber ID"""
-        return self.wallet.get_blobber_info(blobber_id)
+        return self.client.get_blobber_info(blobber_id)
 
     def get_blobber_stats(self, blobber_url):
         """Get stats for given blobber url"""
-        return self.wallet.get_blobber_stats(blobber_url)
+        return self.client.get_blobber_stats(blobber_url)
 
     def list_blobbers(self):
         """Get stats of each blobber used by the allocation, detailed
         information of allocation size and write markers per blobber"""
-        return self.wallet.list_blobbers_by_allocation_id(self.id)
+        return self.client.list_blobbers_by_allocation_id(self.id)
 
     def list_read_pool_info(self):
-        return self.wallet.list_read_pool_by_allocation_id(self.id)
+        return self.client.list_read_pool_by_allocation_id(self.id)
 
     def read_pool_lock(
         self, amount, days=0, hours=0, minutes=0, seconds=0, blobber_id=None
     ):
-        return self.wallet.read_pool_lock(
+        return self.client.read_pool_lock(
             amount,
             self.id,
             days,
@@ -56,15 +56,15 @@ class Allocation(ConnectionBase):
         pass
 
     def get_read_pool_info(self):
-        return self.wallet.list_read_pool_info(self.id)
+        return self.client.list_read_pool_info(self.id)
 
     def get_write_pool_info(self):
-        return self.wallet.list_write_pool_info(self.id)
+        return self.client.list_write_pool_info(self.id)
 
-    def get_wallet_info(self):
+    def get_client_info(self):
         return {
-            "client_id": self.wallet.client_id,
-            "public_key": self.wallet.public_key,
+            "client_id": self.client.id,
+            "public_key": self.client.public_key,
         }
 
     # --------------
@@ -126,7 +126,7 @@ class Allocation(ConnectionBase):
             transaction_name=transaction_name,
             transaction_type=transaction_type,
             input=input,
-            wallet=self.wallet,
+            client=self.client,
             value=value,
             sc_address=sc_address,
             raise_exception=raise_exception,
@@ -148,8 +148,8 @@ class Allocation(ConnectionBase):
 
     #     for blobber in self.blobbers:
     #         headers = {
-    #             "X-App-Client-Id": self.wallet.client_id,
-    #             "X-App-Client-Key": self.wallet.public_key,
+    #             "X-App-Client-Id": self.client.id,
+    #             "X-App-Client-Key": self.client.public_key,
     #         }
     #         # Get file info from each blobber
     #         url = f"{blobber['url']}/v1/file/meta/{self.id}"
@@ -158,8 +158,8 @@ class Allocation(ConnectionBase):
 
     #         if res.status_code == 200:
     #             # Get latest read marker
-    #             for sharder in self.wallet.network.sharders:
-    #                 url = f"{sharder}/v1/screst/6dba10422e368813802877a85039d3985d96760ed844092319743fb3a76712d7/latestreadmarker?client={self.wallet.client_id}&blobber={blobber['id']}"
+    #             for sharder in self.client.network.sharders:
+    #                 url = f"{sharder}/v1/screst/6dba10422e368813802877a85039d3985d96760ed844092319743fb3a76712d7/latestreadmarker?client={self.client.id}&blobber={blobber['id']}"
     #                 read_marker_res = requests.get(url)
 
     #             # Build info from read marker and blobber file info
@@ -180,9 +180,9 @@ class Allocation(ConnectionBase):
     #             timestamp = int(time())
 
     #             # Build signature
-    #             signature_payload = f"{self.id}:{blobber['id']}:{self.wallet.client_id}:{self.wallet.public_key}:{old_marker['owner_id']}:{counter}:{timestamp}"
+    #             signature_payload = f"{self.id}:{blobber['id']}:{self.client.id}:{self.client.public_key}:{old_marker['owner_id']}:{counter}:{timestamp}"
     #             hashed_signature_payload = hash_string(signature_payload)
-    #             signature = self.wallet.sign(hashed_signature_payload)
+    #             signature = self.client.sign(hashed_signature_payload)
 
     #             # Set request payload
     #             payload = MultipartEncoder(
@@ -192,11 +192,11 @@ class Allocation(ConnectionBase):
     #                     "num_blocks": str(num_blocks),
     #                     "read_marker": json.dumps(
     #                         {
-    #                             "client_id": self.wallet.client_id,
-    #                             "client_public_key": self.wallet.public_key,
+    #                             "client_id": self.client.id,
+    #                             "client_public_key": self.client.public_key,
     #                             "blobber_id": blobber["id"],
     #                             "allocation_id": self.id,
-    #                             "owner_id": self.wallet.client_id,
+    #                             "owner_id": self.client.id,
     #                             "timestamp": timestamp,
     #                             "counter": counter,
     #                             "signature": signature,
@@ -230,12 +230,12 @@ class Allocation(ConnectionBase):
     #     # file_shards = open(filepath, "rb")
 
     #     hashed_allocation_id = hash_string(self.id)
-    #     signature = self.wallet.sign(hashed_allocation_id)
+    #     signature = self.client.sign(hashed_allocation_id)
 
     #     upload_headers = {
-    #         "X-App-Client-Id": self.wallet.client_id,
+    #         "X-App-Client-Id": self.client.id,
     #         "X-App-Client-Signature": signature,
-    #         "X-App-Client-Key": self.wallet.public_key,
+    #         "X-App-Client-Key": self.client.public_key,
     #     }
 
     #     upload_result = self._upload_shards(
@@ -348,9 +348,9 @@ class Allocation(ConnectionBase):
 
     #     # Sign payload
     #     signature_payload = hash_string(
-    #         f"{new_allocation_root}:{prev_allocation_root}:{self.id}:{blobber['id']}:{self.wallet.client_id}:{filesize}:{timestamp}"
+    #         f"{new_allocation_root}:{prev_allocation_root}:{self.id}:{blobber['id']}:{self.client.id}:{filesize}:{timestamp}"
     #     )
-    #     signature = self.wallet.sign(signature_payload)
+    #     signature = self.client.sign(signature_payload)
 
     #     data = MultipartEncoder(
     #         fields={
@@ -363,7 +363,7 @@ class Allocation(ConnectionBase):
     #                     "size": filesize,
     #                     "blobber_id": blobber["id"],
     #                     "timestamp": timestamp,
-    #                     "client_id": self.wallet.client_id,
+    #                     "client_id": self.client.id,
     #                     "signature": signature,
     #                 }
     #             ),
@@ -371,8 +371,8 @@ class Allocation(ConnectionBase):
     #     )
 
     #     headers = {
-    #         "X-App-Client-Id": self.wallet.client_id,
-    #         "X-App-Client-Key": self.wallet.public_key,
+    #         "X-App-Client-Id": self.client.id,
+    #         "X-App-Client-Key": self.client.public_key,
     #         "Connection": "Keep-Alive",
     #         # "Cache-Control": "no-cache",
     #         # "Transfer-Encoding": "chunked",
@@ -430,11 +430,11 @@ class Allocation(ConnectionBase):
         return json.dumps(
             {
                 "id": self.id,
-                "wallet_id": self.wallet.client_id,
-                "network_url": self.wallet.network.hostname,
+                "client_id": self.client.id,
+                "network_url": self.client.network.hostname,
             },
             indent=4,
         )
 
     def __repr__(self) -> str:
-        return f"Allocation(id, wallet)"
+        return f"Allocation(id, client)"

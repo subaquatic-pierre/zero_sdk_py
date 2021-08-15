@@ -109,7 +109,7 @@ class TestGetConsensus(TestCase):
                 "sharders", "http://placeholder.com"
             )
 
-    def test_error_balance_wallet(self):
+    def test_error_balance_client(self):
         self._setup_mock(200, json.dumps({"error": "value not present"}))
         empty_return_value = {"balance": 0}
         data = self.connection._consensus_from_workers(

@@ -23,7 +23,7 @@
             "used": 5726623070,
             "last_health_check": 1627613724,
             "stake_pool_settings": {
-                "delegate_wallet": "dad8cbae61dd312296d830c9400f308518da6ac5fb4c2ae643219e6ef27ea493",
+                "delegate_client": "dad8cbae61dd312296d830c9400f308518da6ac5fb4c2ae643219e6ef27ea493",
                 "min_stake": 10000000000,
                 "max_stake": 1000000000000,
                 "num_delegates": 50,
@@ -48,7 +48,7 @@
             "used": 5010795186,
             "last_health_check": 1627613704,
             "stake_pool_settings": {
-                "delegate_wallet": "dad8cbae61dd312296d830c9400f308518da6ac5fb4c2ae643219e6ef27ea493",
+                "delegate_client": "dad8cbae61dd312296d830c9400f308518da6ac5fb4c2ae643219e6ef27ea493",
                 "min_stake": 10000000000,
                 "max_stake": 1000000000000,
                 "num_delegates": 50,
@@ -73,7 +73,7 @@
             "used": 5010795186,
             "last_health_check": 1627613717,
             "stake_pool_settings": {
-                "delegate_wallet": "dad8cbae61dd312296d830c9400f308518da6ac5fb4c2ae643219e6ef27ea493",
+                "delegate_client": "dad8cbae61dd312296d830c9400f308518da6ac5fb4c2ae643219e6ef27ea493",
                 "min_stake": 10000000000,
                 "max_stake": 1000000000000,
                 "num_delegates": 50,
@@ -98,7 +98,7 @@
             "used": 5726623070,
             "last_health_check": 1627613708,
             "stake_pool_settings": {
-                "delegate_wallet": "dad8cbae61dd312296d830c9400f308518da6ac5fb4c2ae643219e6ef27ea493",
+                "delegate_client": "dad8cbae61dd312296d830c9400f308518da6ac5fb4c2ae643219e6ef27ea493",
                 "min_stake": 10000000000,
                 "max_stake": 1000000000000,
                 "num_delegates": 50,

@@ -8,4 +8,4 @@ DEFUALT_PUBLIC_URL = "https://beta.0chain.net"
 
 # Change default paths to home dir in production
 default_network_config_obj = from_yaml(os.path.join(HOME_PATH, ".zcn/config.yaml"))
-default_wallet_config_obj = from_json(os.path.join(HOME_PATH, ".zcn/wallet.json"))
+default_client_config_obj = from_json(os.path.join(HOME_PATH, ".zcn/wallet.json"))

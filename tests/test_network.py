@@ -1,7 +1,7 @@
 from unittest.case import TestCase
 from unittest.mock import MagicMock
 import os
-from zerochain.wallet import Wallet
+from zerochain.client import Client
 
 from zerochain.workers import Blobber, Miner, Sharder
 from zerochain.network import Network
@@ -100,17 +100,17 @@ class TestNetworkChainMethods(TestCase):
         block_info = self.network.check_transaction_status("thisistransactionhash")
         self.assertIsInstance(block_info, dict)
 
-    def test_restore_wallet(self):
+    def test_restore_client(self):
         """Test get_latest_finalized block returns valid data"""
         self._setup_mock("create.json")
-        wallet = self.network.restore_wallet("this is a mnonnic key phrase")
-        self.assertIn("id", wallet)
+        client = self.network.restore_client("this is a mnonnic key phrase")
+        self.assertIn("id", client)
 
-    def test_create_wallet(self):
+    def test_create_client(self):
         """Test get_latest_finalized block returns valid data"""
         self._setup_mock("create.json")
-        wallet = self.network.create_wallet()
-        self.assertIsInstance(wallet, Wallet)
+        client = self.network.create_client()
+        self.assertIsInstance(client, Client)
 
 
 class TestNetworkMethods(TestCase):
