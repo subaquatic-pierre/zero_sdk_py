@@ -250,7 +250,7 @@ class Client(ConnectionBase):
         return blobber.list_blobbers(self)
 
     def list_blobbers_by_allocation_id(self, allocation_id):
-        return blobber.get_blobber_info(self, allocation_id)
+        return blobber.list_blobbers_by_allocation_id(self, allocation_id)
 
     def blobber_lock_token(self, transaction_value, blobber_id):
         return blobber.blobber_lock_token(self, transaction_value, blobber_id)

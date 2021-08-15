@@ -1,5 +1,6 @@
 import json
 from zerochain.const import Endpoints, STORAGE_SMART_CONTRACT_ADDRESS
+from zerochain.actions import allocation
 
 # def update_blobber_settings(client, blobber_id, )
 
@@ -38,7 +39,7 @@ def list_blobbers(client):
 def list_blobbers_by_allocation_id(client, allocation_id):
     """Get stats of each blobber used by the allocation, detailed
     information of allocation size and write markers per blobber"""
-    res = client.get_allocation_info(allocation_id)
+    res = allocation.get_allocation_info(client, allocation_id)
     try:
         return res.get("blobbers")
     except:
