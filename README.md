@@ -124,6 +124,10 @@ This is a Python SDK for 0Chain Blockchain network. Below is a mapping from curr
 - get_read_lock_token info
 - Save allocation
 
+#### Utils
+
+- get_duration_nanoseconds
+
 ## Hard coded values
 
 - Allocation creation size

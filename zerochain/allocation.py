@@ -21,42 +21,38 @@ class Allocation(ConnectionBase):
     def get_allocation_info(self):
         """Get full details of allocation, including overview of
         stats and details of each blobber, including blobber ID"""
-        url = f"{Endpoints.SC_REST_ALLOCATION}?allocation={self.id}"
-        res = self._consensus_from_workers("sharders", url)
-        return res
+        return self.wallet.get_allocation_info(self.id)
 
     def get_blobber_info(self, blobber_id):
         """Get info for given blobber ID"""
-        blobbers = self.list_blobbers()
-        for blobber in blobbers:
-            if blobber["id"] == blobber_id:
-                found_blobber = blobber
-        if not found_blobber:
-            return {"error": "Blobber with that ID not found"}
-        return found_blobber
+        return self.wallet.get_blobber_info(blobber_id)
 
     def get_blobber_stats(self, blobber_url):
         """Get stats for given blobber url"""
-        endpoint = f"{blobber_url}/getstats"
-        res = self._request(endpoint)
-        res = self._check_status_code(res)
-        return res
+        return self.wallet.get_blobber_stats(blobber_url)
 
     def list_blobbers(self):
         """Get stats of each blobber used by the allocation, detailed
         information of allocation size and write markers per blobber"""
-        endpoint = Endpoints.SC_BLOBBER_STATS
-        res = self._consensus_from_workers("sharders", endpoint)
-        try:
-            nodes = res.get("Nodes")
-            return nodes
-        except:
-            return res
+        return self.wallet.list_blobbers_by_allocation_id(self.id)
 
-    def lock_read_tokens(self):
-        pass
+    def list_read_pool_info(self):
+        return self.wallet.list_read_pool_by_allocation_id(self.id)
 
-    def lock_write_tokens(self):
+    def read_pool_lock(
+        self, amount, days=0, hours=0, minutes=0, seconds=0, blobber_id=None
+    ):
+        return self.wallet.read_pool_lock(
+            amount,
+            self.id,
+            days,
+            hours,
+            minutes,
+            seconds,
+            blobber_id,
+        )
+
+    def write_pool_lock(self):
         pass
 
     def get_read_pool_info(self):
@@ -64,20 +60,6 @@ class Allocation(ConnectionBase):
 
     def get_write_pool_info(self):
         return self.wallet.list_write_pool_info(self.id)
-
-    def save(self, allocation_name=None):
-        if not allocation_name:
-            allocation_name = generate_random_letters()
-
-        data = self.get_allocation_info()
-
-        with open(
-            os.path.join(
-                Path.home(), f".zcn/test_allocations/allocation_{allocation_name}.json"
-            ),
-            "w",
-        ) as f:
-            f.write(json.dumps(data, indent=4))
 
     def get_wallet_info(self):
         return {
@@ -108,6 +90,24 @@ class Allocation(ConnectionBase):
             input=input,
             value=1,
         )
+
+    # --------------
+    # Utility Methods
+    # --------------
+
+    def save(self, allocation_name=None):
+        if not allocation_name:
+            allocation_name = generate_random_letters()
+
+        data = self.get_allocation_info()
+
+        with open(
+            os.path.join(
+                Path.home(), f".zcn/test_allocations/allocation_{allocation_name}.json"
+            ),
+            "w",
+        ) as f:
+            f.write(json.dumps(data, indent=4))
 
     # --------------
     # Private Methods

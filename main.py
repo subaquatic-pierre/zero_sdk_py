@@ -27,13 +27,8 @@ network = Network.from_object(default_network_config_obj)
 wallet = Wallet.from_object(default_wallet_config_obj, network)
 aloc = Allocation(aloc_id, wallet)
 
-data = wallet.sign("somethig to sign")
+data = wallet.list_blobbers_by_allocation_id(aloc.id)
 pprint(data)
-
-print(wallet.public_key)
-print(wallet.private_key)
-print(wallet.mnemonic)
-print(wallet)
 
 
 # from reedsolo import RSCodec

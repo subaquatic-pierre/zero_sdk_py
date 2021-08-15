@@ -11,6 +11,9 @@ from zerochain.utils import generate_random_letters, get_duration_nanoseconds
 from zerochain.bls import sign_payload
 from zerochain.connection import ConnectionBase
 from zerochain.miner_settings import miner_delegate_pool
+from zerochain.wallet_methods.vesting import VestingMethods
+from zerochain.wallet_methods.allocation import AllocationMethods
+from zerochain.wallet_methods.blobber import BlobberMethods
 from zerochain.const import (
     INTEREST_POOL_SMART_CONTRACT_ADDRESS,
     STORAGE_SMART_CONTRACT_ADDRESS,
@@ -20,7 +23,6 @@ from zerochain.const import (
     AllocationConfig,
     TransactionType,
     TransactionName,
-    VESTING_SMART_CONTRACT_ADDRESS,
 )
 
 
@@ -203,22 +205,13 @@ class Wallet(ConnectionBase):
     # --------------------
 
     def get_vesting_pool_config(self):
-        endpoint = Endpoints.GET_VESTING_CONFIG
-        res = self._consensus_from_workers("sharders", endpoint)
-        return res
+        return VestingMethods.get_vesting_pool_config(self)
 
     def get_vesting_pool_info(self, pool_id):
-        endpoint = f"{Endpoints.GET_VESTING_POOL_INFO}?pool_id={pool_id}"
-        res = self._consensus_from_workers("sharders", endpoint)
-        return res
+        return VestingMethods.get_vesting_pool_config(self, pool_id)
 
     def list_vesting_pool_info(self):
-        endpoint = f"{Endpoints.GET_VESTING_CLIENT_POOLS}?client_id={self.client_id}"
-        res = self._consensus_from_workers("sharders", endpoint)
-        try:
-            return res.get("pools")
-        except:
-            return res
+        return VestingMethods.list_vesting_pool_info(self)
 
     def vesting_pool_create(
         self,
@@ -229,53 +222,22 @@ class Wallet(ConnectionBase):
         description="",
         start_time=int(time()),
     ):
-        duration = 140000000000
-        # duration = int(
-        #     timedelta(days=days, hours=hours, minutes=minutes).total_seconds()
-        # )
-        input = {
-            "description": description,
-            "start_time": start_time,
-            "duration": duration,
-            "destinations": destinations,
-        }
-        return self._handle_transaction(
-            input=input,
-            transaction_name=TransactionName.VESTING_ADD,
-            sc_address=VESTING_SMART_CONTRACT_ADDRESS,
+        return VestingMethods.vesting_pool_create(
+            self, destinations, hours, minutes, days, description, start_time
         )
 
     def vesting_pool_delete(self, pool_id):
-        input = {"pool_id": pool_id}
-        return self._handle_transaction(
-            input=input,
-            transaction_name=TransactionName.VESTING_DELETE,
-            sc_address=VESTING_SMART_CONTRACT_ADDRESS,
-        )
+        return VestingMethods.vesting_pool_delete(self, pool_id)
 
     def vesting_pool_unlock(self, pool_id):
-        input = {"pool_id": pool_id}
-        return self._handle_transaction(
-            input=input,
-            transaction_name=TransactionName.VESTING_UNLOCK,
-            sc_address=VESTING_SMART_CONTRACT_ADDRESS,
-        )
+        return VestingMethods.vesting_pool_unlock(self, pool_id)
 
     def vesting_pool_trigger(self, pool_id):
         input = {"pool_id": pool_id}
-        return self._handle_transaction(
-            input=input,
-            transaction_name=TransactionName.VESTING_TRIGGER,
-            sc_address=VESTING_SMART_CONTRACT_ADDRESS,
-        )
+        return VestingMethods.vesting_pool_trigger(self, pool_id)
 
     def vesting_pool_stop(self, miner_id, pool_id):
-        input = {"pool_id": pool_id, "destination": miner_id}
-        return self._handle_transaction(
-            input=input,
-            transaction_name=TransactionName.VESTING_STOP,
-            sc_address=VESTING_SMART_CONTRACT_ADDRESS,
-        )
+        return VestingMethods.vesting_pool_stop(self, miner_id, pool_id)
 
     # --------------------
     # Allocation methods
@@ -283,8 +245,7 @@ class Wallet(ConnectionBase):
 
     def get_sc_config(self):
         """Get storage contract config"""
-        res = self._consensus_from_workers("sharders", Endpoints.SC_GET_CONFIG)
-        return res
+        return AllocationMethods.get_sc_config(self)
 
     def read_pool_lock(
         self,
@@ -296,45 +257,25 @@ class Wallet(ConnectionBase):
         seconds=0,
         blobber_id=None,
     ):
-        duration = get_duration_nanoseconds(days, hours, minutes, seconds=seconds)
-        input = {"duration": duration, "allocation_id": allocation_id}
-        if blobber_id:
-            input["blobber_id"] = blobber_id
-
-        return self._handle_transaction(
-            input=input,
-            transaction_name=TransactionName.STORAGESC_READ_POOL_LOCK,
-            value=amount,
+        return AllocationMethods.read_pool_lock(
+            self, amount, allocation_id, days, hours, minutes, seconds, blobber_id
         )
 
-    def list_read_pool_info_by_allocation_id(self, allocation_id):
-        url = f"{Endpoints.SC_REST_READPOOL_STATS}?client_id={self.client_id}"
-        res = self._consensus_from_workers("sharders", url)
-
-        return self._filter_by_allocation_id(res, allocation_id)
+    def list_read_pool_by_allocation_id(self, allocation_id):
+        return AllocationMethods.list_read_pool_by_allocation_id(self, allocation_id)
 
     def read_pool_unlock(self, pool_id):
-        input = {"pool_id": pool_id}
-        return self._handle_transaction(
-            input=input,
-            transaction_name=TransactionName.STORAGESC_READ_POOL_UNLOCK,
-        )
+        return AllocationMethods.read_pool_unlock(self, pool_id)
 
     def list_allocations(self):
-        url = f"{Endpoints.SC_REST_ALLOCATIONS}?client={self.client_id}"
-        res = self._consensus_from_workers("sharders", url)
-        return res
+        return AllocationMethods.list_allocations(self)
 
     def get_allocation_info(self, allocation_id):
-        url = f"{Endpoints.SC_REST_ALLOCATION}?allocation={allocation_id}"
-        res = self._consensus_from_workers("sharders", url)
-        return res
+        return AllocationMethods.get_allocation_info(self, allocation_id)
 
     def get_allocation(self, allocation_id) -> Allocation:
         """Returns an instance of an allocation"""
-        alocs = self.list_allocations()
-        aloc = self._filter_by_allocation_id(alocs, allocation_id, "list")
-        return Allocation(aloc["id"], self)
+        return AllocationMethods.get_allocation(self, allocation_id)
 
     def create_allocation(
         self,
@@ -348,26 +289,18 @@ class Wallet(ConnectionBase):
         max_challenge_completion_time=AllocationConfig.MAX_CHALLENGE_COMPLETION_TIME,
         expiration_date=time(),
     ):
-        future_date = int(expiration_date + timedelta(days=30).total_seconds())
-        input = {
-            "data_shards": data_shards,
-            "parity_shards": parity_shards,
-            "owner_id": self.client_id,
-            "owner_public_key": self.public_key,
-            "size": size,
-            "expiration_date": future_date,
-            "read_price_range": read_price,
-            "write_price_range": write_price,
-            "max_challenge_completion_time": max_challenge_completion_time,
-            "preferred_blobbers": preferred_blobbers,
-        }
-
-        data = self._handle_transaction(
-            transaction_name=TransactionName.NEW_ALLOCATION_REQUEST,
-            input=input,
-            value=lock_tokens,
+        return AllocationMethods.create_allocation(
+            self,
+            data_shards,
+            parity_shards,
+            size,
+            lock_tokens,
+            preferred_blobbers,
+            write_price,
+            read_price,
+            max_challenge_completion_time,
+            expiration_date,
         )
-        return Allocation(data["hash"], self)
 
     # --------------------
     # Blobber methods
@@ -375,40 +308,21 @@ class Wallet(ConnectionBase):
 
     def get_blobber_info(self, blobber_id):
         """Get info for given blobber ID"""
-        blobbers = self.list_blobbers()
-        for blobber in blobbers:
-            if blobber["id"] == blobber_id:
-                found_blobber = blobber
-        if not found_blobber:
-            return {"error": "Blobber with that ID not found"}
-        return found_blobber
+        return BlobberMethods.get_blobber_info(self, blobber_id)
 
     def get_blobber_stats(self, blobber_url):
         """Get stats for given blobber url"""
-        endpoint = f"{blobber_url}/getstats"
-        res = self._request(endpoint)
-        res = self._check_status_code(res)
-        return res
+        return BlobberMethods.get_blobber_info(self, blobber_url)
 
     def list_blobbers(self):
         """Get stats of each blobber used by the allocation, detailed
         information of allocation size and write markers per blobber"""
-        endpoint = Endpoints.SC_BLOBBER_STATS
-        res = self._consensus_from_workers("sharders", endpoint)
-        try:
-            nodes = res.get("Nodes")
-            return nodes
-        except:
-            return res
+        return BlobberMethods.list_blobbers(self)
 
     def list_blobbers_by_allocation_id(self, allocation_id):
         """Get stats of each blobber used by the allocation, detailed
         information of allocation size and write markers per blobber"""
-        res = self.get_allocation_info(allocation_id)
-        try:
-            return res.get("blobbers")
-        except:
-            return res
+        return BlobberMethods.get_blobber_info(self, allocation_id)
 
     # def update_blobber_settings(self, blobber_id, )
 

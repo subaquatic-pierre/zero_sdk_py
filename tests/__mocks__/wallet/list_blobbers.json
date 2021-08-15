@@ -1,0 +1,176 @@
+[{
+        "id": "144a94640cb78130434a79a7a12d0b2c85f819e3ea8856db31c7fde30c30a820",
+        "url": "http://beta.0chain.net:31301",
+        "geolocation": {
+            "latitude": 0,
+            "longitude": 0
+        },
+        "terms": {
+            "read_price": 188608072,
+            "write_price": 188608072,
+            "min_lock_demand": 0.1,
+            "max_offer_duration": 2678400000000000,
+            "challenge_completion_time": 120000000000
+        },
+        "capacity": 1073741824000,
+        "used": 140010813915,
+        "last_health_check": 1628850887,
+        "stake_pool_settings": {
+            "delegate_wallet": "dad8cbae61dd312296d830c9400f308518da6ac5fb4c2ae643219e6ef27ea493",
+            "min_stake": 10000000000,
+            "max_stake": 1000000000000,
+            "num_delegates": 50,
+            "service_charge": 0.3
+        }
+    },
+    {
+        "id": "1eb1268ef1206816c505303ead318e6e4a83c47ed2924b2bbcce7497b5f51860",
+        "url": "http://beta.0chain.net:31304",
+        "geolocation": {
+            "latitude": 0,
+            "longitude": 0
+        },
+        "terms": {
+            "read_price": 198851038,
+            "write_price": 198851038,
+            "min_lock_demand": 0.1,
+            "max_offer_duration": 2678400000000000,
+            "challenge_completion_time": 120000000000
+        },
+        "capacity": 1073741824000,
+        "used": 137323751867,
+        "last_health_check": 1628850952,
+        "stake_pool_settings": {
+            "delegate_wallet": "dad8cbae61dd312296d830c9400f308518da6ac5fb4c2ae643219e6ef27ea493",
+            "min_stake": 10000000000,
+            "max_stake": 1000000000000,
+            "num_delegates": 50,
+            "service_charge": 0.3
+        }
+    },
+    {
+        "id": "22857c56fbc9bb758152bb02c0901c4abdaeee957b1a2979aaa5b78e990c7410",
+        "url": "http://beta.0chain.net:31305",
+        "geolocation": {
+            "latitude": 0,
+            "longitude": 0
+        },
+        "terms": {
+            "read_price": 194465889,
+            "write_price": 194465889,
+            "min_lock_demand": 0.1,
+            "max_offer_duration": 2678400000000000,
+            "challenge_completion_time": 120000000000
+        },
+        "capacity": 1073741824000,
+        "used": 135308693906,
+        "last_health_check": 1628850340,
+        "stake_pool_settings": {
+            "delegate_wallet": "dad8cbae61dd312296d830c9400f308518da6ac5fb4c2ae643219e6ef27ea493",
+            "min_stake": 10000000000,
+            "max_stake": 1000000000000,
+            "num_delegates": 50,
+            "service_charge": 0.3
+        }
+    },
+    {
+        "id": "2f653412095b69bb149b1b7d2c662ff5bec31f574c23ab3a97a6201bd8b6775d",
+        "url": "http://beta.0chain.net:31303",
+        "geolocation": {
+            "latitude": 0,
+            "longitude": 0
+        },
+        "terms": {
+            "read_price": 193038640,
+            "write_price": 193038640,
+            "min_lock_demand": 0.1,
+            "max_offer_duration": 2678400000000000,
+            "challenge_completion_time": 120000000000
+        },
+        "capacity": 1073741824000,
+        "used": 136870067934,
+        "last_health_check": 1628850380,
+        "stake_pool_settings": {
+            "delegate_wallet": "dad8cbae61dd312296d830c9400f308518da6ac5fb4c2ae643219e6ef27ea493",
+            "min_stake": 10000000000,
+            "max_stake": 1000000000000,
+            "num_delegates": 50,
+            "service_charge": 0.3
+        }
+    },
+    {
+        "id": "8e5280b8d7f3b1d9b3b756f488f207dc30f6c373630041d871be5a52ac6c724e",
+        "url": "http://beta.0chain.net:31302",
+        "geolocation": {
+            "latitude": 0,
+            "longitude": 0
+        },
+        "terms": {
+            "read_price": 193038640,
+            "write_price": 193038640,
+            "min_lock_demand": 0.1,
+            "max_offer_duration": 2678400000000000,
+            "challenge_completion_time": 120000000000
+        },
+        "capacity": 1073741824000,
+        "used": 124794056335,
+        "last_health_check": 1628850792,
+        "stake_pool_settings": {
+            "delegate_wallet": "dad8cbae61dd312296d830c9400f308518da6ac5fb4c2ae643219e6ef27ea493",
+            "min_stake": 10000000000,
+            "max_stake": 1000000000000,
+            "num_delegates": 50,
+            "service_charge": 0.3
+        }
+    },
+    {
+        "id": "d64ff8605e16d89b1a78fc6d90c7657daa053e4f95c554f00527258494f5647c",
+        "url": "http://beta.0chain.net:31306",
+        "geolocation": {
+            "latitude": 0,
+            "longitude": 0
+        },
+        "terms": {
+            "read_price": 195746046,
+            "write_price": 195746046,
+            "min_lock_demand": 0.1,
+            "max_offer_duration": 2678400000000000,
+            "challenge_completion_time": 120000000000
+        },
+        "capacity": 1073741824000,
+        "used": 122102648121,
+        "last_health_check": 1628850726,
+        "stake_pool_settings": {
+            "delegate_wallet": "dad8cbae61dd312296d830c9400f308518da6ac5fb4c2ae643219e6ef27ea493",
+            "min_stake": 10000000000,
+            "max_stake": 1000000000000,
+            "num_delegates": 50,
+            "service_charge": 0.3
+        }
+    },
+    {
+        "id": "f65af5d64000c7cd2883f4910eb69086f9d6e6635c744e62afcfab58b938ee25",
+        "url": "http://olympe.site:5051",
+        "geolocation": {
+            "latitude": 0,
+            "longitude": 0
+        },
+        "terms": {
+            "read_price": 100000000,
+            "write_price": 1000000000,
+            "min_lock_demand": 0.1,
+            "max_offer_duration": 2678400000000000,
+            "challenge_completion_time": 120000000000
+        },
+        "capacity": 1073741824,
+        "used": 0,
+        "last_health_check": 1628705982,
+        "stake_pool_settings": {
+            "delegate_wallet": "2f34516ed8c567089b7b5572b12950db34a62a07e16770da14b15b170d0d60a9",
+            "min_stake": 10000000000,
+            "max_stake": 1000000000000,
+            "num_delegates": 50,
+            "service_charge": 0.3
+        }
+    }
+]
