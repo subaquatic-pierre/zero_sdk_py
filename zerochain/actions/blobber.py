@@ -1,6 +1,7 @@
-from zerochain.const import (
-    Endpoints,
-)
+import json
+from zerochain.const import Endpoints, STORAGE_SMART_CONTRACT_ADDRESS
+
+# def update_blobber_settings(client, blobber_id, )
 
 
 def get_blobber_info(client, blobber_id):
@@ -42,3 +43,31 @@ def list_blobbers_by_allocation_id(client, allocation_id):
         return res.get("blobbers")
     except:
         return res
+
+
+def blobber_lock_token(client, transaction_value, blobber_id):
+    """Lock tokens on blobber"""
+    payload = json.dumps(
+        {"name": "stake_pool_lock", "input": {"blobber_id": blobber_id}}
+    )
+    res = client._execute_smart_contract(
+        to_client_id=STORAGE_SMART_CONTRACT_ADDRESS,
+        transaction_value=transaction_value,
+        payload=payload,
+    )
+    return res
+
+
+def blobber_unlock_token(client, pool_id, blobber_id):
+    """Unlock tokens from pool id and blobber"""
+    payload = json.dumps(
+        {
+            "name": "stake_pool_unlock",
+            "input": {"pool_id": pool_id, "blobber_id": blobber_id},
+        }
+    )
+    res = client._execute_smart_contract(
+        to_client_id=STORAGE_SMART_CONTRACT_ADDRESS,
+        payload=payload,
+    )
+    return res

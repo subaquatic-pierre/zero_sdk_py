@@ -163,33 +163,3 @@ class Endpoints:
     ZEROBOX_SERVER_SAVE_MNEMONIC_ENDPOINT = "/savemnemonic"
     ZEROBOX_SERVER_DELETE_MNEMONIC_ENDPOINT = "/shareinfo"
     ZEROBOX_SERVER_REFERRALS_INFO_ENDPOINT = "/getreferrals"
-
-
-class AllocationConfig:
-    DATA_SHARDS = 2
-    PARITY_SHARDS = 2
-    SIZE = 1628610719
-    TOKEN_LOCK = 1
-    PREFERRED_BLOBBERS = None
-    READ_PRICE = {"min": 0, "max": 9223372036854775807}
-    WRITE_PRICE = {"min": 0, "max": 9223372036854775807}
-    MAX_CHALLENGE_COMPLETION_TIME = 3600000000000
-
-
-#   "dataShards" : 4,
-#   "parityShards" : 2,
-#   "allocationSize" : 2,
-#   "tokenLock": 5000000000,
-#   "tokenLockDuration": "720h",
-#   "maxChallengeCompletionTime":3600,
-#   "chain_id" :   "0afc093ffb509f059c55478bc1a60351cef7b4e9c008a53a6cc8241ca8617dfe",
-#   "clusterName" : "0chain-local-cluster",
-#   "proxyServerUrl" : "https://beta.0chain.net/proxy",
-#   "recorderUrl": "https://beta.0chain.net/recorder",
-#   "zeroBoxUrl": "https://0box.beta.0chain.net",
-#   "backend": "https://backend.0chain.net",
-#   "dataSource": "database",
-#   "explorerType": "public",
-#   "transaction_timeout" : 20,
-#   "state " : true,
-#   "minLockDemand": 0.1

@@ -99,6 +99,11 @@ This is a Python SDK for 0Chain Blockchain network. Below is a mapping from curr
 | vp-trigger         | Client.vesting_pool_trigger        | No Tests    | Trigger a vesting pool work.                                      |
 | vp-unlock          | Client.vesting_pool_unlock         | Unconfirmed | Unlock tokens of a vesting pool                                   |
 
+## TODO
+
+- Ensure client is initialized before each method
+- Create client init method
+
 ## Tests to write
 
 #### Client
