@@ -1,6 +1,6 @@
 class MockWallet:
     def mock_return(return_value):
-        def wrapper(self):
+        def wrapper(self, *args, **kwargs):
             return return_value
 
         return wrapper

@@ -86,7 +86,7 @@ class TestAllocationWalletMethods(TestCase):
         data = self.allocation.read_pool_lock(
             1,
         )
-        self.assertIn("allocated_size", data)
+        self.assertIn("status", data)
 
 
 class TestAllocationBlobberInfo(TestCase):
