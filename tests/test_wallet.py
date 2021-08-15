@@ -4,7 +4,7 @@ from unittest.mock import MagicMock
 
 from zerochain.wallet import Wallet
 from zerochain.wallet import Wallet
-from zerochain.utils import from_json
+from zerochain.utils import from_json, hash_string
 from zerochain.exceptions import ConsensusError
 from zerochain.allocation import Allocation
 
@@ -16,7 +16,7 @@ default_wallet_config = from_json(
 )
 
 
-class TestWalletNetwork(TestCase):
+class TestWallet(TestCase):
     def setUp(self) -> None:
         self.wallet = build_wallet()
         return super().setUp()
@@ -30,6 +30,13 @@ class TestWalletNetwork(TestCase):
             )
         request_mock = MagicMock(return_value=res_obj)
         self.wallet.network._consensus_from_workers = request_mock
+
+    # def test_sign(self):
+    #     """Wallet can sign"""
+    #     hash = hash_string("this string needs to be hashed")
+    #     data = self.wallet.sign(hash)
+    #     print(data)
+    #     self.assertEqual(len(data), 64)
 
 
 class TestWalletMethods(TestCase):

@@ -138,7 +138,7 @@ class Network(ConnectionBase):
                     "private_key": keys["private_key"],
                 }
             ],
-            "mnemonics": mnemonic,
+            "mnemonic": mnemonic,
             "version": res["version"],
             "date_created": res["creation_date"],
         }

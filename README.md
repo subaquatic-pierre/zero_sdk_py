@@ -42,7 +42,7 @@ This is a Python SDK for 0Chain Blockchain network. Below is a mapping from curr
 | rp-unlock          | Wallet.read_pool_unlock         | Tested           | Unlock some expired tokens in a read pool.                |
 | sc-config          | Wallet.get_sc_config            | Tested           | Show storage SC configuration.                            |
 | share              |                                 |                  | share files from blobbers                                 |
-| sign-data          |                                 |                  | Sign given data                                           |
+| sign-data          | Wallet.sign                     | No Tests         | Sign given data                                           |
 | sp-info            | NA                              | Awaiting Network | Stake pool information.                                   |
 | sp-lock            | NA                              | Awaiting Network | Lock tokens lacking in stake pool.                        |
 | sp-pay-interests   | NA                              | Awaiting Network | Pay interests not payed yet.                              |

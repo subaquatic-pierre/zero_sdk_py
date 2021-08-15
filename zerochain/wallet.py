@@ -31,7 +31,7 @@ class Wallet(ConnectionBase):
         client_key,
         public_key,
         private_key,
-        mnemonics,
+        mnemonic,
         date_created,
         network,
         version="1.0",
@@ -40,7 +40,7 @@ class Wallet(ConnectionBase):
         self.client_key = client_key
         self.public_key = public_key
         self.private_key = private_key
-        self.mnemonics = mnemonics
+        self.mnemonic = mnemonic
         self.version = version
         self.date_created = date_created
         self.network = network
@@ -370,7 +370,7 @@ class Wallet(ConnectionBase):
             "client_id": self.client_id,
             "client_key": self.public_key,
             "keys": [{"public_key": self.public_key, "private_key": self.private_key}],
-            "mnemonics": self.mnemonics,
+            "mnemonic": self.mnemonic,
             "version": self.version,
             "date_created": self.date_created,
         }
