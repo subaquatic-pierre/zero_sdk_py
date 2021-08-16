@@ -46,14 +46,14 @@ def list_blobbers_by_allocation_id(client, allocation_id):
         return res
 
 
-def blobber_lock_token(client, transaction_value, blobber_id):
+def blobber_lock_token(client, amount, blobber_id):
     """Lock tokens on blobber"""
     payload = json.dumps(
         {"name": "stake_pool_lock", "input": {"blobber_id": blobber_id}}
     )
-    res = client._execute_smart_contract(
+    res = client._handle_transaction(
         to_client_id=STORAGE_SMART_CONTRACT_ADDRESS,
-        transaction_value=transaction_value,
+        transaction_value=amount,
         payload=payload,
     )
     return res
@@ -67,7 +67,7 @@ def blobber_unlock_token(client, pool_id, blobber_id):
             "input": {"pool_id": pool_id, "blobber_id": blobber_id},
         }
     )
-    res = client._execute_smart_contract(
+    res = client._handle_transaction(
         to_client_id=STORAGE_SMART_CONTRACT_ADDRESS,
         payload=payload,
     )
