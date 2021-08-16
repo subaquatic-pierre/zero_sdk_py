@@ -106,28 +106,38 @@ This is a Python SDK for 0Chain Blockchain network. Below is a mapping from curr
 
 ## Tests to write
 
-#### Client
+### Client
 
-- \_filter_by_allocation_id
+- all methods
 
-#### Transaction
+### Transaction
 
 - test_execute_smart_contract
 - test_submit_transaction
+- test_process_transaction
 
 #### Network
 
 - get_worker_stats
 
-#### ConnectionBase
+### ConnectionBase
 
 - handle_empty_return_value
 
-#### Allocation
+### Allocation
 
 - get_write_lock_token info
 - get_read_lock_token info
 - Save allocation
+- return_pools
+- filter_by_allocation_id
+
+### Actions
+
+#### Allocation
+
+- return_pools
+- filter_by_allocation_id
 
 #### Utils
 

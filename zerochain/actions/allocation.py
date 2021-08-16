@@ -40,6 +40,13 @@ def list_read_pool_info(client):
     return return_pools(res)
 
 
+def list_read_pool_by_allocation_id(client, allocation_id):
+    url = f"{Endpoints.SC_REST_READPOOL_STATS}?client_id={client.id}"
+    res = client._consensus_from_workers("sharders", url)
+
+    return filter_by_allocation_id(res, allocation_id)
+
+
 def list_write_pool_info(client):
     url = f"{Endpoints.SC_REST_WRITEPOOL_STATS}?client_id={client.id}"
     res = client._consensus_from_workers("sharders", url)
@@ -49,13 +56,6 @@ def list_write_pool_info(client):
 
 def list_write_pool_by_allocation_id(client, allocation_id):
     url = f"{Endpoints.SC_REST_WRITEPOOL_STATS}?client_id={client.id}"
-    res = client._consensus_from_workers("sharders", url)
-
-    return client.filter_by_allocation_id(res, allocation_id)
-
-
-def list_read_pool_by_allocation_id(client, allocation_id):
-    url = f"{Endpoints.SC_REST_READPOOL_STATS}?client_id={client.id}"
     res = client._consensus_from_workers("sharders", url)
 
     return client.filter_by_allocation_id(res, allocation_id)
@@ -91,11 +91,11 @@ def read_pool_unlock(client, pool_id):
     )
 
 
-def write_pool_lock(client):
+def write_pool_lock(*args, **kwargs):
     pass
 
 
-def write_pool_unlock(client):
+def write_pool_unlock(*args, **kwargs):
     pass
 
 
@@ -114,7 +114,7 @@ def get_allocation_info(client, allocation_id):
 def get_allocation(client, allocation_id) -> Allocation:
     """Returns an instance of an allocation"""
     alocs = client.list_allocations()
-    aloc = client.filter_by_allocation_id(alocs, allocation_id, "list")
+    aloc = filter_by_allocation_id(alocs, allocation_id, "list")
     return Allocation(aloc["id"], client)
 
 
@@ -154,8 +154,8 @@ def create_allocation(
 
 def update_allocation(
     client,
-    extend_expiration_hours=10,
-    size=1147483652,
+    extend_expiration_hours,
+    size,
 ):
     future = int(time() + timedelta(hours=extend_expiration_hours).total_seconds())
 

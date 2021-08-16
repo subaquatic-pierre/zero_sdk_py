@@ -98,7 +98,7 @@ class Transaction(ConnectionBase):
         # Manipulate data here if needed
 
         headers = {"Content-Type": "application/json", "Connection": "keep-alive"}
-        self.response_data = self._consensus_from_workers(
+        self.response_data = self.client._consensus_from_workers(
             "miners",
             endpoint=Endpoints.PUT_TRANSACTION,
             method="POST",

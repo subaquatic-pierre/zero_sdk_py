@@ -1,8 +1,5 @@
 import json
-from math import inf
 from time import sleep
-from zerochain.workers import Blobber
-from zerochain import allocation
 from zerochain.client import Client
 from zerochain.utils import (
     generate_mnemonic,
@@ -27,7 +24,7 @@ network = Network.from_object(default_network_config_obj)
 client = Client.from_object(default_client_config_obj, network)
 aloc = Allocation(aloc_id, client)
 
-data = client.list_blobbers_by_allocation_id(aloc.id)
+data = client.list_write_pool_info()
 pprint(data)
 
 
