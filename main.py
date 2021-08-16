@@ -27,7 +27,7 @@ network = Network.from_object(default_network_config_obj)
 client = Client.from_object(default_client_config_obj, network)
 aloc = Allocation(aloc_id, client)
 
-data = client.create_client(network)
+data = client.get_lock_config()
 pprint(data)
 # pprint(data)
 
