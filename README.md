@@ -136,7 +136,6 @@ This is a Python SDK for 0Chain Blockchain network. Below is a mapping from curr
 
 #### Allocation
 
-- return_pools
 - filter_by_allocation_id
 
 #### Utils
