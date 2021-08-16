@@ -14,26 +14,47 @@ class BaseTest(TestCase):
         self.mock_path = path
         super().__init__()
 
-    def setup_mock_consensus_from_path(self, filename):
-        res_obj = from_json(
-            os.path.join(TEST_DIR, f"__mocks__/{self.mock_path}/{filename}")
-        )
-        mock_response = MagicMock(return_value=res_obj)
-        self.client._consensus_from_workers = mock_response
+    def setup_mock_consensus(self, filename=None, data=None, format="path"):
+        if not filename and not data:
+            raise TypeError("Atleast filename or data object needs to be passed")
 
-    def setup_mock_consensus_from_obj(self, obj):
-        mock_response = MagicMock(return_value=obj)
-        self.client._consensus_from_workers = mock_response
+        if format == "path":
+            res_obj = from_json(
+                os.path.join(TEST_DIR, f"__mocks__/{self.mock_path}/{filename}")
+            )
+            mock_response = MagicMock(return_value=res_obj)
+            self.client._consensus_from_workers = mock_response
 
-    def setup_mock_request_from_path(self, filename):
-        data = from_json(
-            os.path.join(TEST_DIR, f"__mocks__/{self.mock_path}/{filename}")
-        )
-        response = MockResponse(200, data)
-        mock_response = MagicMock(return_value=response)
-        self.client._request = mock_response
+        else:
+            mock_response = MagicMock(return_value=data)
+            self.client._consensus_from_workers = mock_response
 
-    def setup_mock_request_from_obj(self, obj):
-        response = MockResponse(200, obj)
-        mock_response = MagicMock(return_value=response)
-        self.client._request = mock_response
+    def setup_mock_request(self, filename=None, data=None, format="path"):
+        if not filename and not data:
+            raise TypeError("Atleast filename or data object needs to be passed")
+
+        if format == "path":
+            res_obj = from_json(
+                os.path.join(TEST_DIR, f"__mocks__/{self.mock_path}/{filename}")
+            )
+            mock_response = MagicMock(return_value=res_obj)
+            self.client._request = mock_response
+
+        else:
+            mock_response = MagicMock(return_value=data)
+            self.client._request = mock_response
+
+    def setup_mock_transaction(self, filename=None, data=None, format="path"):
+        if not filename and not data:
+            raise TypeError("Atleast filename or data object needs to be passed")
+
+        if format == "path":
+            res_obj = from_json(
+                os.path.join(TEST_DIR, f"__mocks__/{self.mock_path}/{filename}")
+            )
+            mock_response = MagicMock(return_value=res_obj)
+            self.client._handle_transaction = mock_response
+
+        else:
+            mock_response = MagicMock(return_value=data)
+            self.client._handle_transaction = mock_response
