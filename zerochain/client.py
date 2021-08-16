@@ -244,7 +244,8 @@ class Client(ConnectionBase):
     def blobber_unlock_token(self, pool_id, blobber_id):
         return blobber.blobber_unlock_token(self, pool_id, blobber_id)
 
-    # def update_blobber_settings(self, blobber_id, )
+    def update_blobber_settings(self, blobber_id, settings={}):
+        return blobber.update_blobber_settings(self, blobber_id, settings)
 
     # --------------------
     # Network methods

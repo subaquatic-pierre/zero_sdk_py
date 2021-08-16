@@ -39,6 +39,8 @@ class TestBlobber(BaseTest):
         data = blobber.list_blobbers_by_allocation_id(self.client, ALLOCATION_ID)
         self.assertIsInstance(data, list)
 
+    # TO CONFIRM -----------
+
     def test_blobber_lock_token(self):
         """Test can lock tokens to blobber"""
         self.setup_mock_transaction(filename="confirmed_transaction.json")
@@ -50,3 +52,10 @@ class TestBlobber(BaseTest):
         self.setup_mock_transaction(filename="confirmed_transaction.json")
         data = blobber.blobber_unlock_token(self.client, "pool_id", "blobber_id")
         self.assertIn("txn", data)
+
+    def test_update_blobber_settings(self):
+        """Test can updateblobber settings"""
+        self.setup_mock_consensus("list_blobbers.json")
+        self.setup_mock_transaction(filename="unconfirmed_transaction.json")
+        data = blobber.update_blobber_settings(self.client, BLOBBER_ID, settings={})
+        self.assertIn("async", data)

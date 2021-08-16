@@ -1,4 +1,5 @@
 import json
+from tests.test_blobber import BLOBBER_ID
 from time import sleep
 from zerochain.client import Client
 from zerochain.utils import (
@@ -26,9 +27,16 @@ network = Network.from_object(default_network_config_obj)
 client = Client.from_object(default_client_config_obj, network)
 aloc = Allocation(aloc_id, client)
 
-data = client.get_blobber_info(
-    "144a94640cb78130434a79a7a12d0b2c85f819e3ea8856db31c7fde30c30a820"
+# data = client.blobber_unlock_token(
+#     "9c3b29784c7874d6cc95f678a94118469af058feffeee9daec4baabfcfdaeadd",
+#     "6dba10422e368813802877a85039d3985d96760ed844092319743fb3a76712d7",
+# )
+data = client.unlock_token(
+    "3be2931a1a45937f263ca49057a7c56ab4b9abac8e31102b4338191034bd3a76"
 )
+list = client.list_lock_token()
+pprint(list)
+data = client.get_balance("human")
 pprint(data)
 
 

@@ -1,8 +1,6 @@
 import json
-from zerochain.const import Endpoints, STORAGE_SMART_CONTRACT_ADDRESS
+from zerochain.const import Endpoints, TransactionName, STORAGE_SMART_CONTRACT_ADDRESS
 from zerochain.actions import allocation
-
-# def update_blobber_settings(client, blobber_id, )
 
 
 def get_blobber_info(client, blobber_id):
@@ -48,27 +46,28 @@ def list_blobbers_by_allocation_id(client, allocation_id):
 
 def blobber_lock_token(client, amount, blobber_id):
     """Lock tokens on blobber"""
-    payload = json.dumps(
-        {"name": "stake_pool_lock", "input": {"blobber_id": blobber_id}}
+    input = {"blobber_id": blobber_id}
+    return client._handle_transaction(
+        input=input,
+        transaction_name=TransactionName.STORAGESC_STAKE_POOL_LOCK,
+        value=amount,
     )
-    res = client._handle_transaction(
-        to_client_id=STORAGE_SMART_CONTRACT_ADDRESS,
-        transaction_value=amount,
-        payload=payload,
-    )
-    return res
 
 
 def blobber_unlock_token(client, pool_id, blobber_id):
     """Unlock tokens from pool id and blobber"""
-    payload = json.dumps(
-        {
-            "name": "stake_pool_unlock",
-            "input": {"pool_id": pool_id, "blobber_id": blobber_id},
-        }
+    input = {"pool_id": pool_id, "blobber_id": blobber_id}
+    return client._handle_transaction(
+        input=input, transaction_name=TransactionName.STORAGESC_STAKE_POOL_UNLOCK
     )
-    res = client._handle_transaction(
-        to_client_id=STORAGE_SMART_CONTRACT_ADDRESS,
-        payload=payload,
+
+
+def update_blobber_settings(client, blobber_id, settings):
+    blobber = client.get_blobber_info(blobber_id)
+    # get settings from settings obj
+    # read_price = settings.get('read_price')
+    blobber["terms"]["read_price"] = 175350921
+    return client._handle_transaction(
+        input=blobber,
+        transaction_name=TransactionName.STORAGESC_UPDATE_BLOBBER_SETTINGS,
     )
-    return res
