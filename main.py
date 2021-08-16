@@ -27,18 +27,9 @@ network = Network.from_object(default_network_config_obj)
 client = Client.from_object(default_client_config_obj, network)
 aloc = Allocation(aloc_id, client)
 
-# data = client.blobber_unlock_token(
-#     "9c3b29784c7874d6cc95f678a94118469af058feffeee9daec4baabfcfdaeadd",
-#     "6dba10422e368813802877a85039d3985d96760ed844092319743fb3a76712d7",
-# )
-data = client.unlock_token(
-    "3be2931a1a45937f263ca49057a7c56ab4b9abac8e31102b4338191034bd3a76"
-)
-list = client.list_lock_token()
-pprint(list)
-data = client.get_balance("human")
+data = client.create_client(network)
 pprint(data)
-
+# pprint(data)
 
 # from reedsolo import RSCodec
 

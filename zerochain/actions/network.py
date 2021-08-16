@@ -5,10 +5,6 @@ from zerochain.utils import generate_mnemonic, create_client_util, request_dns_w
 from zerochain.bls import generate_keys
 
 
-def list_network_dns(client):
-    return request_dns_workers(url=client.hostname)
-
-
 def list_miners(client):
     endpoint = Endpoints.SC_MINERS_STATS
     res = client._consensus_from_workers("miners", endpoint)
@@ -40,12 +36,6 @@ def list_sharders(client):
         return sharders
     except:
         return {"error": "not found"}
-
-
-def get_miner_list(client):
-    endpoint = Endpoints.SC_MINERS_STATS
-    res = client._consensus_from_workers("sharders", endpoint)
-    return res
 
 
 def get_chain_stats(client):
@@ -112,23 +102,10 @@ def get_worker_id(client, worker_url):
     return details
 
 
-def get_storage_smartcontract_for_key(client, key_name, key_value):
-    payload = json.dumps(
-        {
-            "key": f"{key_name}:{key_value}",
-            "sc_address": STORAGE_SMART_CONTRACT_ADDRESS,
-        }
-    )
-    res = client._consensus_from_workers(
-        "sharders", Endpoints.GET_SCSTATE, data=payload
-    )
-    return res
-
-
 def create_client(network):
     mnemonic = generate_mnemonic()
     keys = generate_keys(mnemonic)
-    res = register_client(keys)
+    res = register_client(keys, network)
     data = {
         "client_id": res["id"],
         "client_key": keys["public_key"],
@@ -142,7 +119,6 @@ def create_client(network):
         "version": res["version"],
         "date_created": res["creation_date"],
     }
-
     client = create_client_util(data, network)
     return client
 
@@ -150,7 +126,21 @@ def create_client(network):
 def restore_client(mnemonic, network):
     keys = generate_keys(mnemonic)
     res = register_client(keys, network)
-    return res
+    data = {
+        "client_id": res["id"],
+        "client_key": keys["public_key"],
+        "keys": [
+            {
+                "public_key": keys["public_key"],
+                "private_key": keys["private_key"],
+            }
+        ],
+        "mnemonic": mnemonic,
+        "version": res["version"],
+        "date_created": res["creation_date"],
+    }
+    client = create_client_util(data, network)
+    return client
 
 
 def register_client(keys, network):
@@ -172,3 +162,11 @@ def register_client(keys, network):
         min_confirmation=10,
     )
     return res
+
+
+def get_storage_smartcontract_for_key(client, key_name, key_value):
+    pass
+
+
+def list_network_dns(client):
+    return request_dns_workers(url=client.hostname)

@@ -1,6 +1,9 @@
 import os
-from zerochain.utils import get_project_root
+from unittest.mock import MagicMock
 
+from tests.mock_response import MockResponse
+
+from zerochain.utils import get_project_root, from_json
 from zerochain.network import Network
 from zerochain.client import Client
 from zerochain.workers import Miner, Sharder, Blobber
@@ -35,3 +38,17 @@ def build_network(min_confirmations):
     return Network(
         "http://placehoder.com", miners, sharders, blobbers, min_confirmations
     )
+
+
+def create_mock_response(path=None, data=None, format="path"):
+    if not path and not data:
+        raise TypeError("Atleast filename or data object needs to be passed")
+
+    if format == "path":
+        res_obj = from_json(os.path.join(TEST_DIR, f"__mocks__/{path}"))
+        mock_response = MagicMock(return_value=res_obj)
+        return mock_response
+
+    else:
+        mock_response = MagicMock(return_value=data)
+        return mock_response

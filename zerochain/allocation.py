@@ -8,6 +8,7 @@ from zerochain.utils import generate_random_letters
 class Allocation:
     def __init__(self, id, client) -> None:
         self.id = id
+        self.client = client
 
     def save(self, allocation_name=None):
         if not allocation_name:
