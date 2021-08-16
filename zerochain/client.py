@@ -1,4 +1,3 @@
-from datetime import timedelta
 import os
 from pathlib import Path
 from time import time
@@ -8,7 +7,15 @@ from zerochain.connection import ConnectionBase
 from zerochain.allocation import Allocation
 from zerochain.transaction import Transaction
 from zerochain.network import Network
-from zerochain.actions import miner, vesting, allocation, blobber, interest, wallet
+from zerochain.actions import (
+    miner,
+    vesting,
+    allocation,
+    blobber,
+    interest,
+    wallet,
+    network,
+)
 from zerochain.actions.allocation import AllocationConfig
 from zerochain.actions.miner import miner_delegate_pool
 
@@ -16,10 +23,7 @@ from zerochain.utils import generate_random_letters
 from zerochain.bls import sign_payload
 from zerochain.const import (
     STORAGE_SMART_CONTRACT_ADDRESS,
-    FAUCET_SMART_CONTRACT_ADDRESS,
-    Endpoints,
     TransactionType,
-    TransactionName,
 )
 
 
@@ -44,36 +48,12 @@ class Client(ConnectionBase):
         self.date_created = date_created
         self.network = network
 
-    def get_balance(self, format="default") -> int:
-        """Get Client balance
-        Return float value of tokens
-        """
-        endpoint = f"{Endpoints.GET_BALANCE}?client_id={self.id}"
-        empty_return_value = {"balance": 0}
-        res = self._consensus_from_workers(
-            "sharders", endpoint, empty_return_value=empty_return_value
-        )
-        try:
-            bal = res.get("balance")
-            if format == "default":
-                return bal
-            elif format == "human":
-                return "%.10f" % (bal / 10000000000)
-            else:
-                return bal
-
-        except AttributeError:
-            return res
-
-    def list_miners(self):
-        return self.network.list_miners()
-
-    def list_sharders(self):
-        return self.network.list_sharders()
-
     # --------------
     # Wallet Methods
     # --------------
+
+    def get_balance(self, format="default") -> int:
+        return wallet.get_balance(self, format)
 
     def send_token(self, to_client_id, amount, description=""):
         return wallet.send_token(self, to_client_id, amount, description)
@@ -100,6 +80,12 @@ class Client(ConnectionBase):
     # --------------------
     # Miner methods
     # --------------------
+
+    def list_miners(self):
+        return self.network.list_miners()
+
+    def list_sharders(self):
+        return self.network.list_sharders()
 
     def get_stake_pool_info(self, node_id, pool_id):
         return miner.get_stake_pool_info(self, node_id, pool_id)
@@ -261,6 +247,70 @@ class Client(ConnectionBase):
     # def update_blobber_settings(self, blobber_id, )
 
     # --------------------
+    # Network methods
+    # --------------------
+
+    def list_network_dns(self):
+        return network.request_dns_workers(url=self.hostname)
+
+    def list_miners(self):
+        return network.list_miners(self)
+
+    def get_miner_config(self):
+        return network.get_miner_config(self)
+
+    def get_node_stats(self, node_id=None):
+        return network.get_node_stats(self, node_id)
+
+    def list_sharders(self):
+        return network.list_sharders(self)
+
+    def get_miner_list(self):
+        return network.get_miner_list(self)
+
+    def get_chain_stats(self):
+        return network.get_chain_stats(self)
+
+    def get_block_by_hash(self, block_id):
+        return network.get_block_by_hash(self, block_id)
+
+    def get_block_by_round(self, round_num):
+        return network.get_block_by_round(self, round_num)
+
+    def get_latest_finalized_block(self):
+        return network.get_latest_finalized_block(self)
+
+    def get_latest_finalized_magic_block(self):
+        return network.get_latest_finalized_magic_block(self)
+
+    def get_latest_finalized_magic_block_summary(self):
+        return network.get_latest_finalized_magic_block_summary(self)
+
+    def check_transaction_status(self, hash):
+        return network.check_transaction_status(self, hash)
+
+    def get_worker_stats(self, worker):
+        return network.get_worker_stats(self, worker)
+
+    def get_worker_id(self, worker_url):
+        return network.get_worker_id(self, worker_url)
+
+    def get_storage_smartcontract_for_key(self, key_name, key_value):
+        return network.get_storage_smartcontract_for_key(self, key_name, key_value)
+
+    @staticmethod
+    def create_client(network_param):
+        return network.create_client(network_param)
+
+    @staticmethod
+    def restore_client(mnemonic):
+        return network.restore_client(mnemonic)
+
+    @staticmethod
+    def register_client(keys, network_param):
+        return network.register_client(keys, network_param)
+
+    # --------------------
     # Utility methods
     # --------------------
 
@@ -305,7 +355,7 @@ class Client(ConnectionBase):
         sc_address=STORAGE_SMART_CONTRACT_ADDRESS,
         raise_exception=False,
     ):
-        transaction = Transaction(
+        return Transaction.process_transaction(
             transaction_name=transaction_name,
             transaction_type=transaction_type,
             input=input,
@@ -314,10 +364,6 @@ class Client(ConnectionBase):
             sc_address=sc_address,
             raise_exception=raise_exception,
         )
-        transaction.execute()
-        data = transaction.validate()
-
-        return data
 
     @staticmethod
     def from_object(config: dict, network: Network):

@@ -5,7 +5,7 @@ from zerochain.const import Endpoints
 from zerochain.utils import hash_string
 from zerochain.connection import ConnectionBase
 from zerochain.exceptions import TransactionError
-from zerochain.const import STORAGE_SMART_CONTRACT_ADDRESS
+from zerochain.const import STORAGE_SMART_CONTRACT_ADDRESS, TransactionType
 
 
 class Transaction(ConnectionBase):
@@ -26,7 +26,6 @@ class Transaction(ConnectionBase):
         self.name = transaction_name
         self.type = transaction_type
         self.value = value * 10000000000
-        self.network = client.network
         self.client = client
         self.status = 0
         self.hash = None
@@ -35,6 +34,29 @@ class Transaction(ConnectionBase):
         self.timeout = timeout
         self.raise_exception = raise_exception
         self.fee = fee * 10000000000
+
+    @staticmethod
+    def process_transaction(
+        client,
+        input,
+        transaction_name,
+        transaction_type,
+        value,
+        sc_address,
+        raise_exception,
+    ):
+        transaction = Transaction(
+            transaction_name=transaction_name,
+            transaction_type=transaction_type,
+            input=input,
+            client=client,
+            value=value,
+            sc_address=sc_address,
+            raise_exception=raise_exception,
+        )
+        transaction.execute()
+        valid_res = transaction.validate()
+        return valid_res
 
     def execute(self):
         if not self.name:
@@ -54,7 +76,7 @@ class Transaction(ConnectionBase):
                 break
             sleep(1)
             try:
-                self.confirmation_data = self.network.check_transaction_status(hash)
+                self.confirmation_data = self.client.check_transaction_status(hash)
                 self.status = self.confirmation_data.get("transaction_status")
             except:
                 pass

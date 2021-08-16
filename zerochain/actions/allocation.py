@@ -1,8 +1,9 @@
 from datetime import timedelta
 import json
 from time import time
-from zerochain.allocation import Allocation
 
+from zerochain.allocation import Allocation
+from zerochain.transaction import Transaction
 from zerochain.utils import get_duration_nanoseconds
 from zerochain.const import Endpoints, TransactionName, STORAGE_SMART_CONTRACT_ADDRESS
 
