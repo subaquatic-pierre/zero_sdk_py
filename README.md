@@ -99,50 +99,48 @@ This is a Python SDK for 0Chain Blockchain network. Below is a mapping from curr
 | vp-trigger         | Client.vesting_pool_trigger        | No Tests    | Trigger a vesting pool work.                                      |
 | vp-unlock          | Client.vesting_pool_unlock         | Unconfirmed | Unlock tokens of a vesting pool                                   |
 
+---
+
 ## TODO
 
 - Ensure client is initialized before each method
 - Create client init method
 
-## Tests to write
+---
 
-### Client
+## Tests Needed
+
+### Classes
+
+#### Client
 
 - all methods
 
-### Transaction
+#### Transaction
 
 - test_execute_smart_contract
 - test_submit_transaction
 - test_process_transaction
 
-#### Network
-
-- get_worker_stats
-
-### ConnectionBase
+#### ConnectionBase
 
 - handle_empty_return_value
-
-### Allocation
-
-- get_write_lock_token info
-- get_read_lock_token info
-- Save allocation
-- return_pools
-- filter_by_allocation_id
 
 ### Actions
 
 #### Allocation
 
 - filter_by_allocation_id
+- save_allocation
+- return_pools
 
-#### Utils
+### Utils
 
 - get_duration_nanoseconds
 
-## Hard coded values
+---
+
+#### Hard coded values
 
 - Allocation creation size
 - Allocation lock tokens on creation
