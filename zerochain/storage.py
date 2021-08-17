@@ -13,7 +13,7 @@ from zerochain.utils import generate_random_letters
 from zerochain.const import STORAGE_SMART_CONTRACT_ADDRESS
 
 
-class Allocation(ConnectionBase):
+class Storage(ConnectionBase):
     def __init__(self) -> None:
         pass
 

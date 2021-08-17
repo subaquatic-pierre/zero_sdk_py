@@ -82,12 +82,26 @@ def read_pool_unlock(client, pool_id):
     )
 
 
-def write_pool_lock(*args, **kwargs):
-    pass
+def write_pool_lock(
+    client, allocation_id, amount, days, hours, minutes, seconds, blobber_id
+):
+    duration = get_duration_nanoseconds(days, hours, minutes, seconds)
+    input = {"duration": duration, "allocation_id": allocation_id}
+    if blobber_id:
+        input.setdefault("blobber_id", blobber_id)
+    return client._handle_transaction(
+        input=input,
+        value=amount,
+        transaction_name=TransactionName.STORAGESC_WRITE_POOL_LOCK,
+    )
 
 
-def write_pool_unlock(*args, **kwargs):
-    pass
+def write_pool_unlock(client, pool_id):
+    input = {"pool_id": pool_id}
+    return client._handle_transaction(
+        input=input,
+        transaction_name=TransactionName.STORAGESC_WRITE_POOL_UNLOCK,
+    )
 
 
 def list_allocations(client):
@@ -151,7 +165,6 @@ def update_allocation(
     set_immutable,
 ):
     future = int(timedelta(hours=extend_expiration_hours).total_seconds())
-    # expiration_date = int(time() + future)
 
     input = {
         "owner_id": client.id,
@@ -162,11 +175,29 @@ def update_allocation(
     }
 
     return client._handle_transaction(
-        sc_address=STORAGE_SMART_CONTRACT_ADDRESS,
         transaction_name=TransactionName.STORAGESC_UPDATE_ALLOCATION,
         input=input,
         value=1,
     )
+
+
+def cancel_allocation(client, allocation_id):
+    input = {"allocation_id": allocation_id}
+    return client._handle_transaction(
+        transaction_name=TransactionName.STORAGESC_CANCEL_ALLOCATION,
+        input=input,
+    )
+
+
+def finalize_allocation(client, allocation_id):
+    input = {"allocation_id": allocation_id}
+    return client._handle_transaction(
+        transaction_name=TransactionName.STORAGESC_FINALIZE_ALLOCATION,
+        input=input,
+    )
+
+
+# CONFIRM METHODS BELOW
 
 
 def allocation_min_lock(

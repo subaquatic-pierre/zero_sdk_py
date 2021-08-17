@@ -9,7 +9,7 @@ This is a Python SDK for 0Chain Blockchain network. Below is a mapping from curr
 | add                |                             | AWAITING NETWORK | Adds free storage assigner                                |
 | add-collab         |                             |                  | add collaborator for a file                               |
 | addcurator         |                             |                  | Adds a curator to an allocation                           |
-| alloc-cancel       |                             |                  | Cancel an allocation                                      |
+| alloc-cancel       | Client.cancel_allocation    | No Tests         | Cancel an allocation                                      |
 | alloc-fini         |                             |                  | Finalize an expired allocation                            |
 | bl-info            | Client.get_blobber_stats \  | Tested           | Get blobber info                                          |
 |                    | Client.get_blobber_info     | Tested           |                                                           |
@@ -55,8 +55,8 @@ This is a Python SDK for 0Chain Blockchain network. Below is a mapping from curr
 | updateallocation   | Client.update_allocation    | Tested           | Updates allocation's expiry and size                      |
 | upload             |                             |                  | upload file to blobbers                                   |
 | wp-info            | Client.list_write_pool_info | Tested           | Write pool information.                                   |
-| wp-lock            | Client.write_pool_lock      | Unimplemented    | Lock some tokens in write pool.                           |
-| wp-unlock          | Client.write_pool_unlock    | Unimplemented    | Unlock some expired tokens in a write pool.               |
+| wp-lock            | Client.write_pool_lock      | Tested           | Lock some tokens in write pool.                           |
+| wp-unlock          | Client.write_pool_unlock    | Tested           | Unlock some expired tokens in a write pool.               |
 
 ## ZClient CLI
 

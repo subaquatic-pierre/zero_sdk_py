@@ -162,21 +162,30 @@ class Client(ConnectionBase):
     def list_write_pool_by_allocation_id(self, allocation_id):
         return allocation.list_write_pool_by_allocation_id(self, allocation_id)
 
-    def write_pool_lock(self):
-        pass
-        # return allocation.write_pool_lock(self)
+    def write_pool_lock(
+        self,
+        allocation_id,
+        value,
+        day=0,
+        hours=0,
+        minutes=0,
+        seconds=0,
+        blobber_id=None,
+    ):
+        return allocation.write_pool_lock(
+            self, allocation_id, value, day, hours, minutes, seconds, blobber_id
+        )
 
-    def write_pool_unlock(self):
-        pass
-        # return allocation.write_pool_unlock(self)
+    def write_pool_unlock(self, pool_id):
+        return allocation.write_pool_unlock(self, pool_id)
 
     def create_read_pool(self):
         return allocation.create_read_pool(self)
 
     def read_pool_lock(
         self,
-        amount,
         allocation_id,
+        amount,
         days=0,
         hours=0,
         minutes=0,
@@ -224,6 +233,14 @@ class Client(ConnectionBase):
             max_challenge_completion_time,
             expiration_date,
         )
+
+    def cancel_allocation(self, allocation_id):
+        return allocation.cancel_allocation(self, allocation_id)
+
+    def finalize_allocation(self, allocation_id):
+        return allocation.finalize_allocation(self, allocation_id)
+
+    # CONFIRM BELOW METHODS
 
     def update_allocation(
         self,
