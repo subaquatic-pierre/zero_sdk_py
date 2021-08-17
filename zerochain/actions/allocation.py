@@ -2,9 +2,8 @@ from datetime import timedelta
 import json
 from time import time
 
-from zerochain.allocation import Allocation
 from zerochain.transaction import Transaction
-from zerochain.utils import get_duration_nanoseconds
+from zerochain.utils import get_duration_nanoseconds, create_allocation
 from zerochain.const import Endpoints, TransactionName, STORAGE_SMART_CONTRACT_ADDRESS
 
 
@@ -116,11 +115,16 @@ def get_allocation_info(client, allocation_id):
     return res
 
 
-def get_allocation(client, allocation_id) -> Allocation:
+def get_allocation_tx(client, allocation_id):
+    """Returns tx of allocation"""
+    aloc = get_allocation_info(client, allocation_id)
+    return aloc["tx"]
+
+
+def get_allocation(client, allocation_id):
     """Returns an instance of an allocation"""
-    alocs = client.list_allocations()
-    aloc = filter_by_allocation_id(alocs, allocation_id, "list")
-    return Allocation(aloc["id"], client)
+    aloc = get_allocation_info(client, allocation_id)
+    return create_allocation(aloc["id"], client)
 
 
 def create_allocation(
@@ -154,7 +158,7 @@ def create_allocation(
         input=input,
         value=lock_tokens,
     )
-    return Allocation(data["hash"], client)
+    return create_allocation(data["hash"], client)
 
 
 def update_allocation(

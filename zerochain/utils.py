@@ -92,6 +92,12 @@ def create_wallet_util(data, network):
     return Client.from_object(data, network)
 
 
+def create_allocatino_util(allocation_id, client):
+    from zerochain.allocation import Allocation
+
+    return Allocation(allocation_id, client)
+
+
 def create_allocation(allocation_id, client):
     from zerochain.allocation import Allocation
 

@@ -18,7 +18,7 @@ from zerochain.network import Network
 blobber_id = "144a94640cb78130434a79a7a12d0b2c85f819e3ea8856db31c7fde30c30a820"
 blobber_url = "http://beta.0chain.net:31301"
 txn_hash = "17297e21e21c59b32de70f082a8668166cc9cb06eb5071abd2907089c45c7238"
-aloc_id = "fd1835c64f4b96f87ccfb478712a8fb09149ad38bbfada9c9e2c9986f62c7202"
+aloc_id = "18dac2397e4040319a5becf753a94b9d2c544ed209b038203ea51353c3c782de"
 send_client_id = "f203b553bad7e0ac78a4561d39acbe5021d855433a0b8a2094195b02b00216ce"
 vp_id = "2bba5b05949ea59c80aed3ac3474d7379d3be737e8eb5a968c52295e48333ead:vestingpool:ce4387472f04c3f5514134691d88663fde4187d1db32509c9ee8421ee95a1358"
 miner_id = "99dfe67a348281ba40a979db7e5cffabdedea3c432bb41079d0fbc6e2d554143"
@@ -36,13 +36,13 @@ trans_client = {
 #     client.id, "183ec3c9f1767d2495415ff00ebfa2871624232758ae65a966d038f4dfbef369"
 # )
 
-data = client.transfer_allocation(
-    trans_client["client_id"],
-    trans_client["public_key"],
-    "183ec3c9f1767d2495415ff00ebfa2871624232758ae65a966d038f4dfbef369",
-)
+# data = client.list_blobbers_by_allocation_id(aloc.id)
 
-pprint(data)
+# pprint(data)
+# print(aloc.list_blobbers())
+
+data = aloc.list_all_files()
+print(data)
 
 
 # from reedsolo import RSCodec
