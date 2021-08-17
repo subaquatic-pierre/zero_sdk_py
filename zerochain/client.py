@@ -234,11 +234,23 @@ class Client(ConnectionBase):
             expiration_date,
         )
 
+    # STILL TO TEST
+
     def cancel_allocation(self, allocation_id):
         return allocation.cancel_allocation(self, allocation_id)
 
     def finalize_allocation(self, allocation_id):
         return allocation.finalize_allocation(self, allocation_id)
+
+    def add_curator(self, curator_id, allocation_id):
+        return allocation.add_curator(self, curator_id, allocation_id)
+
+    def curator_transafer_allocation(
+        self, to_client_id, to_client_public_key, allocation_id
+    ):
+        return allocation.curator_transafer_allocation(
+            self, to_client_id, to_client_public_key, allocation_id
+        )
 
     # CONFIRM BELOW METHODS
 

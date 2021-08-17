@@ -4,59 +4,59 @@ This is a Python SDK for 0Chain Blockchain network. Below is a mapping from curr
 
 ## ZBox CLI method map
 
-| Go SDK             | Python SDK                  | Status           | Description                                               |
-| ------------------ | --------------------------- | ---------------- | --------------------------------------------------------- |
-| add                |                             | AWAITING NETWORK | Adds free storage assigner                                |
-| add-collab         |                             |                  | add collaborator for a file                               |
-| addcurator         |                             |                  | Adds a curator to an allocation                           |
-| alloc-cancel       | Client.cancel_allocation    | No Tests         | Cancel an allocation                                      |
-| alloc-fini         |                             |                  | Finalize an expired allocation                            |
-| bl-info            | Client.get_blobber_stats \  | Tested           | Get blobber info                                          |
-|                    | Client.get_blobber_info     | Tested           |                                                           |
-| bl-update          |                             |                  | Update blobber settings by its delegate_wallet owner      |
-| commit             |                             |                  | commit a file changes to chain                            |
-| copy               |                             |                  | copy an object(file/folder) to another folder on blobbers |
-| cp-info            |                             |                  | Challenge pool information.                               |
-| delete             |                             |                  | delete file from blobbers                                 |
-| delete-collab      |                             |                  | delete collaborator for a file                            |
-| download           |                             |                  | download file from blobbers                               |
-| get                | Client.get_allocation_info  | Tested           | Gets the allocation info                                  |
-| get-diff           |                             |                  | Get difference of local and allocation root               |
-| get-download-cost  |                             |                  | Get downloading cost                                      |
-| get-upload-cost    |                             |                  | Get uploading cost                                        |
-| getwallet          | Client.get_wallet_info      | No Tests         | Get wallet information                                    |
-| list               |                             |                  | list files from blobbers                                  |
-| list-all           |                             |                  | list all files from blobbers                              |
-| listallocations    | Client.list_allocations     | Tested           | List allocations for the client                           |
-| ls-blobbers        | Client.list_blobbers        | Tested           | Show active blobbers in storage SC.                       |
-| meta               |                             |                  | get meta data of files from blobbers                      |
-| move               |                             |                  | move an object(file/folder) to another folder on blobbers |
-| newallocation      | Client.create_allocation    | Tested           | Creates a new allocation                                  |
-| register           | Client.create_wallet        | Tested           | Registers the wallet with the blockchain                  |
-| rename             |                             |                  | rename an object(file/folder) on blobbers                 |
-| rp-create          | Client.create_read_pool     | Unconfirmed      | Create read pool if missing                               |
-| rp-info            | Client.list_read_pool_info  | Tested           | Read pool information.                                    |
-| rp-lock            | Client.read_pool_lock       | Tested           | Lock some tokens in read pool.                            |
-| rp-unlock          | Client.read_pool_unlock     | Tested           | Unlock some expired tokens in a read pool.                |
-| sc-config          | Client.get_sc_config        | Tested           | Show storage SC configuration.                            |
-| share              |                             |                  | share files from blobbers                                 |
-| sign-data          | Client.sign                 | No Tests         | Sign given data                                           |
-| sp-info            | NA                          | Awaiting Network | Stake pool information.                                   |
-| sp-lock            | NA                          | Awaiting Network | Lock tokens lacking in stake pool.                        |
-| sp-pay-interests   | NA                          | Awaiting Network | Pay interests not payed yet.                              |
-| sp-unlock          | NA                          | Awaiting Network | Unlock tokens in stake pool.                              |
-| sp-user-info       | NA                          | Awaiting Network | Stake pool information for a user.                        |
-| start-repair       |                             |                  | start repair file to blobbers                             |
-| stats              |                             |                  | stats for file from blobbers                              |
-| sync               |                             |                  | Sync files to/from blobbers                               |
-| transferallocation |                             |                  | Transfer an allocation between owners                     |
-| update             |                             |                  | update file to blobbers                                   |
-| update-attributes  |                             |                  | update object attributes on blobbers                      |
-| updateallocation   | Client.update_allocation    | Tested           | Updates allocation's expiry and size                      |
-| upload             |                             |                  | upload file to blobbers                                   |
-| wp-info            | Client.list_write_pool_info | Tested           | Write pool information.                                   |
-| wp-lock            | Client.write_pool_lock      | Tested           | Lock some tokens in write pool.                           |
-| wp-unlock          | Client.write_pool_unlock    | Tested           | Unlock some expired tokens in a write pool.               |
+| Go SDK             | Python SDK                         | Status           | Description                                               |
+| ------------------ | ---------------------------------- | ---------------- | --------------------------------------------------------- |
+| add                |                                    | AWAITING NETWORK | Adds free storage assigner                                |
+| add-collab         |                                    |                  | add collaborator for a file                               |
+| addcurator         | Client.add_curator                 | No Tests         | Adds a curator to an allocation                           |
+| alloc-cancel       | Client.cancel_allocation           | No Tests         | Cancel an allocation                                      |
+| alloc-fini         | Client.finalize_allocation         |                  | Finalize an expired allocation                            |
+| bl-info            | Client.get_blobber_stats \         | Tested           | Get blobber info                                          |
+|                    | Client.get_blobber_info            | Tested           |                                                           |
+| bl-update          | Client.blobber_update_settings     | Unconfirmed      | Update blobber settings by its delegate_wallet owner      |
+| commit             |                                    |                  | commit a file changes to chain                            |
+| copy               |                                    |                  | copy an object(file/folder) to another folder on blobbers |
+| cp-info            |                                    |                  | Challenge pool information.                               |
+| delete             |                                    |                  | delete file from blobbers                                 |
+| delete-collab      |                                    |                  | delete collaborator for a file                            |
+| download           |                                    |                  | download file from blobbers                               |
+| get                | Client.get_allocation_info         | Tested           | Gets the allocation info                                  |
+| get-diff           |                                    |                  | Get difference of local and allocation root               |
+| get-download-cost  |                                    |                  | Get downloading cost                                      |
+| get-upload-cost    |                                    |                  | Get uploading cost                                        |
+| getwallet          | Client.get_wallet_info             | No Tests         | Get wallet information                                    |
+| list               |                                    |                  | list files from blobbers                                  |
+| list-all           |                                    |                  | list all files from blobbers                              |
+| listallocations    | Client.list_allocations            | Tested           | List allocations for the client                           |
+| ls-blobbers        | Client.list_blobbers               | Tested           | Show active blobbers in storage SC.                       |
+| meta               |                                    |                  | get meta data of files from blobbers                      |
+| move               |                                    |                  | move an object(file/folder) to another folder on blobbers |
+| newallocation      | Client.create_allocation           | Tested           | Creates a new allocation                                  |
+| register           | Client.create_wallet               | Tested           | Registers the wallet with the blockchain                  |
+| rename             |                                    |                  | rename an object(file/folder) on blobbers                 |
+| rp-create          | Client.create_read_pool            | Unconfirmed      | Create read pool if missing                               |
+| rp-info            | Client.list_read_pool_info         | Tested           | Read pool information.                                    |
+| rp-lock            | Client.read_pool_lock              | Tested           | Lock some tokens in read pool.                            |
+| rp-unlock          | Client.read_pool_unlock            | Tested           | Unlock some expired tokens in a read pool.                |
+| sc-config          | Client.get_sc_config               | Tested           | Show storage SC configuration.                            |
+| share              |                                    |                  | share files from blobbers                                 |
+| sign-data          | Client.sign                        | No Tests         | Sign given data                                           |
+| sp-info            | NA                                 | Awaiting Network | Stake pool information.                                   |
+| sp-lock            | NA                                 | Awaiting Network | Lock tokens lacking in stake pool.                        |
+| sp-pay-interests   | NA                                 | Awaiting Network | Pay interests not payed yet.                              |
+| sp-unlock          | NA                                 | Awaiting Network | Unlock tokens in stake pool.                              |
+| sp-user-info       | NA                                 | Awaiting Network | Stake pool information for a user.                        |
+| start-repair       |                                    |                  | start repair file to blobbers                             |
+| stats              |                                    |                  | stats for file from blobbers                              |
+| sync               |                                    |                  | Sync files to/from blobbers                               |
+| transferallocation | Client.curator_transfer_allocation | No Tests         | Transfer an allocation between owners                     |
+| update             |                                    |                  | update file to blobbers                                   |
+| update-attributes  |                                    |                  | update object attributes on blobbers                      |
+| updateallocation   | Client.update_allocation           | Tested           | Updates allocation's expiry and size                      |
+| upload             |                                    |                  | upload file to blobbers                                   |
+| wp-info            | Client.list_write_pool_info        | Tested           | Write pool information.                                   |
+| wp-lock            | Client.write_pool_lock             | Tested           | Lock some tokens in write pool.                           |
+| wp-unlock          | Client.write_pool_unlock           | Tested           | Unlock some expired tokens in a write pool.               |
 
 ## ZClient CLI
 

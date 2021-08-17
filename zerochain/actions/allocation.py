@@ -181,6 +181,9 @@ def update_allocation(
     )
 
 
+# STILL NEED TESTS
+
+
 def cancel_allocation(client, allocation_id):
     input = {"allocation_id": allocation_id}
     return client._handle_transaction(
@@ -194,6 +197,26 @@ def finalize_allocation(client, allocation_id):
     return client._handle_transaction(
         transaction_name=TransactionName.STORAGESC_FINALIZE_ALLOCATION,
         input=input,
+    )
+
+
+def add_curator(client, curator_id, allocation_id):
+    input = {"curator_id": curator_id, "allocation_id": allocation_id}
+    return client._handle_transaction(
+        transaction_name=TransactionName.STORAGESC_ADD_CURATOR, input=input
+    )
+
+
+def curator_transafer_allocation(
+    client, to_client_id, to_client_public_key, allocation_id
+):
+    input = {
+        "new_owner_id": to_client_id,
+        "new_owner_public_key": to_client_public_key,
+        "allocation_id": allocation_id,
+    }
+    return client._handle_transaction(
+        transaction_name=TransactionName.STORAGESC_CURATOR_TRANSFER, input=input
     )
 
 

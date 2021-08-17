@@ -27,6 +27,23 @@ network = Network.from_object(default_network_config_obj)
 client = Client.from_object(default_client_config_obj, network)
 aloc = Allocation(aloc_id, client)
 
+trans_client = {
+    "client_id": "f203b553bad7e0ac78a4561d39acbe5021d855433a0b8a2094195b02b00216ce",
+    "public_key": "5e8fd56201dccf39ba6dac429a3b622e9436d40836645b779d944c348dd7980850eabdbb552af5f6734cc23cb4d1c81b0d0039f1e211468a7239b4c06c9d419d",
+}
+
+# add = client.add_curator(
+#     client.id, "183ec3c9f1767d2495415ff00ebfa2871624232758ae65a966d038f4dfbef369"
+# )
+
+data = client.transfer_allocation(
+    trans_client["client_id"],
+    trans_client["public_key"],
+    "183ec3c9f1767d2495415ff00ebfa2871624232758ae65a966d038f4dfbef369",
+)
+
+pprint(data)
+
 
 # from reedsolo import RSCodec
 
