@@ -1,0 +1,41 @@
+{
+    "version": "1.0",
+    "hash": "7023e7b35b275871bb605891e6cf1c79c5e9d4b1205a1397eb8e9b32e1315fd7",
+    "block_hash": "79293f99be6a4f569a4b1584d9bc9432d8d03686fac4956b8665e720baf6d4bd",
+    "previous_block_hash": "d1b86bef527dc2ad813f4744cdf9c76a33132117605ef27e3e3223b7acf68c5b",
+    "txn": {
+        "hash": "7023e7b35b275871bb605891e6cf1c79c5e9d4b1205a1397eb8e9b32e1315fd7",
+        "version": "1.0",
+        "client_id": "31680e6a4fa9bb9466b7c46d1c853026a672cb913ebaae8e4af9539b15cbe5d8",
+        "to_client_id": "cf8d0df9bd8cc637a4ff4e792ffe3686da6220c45f0e1103baa609f3f1751ef4",
+        "chain_id": "0afc093ffb509f059c55478bc1a60351cef7b4e9c008a53a6cc8241ca8617dfe",
+        "transaction_data": "{\"name\": \"lock\", \"input\": {\"duration\": \"24h0m\"}}",
+        "transaction_value": 30000000000,
+        "signature": "a0fbdf7def308be235a7bd3b1227fbc19027e29d3fb74f081c939f6197a3fa17",
+        "creation_date": 1628747745,
+        "transaction_fee": 0,
+        "transaction_type": 1000,
+        "transaction_output": "{\"txn_hash\":\"7023e7b35b275871bb605891e6cf1c79c5e9d4b1205a1397eb8e9b32e1315fd7\",\"to_pool\":\"7023e7b35b275871bb605891e6cf1c79c5e9d4b1205a1397eb8e9b32e1315fd7\",\"value\":30000000000,\"from_client\":\"31680e6a4fa9bb9466b7c46d1c853026a672cb913ebaae8e4af9539b15cbe5d8\",\"to_client\":\"cf8d0df9bd8cc637a4ff4e792ffe3686da6220c45f0e1103baa609f3f1751ef4\"}",
+        "txn_output_hash": "5c2277291b4ab863f821c3be249fe77eadd8985e9c20574573116a18f73955c5",
+        "transaction_status": 1
+    },
+    "creation_date": 1628747747,
+    "miner_id": "99dfe67a348281ba40a979db7e5cffabdedea3c432bb41079d0fbc6e2d554143",
+    "round": 2781638,
+    "transaction_status": 1,
+    "round_random_seed": 15887137370769387,
+    "merkle_tree_root": "834c3e2b45c64d150606f641592cf1b668120b735445f19096791d087e498f49",
+    "merkle_tree_path": {
+        "nodes": [
+            "aa9e976551837c93cae65017802da2a4e694619dc447b2d2f9c01429ca09af49"
+        ],
+        "leaf_index": 0
+    },
+    "receipt_merkle_tree_root": "ef6c96db75003171c99a77b6865f3168cf6523258ad01f652972a18d2d49366e",
+    "receipt_merkle_tree_path": {
+        "nodes": [
+            "806ebd3d541ac1efe5765c64fbc856292b500e5dc645915abe52fafa4aa5ae49"
+        ],
+        "leaf_index": 0
+    }
+}

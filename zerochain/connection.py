@@ -207,7 +207,7 @@ class ConnectionBase(ABC):
         if self.__class__.__name__ == "Network":
             return getattr(self, worker)
         elif self.__class__.__name__ == "Allocation":
-            return getattr(self.wallet.network, worker)
+            return getattr(self.client.network, worker)
         else:
             return getattr(self.network, worker)
 
@@ -215,7 +215,7 @@ class ConnectionBase(ABC):
         if self.__class__.__name__ == "Network":
             return getattr(self, "min_confirmation")
         elif self.__class__.__name__ == "Allocation":
-            return getattr(self.wallet.network, "min_confirmation")
+            return getattr(self.client.network, "min_confirmation")
         else:
             return getattr(self.network, "min_confirmation")
 

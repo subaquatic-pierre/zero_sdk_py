@@ -38,9 +38,9 @@ class TestUtils(TestCase):
         self.assertTrue(url == DEFAULT_NETWORK)
 
     def test_from_json(self):
-        """Test from_json returining correct wallet config"""
-        wallet_config = from_json(f"{HOME_DIR}/.zcn/wallet.json")
-        self.assertTrue(wallet_config["client_id"] is not None)
+        """Test from_json returining correct client config"""
+        client_config = from_json(f"{HOME_DIR}/.zcn/wallet.json")
+        self.assertTrue(client_config["client_id"] is not None)
 
     def test_verify_data(self):
         """Test verify_data not returning correct data object"""

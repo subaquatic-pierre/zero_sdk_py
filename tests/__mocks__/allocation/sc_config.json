@@ -1,0 +1,64 @@
+{
+    "time_unit": 2592000000000000,
+    "max_mint": 40000000000000000,
+    "minted": 10137111849475,
+    "min_alloc_size": 1024,
+    "min_alloc_duration": 300000000000,
+    "max_challenge_completion_time": 1800000000000,
+    "min_offer_duration": 36000000000000,
+    "min_blobber_capacity": 1024,
+    "readpool": {
+        "min_lock": 1000000000,
+        "min_lock_period": 60000000000,
+        "max_lock_period": 31536000000000000
+    },
+    "writepool": {
+        "min_lock": 1000000000,
+        "min_lock_period": 120000000000,
+        "max_lock_period": 31536000000000000
+    },
+    "stakepool": {
+        "min_lock": 1000000000,
+        "interest_rate": 3.34e-05,
+        "interest_interval": 60000000000
+    },
+    "validator_reward": 0.025,
+    "blobber_slash": 0.1,
+    "max_read_price": 1000000000000,
+    "max_write_price": 1000000000000,
+    "failed_challenges_to_cancel": 20,
+    "failed_challenges_to_revoke_min_lock": 10,
+    "max_total_free_allocation": 100000000000000,
+    "max_individual_free_allocation": 1000000000000,
+    "free_allocation_settings": {
+        "data_shards": 10,
+        "parity_shards": 5,
+        "size": 10000000000,
+        "duration": 18000000000000000,
+        "read_price_range": {
+            "min": 0,
+            "max": 400000000
+        },
+        "write_price_range": {
+            "min": 0,
+            "max": 400000000
+        },
+        "max_challenge_completion_time": 60000000000
+    },
+    "challenge_enabled": true,
+    "max_challenges_per_generation": 100,
+    "challenge_rate_per_mb_min": 1,
+    "min_stake": 100000000,
+    "max_stake": 1000000000000,
+    "max_delegates": 200,
+    "max_charge": 0.5,
+    "block_reward": {
+        "block_reward": 10000000000,
+        "qualifying_stake": 10000000000,
+        "sharder_weight": 0.4,
+        "miner_weight": 0.1,
+        "blobber_capacity_weight": 0.1,
+        "blobber_usage_weight": 0.4
+    },
+    "expose_mpt": false
+}

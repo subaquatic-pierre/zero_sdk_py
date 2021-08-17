@@ -6,17 +6,17 @@
         "longitude": 0
     },
     "terms": {
-        "read_price": 188608072,
-        "write_price": 188608072,
+        "read_price": 175350921,
+        "write_price": 175350921,
         "min_lock_demand": 0.1,
         "max_offer_duration": 2678400000000000,
         "challenge_completion_time": 120000000000
     },
     "capacity": 1073741824000,
-    "used": 140010813915,
-    "last_health_check": 1628851800,
+    "used": 155906743618,
+    "last_health_check": 1629102674,
     "stake_pool_settings": {
-        "delegate_client": "dad8cbae61dd312296d830c9400f308518da6ac5fb4c2ae643219e6ef27ea493",
+        "delegate_wallet": "dad8cbae61dd312296d830c9400f308518da6ac5fb4c2ae643219e6ef27ea493",
         "min_stake": 10000000000,
         "max_stake": 1000000000000,
         "num_delegates": 50,

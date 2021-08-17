@@ -1,3 +1,4 @@
+from datetime import timedelta
 import json
 import random
 import string
@@ -7,6 +8,9 @@ import secrets
 from pathlib import Path
 from hashlib import sha3_256
 from bip39 import encode_bytes
+import requests
+
+from zerochain.const import Endpoints
 
 
 def generate_random_letters(num_letters=5):
@@ -82,13 +86,39 @@ def timer(f):
     return wrapper
 
 
-def create_wallet(data, network):
-    from zerochain.wallet import Wallet
+def create_wallet_util(data, network):
+    from zerochain.client import Client
 
-    return Wallet.from_object(data, network)
+    return Client.from_object(data, network)
 
 
-def create_allocation(allocation_id, wallet):
+def create_allocation(allocation_id, client):
     from zerochain.allocation import Allocation
 
-    return Allocation(allocation_id, wallet)
+    return Allocation(allocation_id, client)
+
+
+def get_duration_nanoseconds(days=0, hours=0, minutes=0, seconds=0):
+    seconds = int(
+        timedelta(
+            days=days, hours=hours, minutes=minutes, seconds=seconds
+        ).total_seconds()
+    )
+
+    return seconds * 1000000000
+
+
+def request_dns_workers(url, worker=None):
+    res = requests.get(f"{url}/{Endpoints.NETWORK_DNS}")
+
+    if res.status_code != 200:
+        raise ConnectionError(f"An error occured requesting workers - {res.text}")
+
+    if not worker:
+        return res.json()
+
+    workers = res.json().get(worker)
+    if not workers:
+        raise KeyError(f"No {worker} found")
+
+    return workers

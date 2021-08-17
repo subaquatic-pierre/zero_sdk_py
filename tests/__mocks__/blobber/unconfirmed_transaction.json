@@ -1,0 +1,18 @@
+{
+    "async": true,
+    "entity": {
+        "hash": "0ce36831b406558b3c94e0ab73324479bd9de6783cf4211cca59c04cadd50504",
+        "version": "1.0",
+        "client_id": "31680e6a4fa9bb9466b7c46d1c853026a672cb913ebaae8e4af9539b15cbe5d8",
+        "to_client_id": "6dba10422e368813802877a85039d3985d96760ed844092319743fb3a76712d7",
+        "chain_id": "0afc093ffb509f059c55478bc1a60351cef7b4e9c008a53a6cc8241ca8617dfe",
+        "transaction_data": "{\"name\": \"new_read_pool\", \"input\": null}",
+        "transaction_value": 0,
+        "signature": "14a1dcea70ae82d0cbccc8800458b683a3a6306aa0f4aca1b9d47e02309be801",
+        "creation_date": 1629097126,
+        "transaction_fee": 0,
+        "transaction_type": 1000,
+        "txn_output_hash": "",
+        "transaction_status": 0
+    }
+}
