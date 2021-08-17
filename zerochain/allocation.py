@@ -25,6 +25,15 @@ class ListRequest:
         self.remote_file_path_hash = remote_file_path_hash
         self.remote_file_path = remote_file_path
 
+    def make_request(self):
+        url = f'{self.blobbers[0].url}/v1/file/referencepath/{self.id}?paths=["{path}"]'
+        print(url)
+        res = requests.get(url)
+        try:
+            return res.data
+        except:
+            return res.text
+
 
 class Allocation:
     def __init__(self, allocation_id, client) -> None:
@@ -42,15 +51,8 @@ class Allocation:
 
     def list_all_files(self):
         path = "/"
-        list_request = ListRequest(self, path)
 
-        url = f'{self.blobbers[0].url}/v1/file/referencepath/{self.id}?paths=["{path}"]'
-        print(url)
-        res = requests.get(url)
-        try:
-            return res.data
-        except:
-            return res.text
+        list_request = ListRequest(self, path)
 
     def save(self, allocation_name=None):
         if not allocation_name:
