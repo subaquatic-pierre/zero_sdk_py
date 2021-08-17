@@ -33,32 +33,23 @@ def create_read_pool(client):
     )
 
 
-def list_read_pool_info(client):
+def list_read_pool_info(client, allocation_id=None):
     url = f"{Endpoints.SC_REST_READPOOL_STATS}?client_id={client.id}"
     res = client._consensus_from_workers("sharders", url)
 
-    return return_pools(res)
+    if allocation_id:
+        return filter_by_allocation_id(res, allocation_id)
+    else:
+        return return_pools(res)
 
 
-def list_read_pool_by_allocation_id(client, allocation_id):
-    url = f"{Endpoints.SC_REST_READPOOL_STATS}?client_id={client.id}"
-    res = client._consensus_from_workers("sharders", url)
-
-    return filter_by_allocation_id(res, allocation_id)
-
-
-def list_write_pool_info(client):
+def list_write_pool_info(client, allocation_id=None):
     url = f"{Endpoints.SC_REST_WRITEPOOL_STATS}?client_id={client.id}"
     res = client._consensus_from_workers("sharders", url)
-
-    return return_pools(res)
-
-
-def list_write_pool_by_allocation_id(client, allocation_id):
-    url = f"{Endpoints.SC_REST_WRITEPOOL_STATS}?client_id={client.id}"
-    res = client._consensus_from_workers("sharders", url)
-
-    return client.filter_by_allocation_id(res, allocation_id)
+    if allocation_id:
+        return filter_by_allocation_id(res, allocation_id)
+    else:
+        return return_pools(res)
 
 
 def read_pool_lock(
@@ -154,15 +145,20 @@ def create_allocation(
 
 def update_allocation(
     client,
+    allocation_id,
     extend_expiration_hours,
     size,
+    set_immutable,
 ):
-    future = int(time() + timedelta(hours=extend_expiration_hours).total_seconds())
+    future = int(timedelta(hours=extend_expiration_hours).total_seconds())
+    # expiration_date = int(time() + future)
 
     input = {
-        "id": client.id,
+        "owner_id": client.id,
+        "id": allocation_id,
         "size": size,
         "expiration_date": future,
+        "set_immutable": set_immutable,
     }
 
     return client._handle_transaction(

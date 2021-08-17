@@ -1,7 +1,7 @@
 import json
 
 from zerochain.const import Endpoints, STORAGE_SMART_CONTRACT_ADDRESS
-from zerochain.utils import generate_mnemonic, create_client_util, request_dns_workers
+from zerochain.utils import generate_mnemonic, create_wallet_util, request_dns_workers
 from zerochain.bls import generate_keys
 
 
@@ -102,10 +102,10 @@ def get_worker_id(client, worker_url):
     return details
 
 
-def create_client(network):
+def create_wallet(network, return_instance=True):
     mnemonic = generate_mnemonic()
     keys = generate_keys(mnemonic)
-    res = register_client(keys, network)
+    res = register_wallet(keys, network)
     data = {
         "client_id": res["id"],
         "client_key": keys["public_key"],
@@ -119,31 +119,35 @@ def create_client(network):
         "version": res["version"],
         "date_created": res["creation_date"],
     }
-    client = create_client_util(data, network)
-    return client
+    if return_instance:
+        return create_wallet_util(data, network)
+    else:
+        return res
 
 
-def restore_client(mnemonic, network):
-    keys = generate_keys(mnemonic)
-    res = register_client(keys, network)
-    data = {
-        "client_id": res["id"],
-        "client_key": keys["public_key"],
-        "keys": [
-            {
-                "public_key": keys["public_key"],
-                "private_key": keys["private_key"],
-            }
-        ],
-        "mnemonic": mnemonic,
-        "version": res["version"],
-        "date_created": res["creation_date"],
-    }
-    client = create_client_util(data, network)
-    return client
+# def restore_wallet(mnemonic, network, return_instance=True):
+#     keys = generate_keys(mnemonic)
+#     res = register_wallet(keys, network)
+#     data = {
+#         "client_id": res["id"],
+#         "client_key": keys["public_key"],
+#         "keys": [
+#             {
+#                 "public_key": keys["public_key"],
+#                 "private_key": keys["private_key"],
+#             }
+#         ],
+#         "mnemonic": mnemonic,
+#         "version": res["version"],
+#         "date_created": res["creation_date"],
+#     }
+#     if return_instance:
+#         return create_wallet_util(data, network)
+#     else:
+#         return res
 
 
-def register_client(keys, network):
+def register_wallet(keys, network):
     payload = json.dumps(
         {
             "id": keys["client_id"],
@@ -155,7 +159,7 @@ def register_client(keys, network):
     headers = {"Accept": "application/json", "Content-Type": "application/json"}
     res = network._consensus_from_workers(
         "miners",
-        endpoint=Endpoints.REGISTER_CLIENT,
+        endpoint=Endpoints.register_wallet,
         method="PUT",
         data=payload,
         headers=headers,

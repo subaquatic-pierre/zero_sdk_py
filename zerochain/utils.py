@@ -86,7 +86,7 @@ def timer(f):
     return wrapper
 
 
-def create_client_util(data, network):
+def create_wallet_util(data, network):
     from zerochain.client import Client
 
     return Client.from_object(data, network)

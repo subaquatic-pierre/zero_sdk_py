@@ -35,7 +35,7 @@ class TestAllocation(BaseTest):
     def test_list_read_pool_info_by_allocation_id(self):
         """Test can get read pool info by allocation ID"""
         self.setup_mock_consensus(filename="pool_info.json")
-        data = allocation.list_read_pool_by_allocation_id(self.client, ALLOCATION_ID)
+        data = allocation.list_read_pool_info(self.client, ALLOCATION_ID)
         self.assertIsInstance(data, list)
 
     def test_list_write_pool_info(self):
@@ -47,7 +47,7 @@ class TestAllocation(BaseTest):
     def test_list_write_pool_by_allocation_id(self):
         """Test can get write pool info by allocation ID"""
         self.setup_mock_consensus(filename="pool_info.json")
-        data = allocation.list_read_pool_by_allocation_id(self.client, ALLOCATION_ID)
+        data = allocation.list_write_pool_info(self.client, ALLOCATION_ID)
         self.assertIsInstance(data, list)
 
     def test_read_pool_lock(self):
@@ -131,7 +131,11 @@ class TestAllocation(BaseTest):
         """Test update allocation"""
         self.setup_mock_transaction(filename="confirmed_transaction.json")
         data = allocation.update_allocation(
-            self.client, extend_expiration_hours=10, size=1
+            self.client,
+            "allocation_id",
+            extend_expiration_hours=10,
+            size=1,
+            set_immutable=False,
         )
         self.assertIn("txn", data)
 

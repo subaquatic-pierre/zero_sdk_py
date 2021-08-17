@@ -27,9 +27,6 @@ network = Network.from_object(default_network_config_obj)
 client = Client.from_object(default_client_config_obj, network)
 aloc = Allocation(aloc_id, client)
 
-data = client.list_read_pool_info()
-pprint(data)
-# pprint(data)
 
 # from reedsolo import RSCodec
 

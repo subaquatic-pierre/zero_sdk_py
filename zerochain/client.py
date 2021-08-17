@@ -153,8 +153,14 @@ class Client(ConnectionBase):
     def list_read_pool_info(self):
         return allocation.list_read_pool_info(self)
 
+    def list_read_pool_by_allocation_id(self, allocation_id):
+        return allocation.list_read_pool_by_allocation_id(self, allocation_id)
+
     def list_write_pool_info(self):
         return allocation.list_write_pool_info(self)
+
+    def list_write_pool_by_allocation_id(self, allocation_id):
+        return allocation.list_write_pool_by_allocation_id(self, allocation_id)
 
     def write_pool_lock(self):
         pass
@@ -180,9 +186,6 @@ class Client(ConnectionBase):
         return allocation.read_pool_lock(
             self, amount, allocation_id, days, hours, minutes, seconds, blobber_id
         )
-
-    def list_read_pool_by_allocation_id(self, allocation_id):
-        return allocation.list_read_pool_by_allocation_id(self, allocation_id)
 
     def read_pool_unlock(self, pool_id):
         return allocation.read_pool_unlock(self, pool_id)
@@ -222,6 +225,17 @@ class Client(ConnectionBase):
             expiration_date,
         )
 
+    def update_allocation(
+        self,
+        allocation_id,
+        extend_expiration_hours=1,
+        size=1628610719,
+        set_immutable=False,
+    ):
+        return allocation.update_allocation(
+            self, allocation_id, extend_expiration_hours, size, set_immutable
+        )
+
     # --------------------
     # Blobber methods
     # --------------------
@@ -230,7 +244,7 @@ class Client(ConnectionBase):
         return blobber.get_blobber_info(self, blobber_id)
 
     def get_blobber_stats(self, blobber_url):
-        return blobber.get_blobber_info(self, blobber_url)
+        return blobber.get_blobber_stats(self, blobber_url)
 
     def list_blobbers(self):
         return blobber.list_blobbers(self)
@@ -300,16 +314,16 @@ class Client(ConnectionBase):
         return network.get_storage_smartcontract_for_key(self, key_name, key_value)
 
     @staticmethod
-    def create_client(network_param):
-        return network.create_client(network_param)
+    def create_wallet(network_param, return_instance=False):
+        return network.create_wallet(network_param, return_instance)
+
+    # @staticmethod
+    # def restore_wallet(mnemonic, network_param, return_instance=False):
+    #     return network.restore_wallet(mnemonic, network_param, return_instance)
 
     @staticmethod
-    def restore_client(mnemonic):
-        return network.restore_client(mnemonic)
-
-    @staticmethod
-    def register_client(keys, network_param):
-        return network.register_client(keys, network_param)
+    def register_wallet(keys, network_param):
+        return network.register_wallet(keys, network_param)
 
     # --------------------
     # Utility methods
@@ -337,7 +351,7 @@ class Client(ConnectionBase):
         ) as f:
             f.write(json.dumps(data, indent=4))
 
-    def get_client_info(self):
+    def get_wallet_info(self):
         return {
             "client_id": self.id,
             "public_key": self.public_key,

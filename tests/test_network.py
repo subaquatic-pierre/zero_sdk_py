@@ -95,26 +95,26 @@ class TestNetwork(BaseTest):
         data = network.get_worker_id(self.client, "http://worker.com")
         self.assertIsInstance(data, dict)
 
-    def test_create_client(self):
+    def test_create_wallet(self):
         """Test can create client"""
         network.generate_keys = create_mock_response(path="network/gen_keys.json")
         mock_response = create_mock_response(path="network/create_wallet.json")
         self.client.network._consensus_from_workers = mock_response
-        data = network.create_client(self.client.network)
+        data = network.create_wallet(self.client.network)
         self.assertIsInstance(data, Client)
 
-    def test_restore_client(self):
+    def test_restore_wallet(self):
         """Test can restore client"""
         network.generate_keys = create_mock_response(path="network/gen_keys.json")
         mock_response = create_mock_response(path="network/create_wallet.json")
         self.client.network._consensus_from_workers = mock_response
-        data = network.restore_client("some words", self.client.network)
+        data = network.restore_wallet("some words", self.client.network)
         self.assertIsInstance(data, Client)
 
-    def test_register_client(self):
+    def test_register_wallet(self):
         """Test can register client"""
         mock_response = create_mock_response(path="network/create_wallet.json")
         self.client.network._consensus_from_workers = mock_response
         keys = from_json(os.path.join(TEST_DIR, f"__mocks__/network/gen_keys.json"))
-        data = network.register_client(keys, self.client.network)
+        data = network.register_wallet(keys, self.client.network)
         self.assertIn("id", data)

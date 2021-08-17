@@ -79,9 +79,7 @@ class TextConnectionBase(TestCase):
 
 
 def get_chain_stats():
-    return from_json(
-        os.path.join(TEST_DIR, "__mocks__/network/valid_chain_stats_response.json")
-    )
+    return from_json(os.path.join(TEST_DIR, "__mocks__/network/chain_stats.json"))
 
 
 class TestGetConsensus(TestCase):
