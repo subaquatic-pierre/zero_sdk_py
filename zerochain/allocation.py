@@ -68,6 +68,14 @@ class Allocation:
         ) as f:
             f.write(json.dumps(data, indent=4))
 
+    def from_object(aloc_obj, client):
+        aloc_id = aloc_obj["id"]
+        aloc = Allocation(aloc_id, client)
+        for key, value in aloc_obj.items():
+            setattr(aloc, key, value)
+
+        return aloc
+
     def __str__(self) -> str:
         return json.dumps(
             {
