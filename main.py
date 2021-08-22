@@ -33,6 +33,7 @@ trans_client = {
 }
 
 new_aloc = client.get_allocation(aloc.id)
+
 pprint(new_aloc.blobber_details)
 
 # add = client.add_curator(
