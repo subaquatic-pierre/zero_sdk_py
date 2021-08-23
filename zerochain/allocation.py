@@ -54,9 +54,11 @@ class Allocation:
 
         path_hash = hash_string(f"{self.id}:{path}")
 
-        # params = f'?auth_token=&path_hash={path_hash}'
-        endpoint = Endpoints.ALLOCATION_FILE_LIST
+        # params = f"?auth_token=&path_hash={path_hash}"
+        endpoint = Endpoints.ALLOCATION_FILE_LIST + self.id
         url = self.blobbers[0]["url"] + endpoint
+
+        print(url)
 
         headers = {
             "X-App-Client-Id": self.client.id,
@@ -65,13 +67,15 @@ class Allocation:
 
         req = requests.Request("GET", url=url, headers=headers)
         req.params = {"auth_token": None, "path_hash": path_hash}
-        req.prepare()
-        print(req.url)
+        prep = req.prepare()
+        s = requests.Session()
+        res = s.send(prep)
 
         try:
-            return req
+            data = json.loads(res.text)
+            return data
         except:
-            return req
+            return res.text
 
     def save(self, allocation_name=None):
         if not allocation_name:
