@@ -36,7 +36,6 @@ new_aloc = client.get_allocation(aloc.id)
 
 res = new_aloc.list_all_files()
 
-pprint(res)
 
 # add = client.add_curator(
 #     client.id, "183ec3c9f1767d2495415ff00ebfa2871624232758ae65a966d038f4dfbef369"

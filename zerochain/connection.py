@@ -6,7 +6,7 @@ import requests
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
 from zerochain.const import Endpoints
-from zerochain.utils import hash_string
+from zerochain.utils import hash_string, pprint
 from zerochain.exceptions import ConsensusError
 
 
@@ -180,6 +180,7 @@ class ConnectionBase(ABC):
 
                 if is_min_consensus_reached:
                     executor.shutdown(wait=False)
+                    pprint(consensus_data)
                     return highest_consensus
 
     def _calculate_confirmation_weighting(

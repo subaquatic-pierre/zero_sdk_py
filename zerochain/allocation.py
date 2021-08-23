@@ -36,7 +36,7 @@ class ListRequest:
             return res.text
 
 
-class Allocation(ConnectionBase):
+class Allocation:
     def __init__(self, allocation_id, client) -> None:
         blobber_list = blobber.list_blobbers_by_allocation_id(client, allocation_id)
         self.id = allocation_id
@@ -52,25 +52,22 @@ class Allocation(ConnectionBase):
 
     def list_all_files(self):
         path = "/"
-
         path_hash = hash_string(f"{self.id}:{path}")
 
-        # params = f"?auth_token=&path_hash={path_hash}"
-        endpoint = Endpoints.ALLOCATION_FILE_LIST + self.id
-        url = self.blobbers[0]["url"] + endpoint
-
-        print(url)
+        params = f"?auth_token=&path_hash={path_hash}"
+        endpoint = Endpoints.ALLOCATION_FILE_LIST + self.id + params
 
         headers = {
             "X-App-Client-Id": self.client.id,
             "X-App-Client-Key": self.client.client_key,
         }
 
+        data = self._consensus_from_workers(self.blobbers, endpoint, headers=headers)
+
         try:
-            data = json.loads(res.text)
             return data
-        except:
-            return res.text
+        except Exception as e:
+            return e
 
     def get_list_request(self, path, headers, url, path_hash):
         req = requests.Request("GET", url=url, headers=headers)
@@ -105,6 +102,8 @@ class Allocation(ConnectionBase):
         aloc_id = aloc_obj["id"]
         aloc = Allocation(aloc_id, client)
         for key, value in aloc_obj.items():
+            if key == "blobbers":
+                continue
             setattr(aloc, key, value)
 
         return aloc
