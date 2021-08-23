@@ -4,7 +4,7 @@ import os
 
 import requests
 from zerochain.workers import Blobber
-from zerochain.const import StorageEndpoints
+from zerochain.const import Endpoints, StorageEndpoints
 from zerochain.utils import generate_random_letters, hash_string
 from zerochain.actions import blobber, allocation
 
@@ -52,7 +52,26 @@ class Allocation:
     def list_all_files(self):
         path = "/"
 
-        list_request = ListRequest(self, path)
+        path_hash = hash_string(f"{self.id}:{path}")
+
+        # params = f'?auth_token=&path_hash={path_hash}'
+        endpoint = Endpoints.ALLOCATION_FILE_LIST
+        url = self.blobbers[0]["url"] + endpoint
+
+        headers = {
+            "X-App-Client-Id": self.client.id,
+            "X-App-Client-Key": self.client.client_key,
+        }
+
+        req = requests.Request("GET", url=url, headers=headers)
+        req.params = {"auth_token": None, "path_hash": path_hash}
+        req.prepare()
+        print(req.url)
+
+        try:
+            return req
+        except:
+            return req
 
     def save(self, allocation_name=None):
         if not allocation_name:
