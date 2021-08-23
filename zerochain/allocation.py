@@ -2,6 +2,8 @@ import json
 from pathlib import Path
 import os
 from zerochain.connection import ConnectionBase
+from concurrent.futures import ThreadPoolExecutor, as_completed
+
 
 import requests
 from zerochain.workers import Blobber
@@ -51,7 +53,12 @@ class Allocation:
         return self.blobbers
 
     def list_all_files(self):
-        path = "/"
+        return self.list_files("/")
+
+    def list_files(self, path):
+        path = self._repair_path(path)
+        requests = []
+        future_responses = []
         path_hash = hash_string(f"{self.id}:{path}")
 
         params = f"?auth_token=&path_hash={path_hash}"
@@ -62,27 +69,41 @@ class Allocation:
             "X-App-Client-Key": self.client.client_key,
         }
 
-        data = self._consensus_from_workers(self.blobbers, endpoint, headers=headers)
+        with ThreadPoolExecutor(max_workers=10) as executor:
+            req = self._get_list_request()
+
+            future = executor.submit(
+                self._request,
+                method=method,
+                url=url,
+                data=data,
+                files=files,
+                headers=headers,
+            )
+
+            future_responses.append(future)
+
+            for future in as_completed(future_responses):
+                response = future.result()
 
         try:
             return data
         except Exception as e:
             return e
 
-    def get_list_request(self, path, headers, url, path_hash):
+    def _build_list_request(self, path, headers, url, path_hash):
         req = requests.Request("GET", url=url, headers=headers)
         req.params = {"auth_token": None, "path_hash": path_hash}
         prep = req.prepare()
         print(prep.url)
         s = requests.Session()
-        res = s.send(prep)
 
         return prep
 
-    def _perform_requests(self, workers, req):
-        results = []
-
-        return results
+    def _repair_path(self, path):
+        # check path is good,
+        # fix if needed
+        return path
 
     def save(self, allocation_name=None):
         if not allocation_name:
