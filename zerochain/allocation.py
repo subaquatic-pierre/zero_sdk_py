@@ -1,6 +1,7 @@
 import json
 from pathlib import Path
 import os
+from zerochain.connection import ConnectionBase
 
 import requests
 from zerochain.workers import Blobber
@@ -35,7 +36,7 @@ class ListRequest:
             return res.text
 
 
-class Allocation:
+class Allocation(ConnectionBase):
     def __init__(self, allocation_id, client) -> None:
         blobber_list = blobber.list_blobbers_by_allocation_id(client, allocation_id)
         self.id = allocation_id
@@ -65,17 +66,26 @@ class Allocation:
             "X-App-Client-Key": self.client.client_key,
         }
 
-        req = requests.Request("GET", url=url, headers=headers)
-        req.params = {"auth_token": None, "path_hash": path_hash}
-        prep = req.prepare()
-        s = requests.Session()
-        res = s.send(prep)
-
         try:
             data = json.loads(res.text)
             return data
         except:
             return res.text
+
+    def get_list_request(self, path, headers, url, path_hash):
+        req = requests.Request("GET", url=url, headers=headers)
+        req.params = {"auth_token": None, "path_hash": path_hash}
+        prep = req.prepare()
+        print(prep.url)
+        s = requests.Session()
+        res = s.send(prep)
+
+        return prep
+
+    def _perform_requests(self, workers, req):
+        results = []
+
+        return results
 
     def save(self, allocation_name=None):
         if not allocation_name:

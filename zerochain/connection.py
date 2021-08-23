@@ -130,7 +130,12 @@ class ConnectionBase(ABC):
         if not min_confirmation:
             min_confirmation = self._get_min_confirmation()
         worker_string = worker
-        workers = self._get_workers(worker_string)
+
+        if type(worker) == str:
+            workers = self._get_workers(worker_string)
+        else:
+            workers = worker
+
         num_requests = 0
 
         future_responses = []
