@@ -180,7 +180,6 @@ class ConnectionBase(ABC):
 
                 if is_min_consensus_reached:
                     executor.shutdown(wait=False)
-                    pprint(consensus_data)
                     return highest_consensus
 
     def _calculate_confirmation_weighting(

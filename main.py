@@ -35,6 +35,7 @@ trans_client = {
 new_aloc = client.get_allocation(aloc.id)
 
 res = new_aloc.list_all_files()
+pprint(res)
 
 
 # add = client.add_curator(

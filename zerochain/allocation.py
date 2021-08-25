@@ -55,50 +55,63 @@ class Allocation:
     def list_all_files(self):
         return self.list_files("/")
 
+    def _request(
+        self, url, method="GET", headers=None, data=None, files=None, params=None
+    ):
+        return requests.request(
+            method, url, headers=headers, data=data, files=files, params=params
+        )
+
     def list_files(self, path):
         path = self._repair_path(path)
-        requests = []
+        request_list = []
+        response_list = []
         future_responses = []
-        path_hash = hash_string(f"{self.id}:{path}")
-
-        params = f"?auth_token=&path_hash={path_hash}"
-        endpoint = Endpoints.ALLOCATION_FILE_LIST + self.id + params
 
         headers = {
             "X-App-Client-Id": self.client.id,
             "X-App-Client-Key": self.client.client_key,
         }
 
+        for blobber in self.blobbers:
+            url = f"{blobber.url}{Endpoints.ALLOCATION_FILE_LIST}{self.id}"
+            request = self._build_list_request("/", headers, url)
+            request_list.append(request)
+
         with ThreadPoolExecutor(max_workers=10) as executor:
-            req = self._get_list_request()
+            session = requests.Session()
 
-            future = executor.submit(
-                self._request,
-                method=method,
-                url=url,
-                data=data,
-                files=files,
-                headers=headers,
-            )
+            for request in request_list:
+                future = executor.submit(session.send, request)
 
-            future_responses.append(future)
+                future_responses.append(future)
 
             for future in as_completed(future_responses):
                 response = future.result()
+                response_list.append(response)
 
         try:
+            data = self._parse_response_list(response_list)
             return data
         except Exception as e:
             return e
 
-    def _build_list_request(self, path, headers, url, path_hash):
+    def _parse_response_list(self, response_list):
+        data = {}
+        for index, response in enumerate(response_list):
+            try:
+                json_data = json.loads(response.text)
+                data.setdefault(index, json_data)
+            except:
+                return response.text
+
+        return data
+
+    def _build_list_request(self, path, headers, url):
+        path_hash = hash_string(f"{self.id}:{path}")
         req = requests.Request("GET", url=url, headers=headers)
         req.params = {"auth_token": None, "path_hash": path_hash}
-        prep = req.prepare()
-        print(prep.url)
-        s = requests.Session()
-
-        return prep
+        return req.prepare()
 
     def _repair_path(self, path):
         # check path is good,
