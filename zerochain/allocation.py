@@ -108,7 +108,8 @@ class Allocation:
         return data
 
     def _build_list_request(self, path, headers, url):
-        path_hash = hash_string(f"{self.id}:{path}")
+        # path_hash = hash_string(f"{self.id}:/folder/AMAZING.txt")
+        path_hash = "960f7d69e28566e260d947fda1ec1ea631731e6922b07987e6448f95209a829e"
         req = requests.Request("GET", url=url, headers=headers)
         req.params = {"auth_token": None, "path_hash": path_hash}
         return req.prepare()
