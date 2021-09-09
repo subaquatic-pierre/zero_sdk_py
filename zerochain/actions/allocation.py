@@ -159,6 +159,7 @@ def create_allocation(
         input=input,
         value=lock_tokens,
     )
+    print(data)
     return create_allocation_util(data["hash"], client)
 
 
