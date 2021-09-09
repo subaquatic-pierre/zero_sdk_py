@@ -25,8 +25,8 @@ This is a Python SDK for 0Chain Blockchain network. Below is a mapping from curr
 | get-download-cost  |                                    |                  | Get downloading cost                                      |
 | get-upload-cost    |                                    |                  | Get uploading cost                                        |
 | getwallet          | Client.get_wallet_info             | No Tests         | Get wallet information                                    |
-| list               |                                    |                  | list files from blobbers                                  |
-| list-all           |                                    |                  | list all files from blobbers                              |
+| list               | Allocation.list_files              | No Tests         | list files from blobbers                                  |
+| list-all           | Allocation.list_all                | No Tests         | list all files from blobbers                              |
 | listallocations    | Client.list_allocations            | Tested           | List allocations for the client                           |
 | ls-blobbers        | Client.list_blobbers               | Tested           | Show active blobbers in storage SC.                       |
 | meta               |                                    |                  | get meta data of files from blobbers                      |
