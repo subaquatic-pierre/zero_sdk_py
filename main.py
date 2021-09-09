@@ -34,7 +34,7 @@ trans_client = {
 
 new_aloc = client.get_allocation(aloc.id)
 
-res = new_aloc.list_all_files()
+res = new_aloc.list_files("/")
 pprint(res)
 
 

@@ -65,7 +65,7 @@ class Allocation:
     def list_files(self, path):
         path = self._repair_path(path)
         request_list = []
-        response_list = []
+        responses = []
         future_responses = []
 
         headers = {
@@ -88,15 +88,15 @@ class Allocation:
 
             for future in as_completed(future_responses):
                 response = future.result()
-                response_list.append(response)
+                responses.append(response)
 
         try:
-            data = self._parse_response_list(response_list)
+            data = self._parse_responses(responses)
             return data
         except Exception as e:
             return e
 
-    def _parse_response_list(self, response_list):
+    def _parse_responses(self, response_list):
         data = {}
         for index, response in enumerate(response_list):
             try:
@@ -108,8 +108,7 @@ class Allocation:
         return data
 
     def _build_list_request(self, path, headers, url):
-        # path_hash = hash_string(f"{self.id}:/folder/AMAZING.txt")
-        path_hash = "960f7d69e28566e260d947fda1ec1ea631731e6922b07987e6448f95209a829e"
+        path_hash = hash_string(f"{self.id}:{path}")
         req = requests.Request("GET", url=url, headers=headers)
         req.params = {"auth_token": None, "path_hash": path_hash}
         return req.prepare()
