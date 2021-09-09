@@ -213,7 +213,7 @@ def add_curator(client, curator_id, allocation_id):
     )
 
 
-def curator_transafer_allocation(
+def curator_transfer_allocation(
     client, to_client_id, to_client_public_key, allocation_id
 ):
     input = {

@@ -9,6 +9,7 @@ import requests
 from zerochain.workers import Blobber
 from zerochain.const import Endpoints, StorageEndpoints
 from zerochain.utils import generate_random_letters, hash_string
+from zerochain.exceptions import ConsensusError
 from zerochain.actions import blobber, allocation
 
 file_info = {"size": "", "actual_size": 0, "hash": "", "type": ""}
@@ -55,18 +56,9 @@ class Allocation:
     def list_all_files(self):
         return self.list_files("/")
 
-    def _request(
-        self, url, method="GET", headers=None, data=None, files=None, params=None
-    ):
-        return requests.request(
-            method, url, headers=headers, data=data, files=files, params=params
-        )
-
-    def list_files(self, path):
-        path = self._repair_path(path)
+    def list_files(self, remote_path, auth_token=None):
+        remote_path = self._repair_path(remote_path)
         request_list = []
-        responses = []
-        future_responses = []
 
         headers = {
             "X-App-Client-Id": self.client.id,
@@ -75,9 +67,14 @@ class Allocation:
 
         for blobber in self.blobbers:
             url = f"{blobber.url}{Endpoints.ALLOCATION_FILE_LIST}{self.id}"
-            request = self._build_list_request("/", headers, url)
+            request = self._build_list_request(remote_path, headers, url, auth_token)
             request_list.append(request)
 
+        return self._make_requests(request_list, remote_path)
+
+    def _make_requests(self, request_list, remote_path):
+        responses = []
+        future_responses = []
         with ThreadPoolExecutor(max_workers=10) as executor:
             session = requests.Session()
 
@@ -91,12 +88,19 @@ class Allocation:
                 responses.append(response)
 
         try:
-            data = self._parse_responses(responses)
+            data = self._parse_responses(responses, remote_path)
             return data
         except Exception as e:
             return e
 
-    def _parse_responses(self, response_list):
+    def _request(
+        self, url, method="GET", headers=None, data=None, files=None, params=None
+    ):
+        return requests.request(
+            method, url, headers=headers, data=data, files=files, params=params
+        )
+
+    def _parse_responses(self, response_list, remote_path):
         data = {}
         for index, response in enumerate(response_list):
             try:
@@ -105,12 +109,24 @@ class Allocation:
             except:
                 return response.text
 
-        return data
+        if not len(data) == len(self.blobbers):
+            raise ConsensusError("Consensus not reached from all blobbers")
 
-    def _build_list_request(self, path, headers, url):
+        path_check_list = []
+        for blobber_data in data.values():
+            path_check_list.append(blobber_data.get("meta_data").get("path"))
+
+        if not all(path == remote_path for path in path_check_list):
+            raise ConsensusError(
+                "Incorrect response returned from atleast on of the blobbers, incorrect remote path returned"
+            )
+
+        return data[0]
+
+    def _build_list_request(self, path, headers, url, auth_token):
         path_hash = hash_string(f"{self.id}:{path}")
         req = requests.Request("GET", url=url, headers=headers)
-        req.params = {"auth_token": None, "path_hash": path_hash}
+        req.params = {"auth_token": auth_token, "path_hash": path_hash}
         return req.prepare()
 
     def _repair_path(self, path):
