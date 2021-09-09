@@ -4,6 +4,7 @@ from time import time
 
 from zerochain.transaction import Transaction
 from zerochain.utils import get_duration_nanoseconds, create_allocation_from_obj
+from zerochain.utils import create_allocation as create_allocation_util
 from zerochain.const import Endpoints, TransactionName, STORAGE_SMART_CONTRACT_ADDRESS
 
 
@@ -158,7 +159,7 @@ def create_allocation(
         input=input,
         value=lock_tokens,
     )
-    return create_allocation(data["hash"], client)
+    return create_allocation_util(data["hash"], client)
 
 
 def update_allocation(
